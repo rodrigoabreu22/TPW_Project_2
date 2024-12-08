@@ -15,6 +15,13 @@ from django.shortcuts import render
 from django.contrib.auth import views as auth_views
 from django.urls import reverse
 
+from rest_framework import status
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from AmorCamisola.serializers import *
+
+
 def verifyIfAdmin(request):
     if request.user.is_authenticated and request.user.is_superuser:
         return True
@@ -1049,3 +1056,56 @@ def accountSettings(request):
                                                                  'error': 'Invalid form!','offer_count' : getOffersCount(request)})
 
 
+# ------------------- REST API ------------------- #
+
+@api_view(['GET'])
+def get_users(request):
+    users = User.objects.all()
+    num = 10
+    if 'num' in request.GET:
+        num = int(request.GET['num'])
+    if 'page' in request.GET:
+        page = int(request.GET['page'])
+        users = users[(page-1)*num:min(len(users), page*num)]
+    serializer = UserSerializer(users, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def get_user(request):
+    id = request.GET['id']
+    try:
+        user = UserProfile.objects.get(id=id)
+    except User.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    serializer = UserProfileSerializer(user, many=False)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_user_offers(request):
+    userProfile = UserProfile.objects.get(user__id=request.user.id)
+    user = User.objects.get(id=request.user.id)
+    madeOffers = Offer.objects.filter(sent_by__user_id=request.user.id).filter(offer_status__exact='in_progress')
+    receivedOffers = Offer.objects.filter(product__seller_id=request.user.id) | Offer.objects.filter(buyer__user_id=request.user.id)
+    receivedOffersFiltered = receivedOffers.exclude(sent_by__user_id=request.user.id).filter(offer_status__exact='in_progress')
+    acceptedOffers = receivedOffers.filter(offer_status__exact='accepted').exclude(paid=True, delivered=True) | madeOffers.filter(offer_status__exact='accepted').exclude(paid=True, delivered=True)
+    processedOffers = receivedOffers.filter(offer_status__exact='rejected') | madeOffers.filter(offer_status__exact='rejected') | Offer.objects.filter(paid=True, delivered=True, sent_by__user_id=request.user.id)
+    user_profile_serializer = UserProfileSerializer(userProfile, many=False)
+    user_serializer = UserSerializer(user, many=False)
+    madeOffers_serializer = OfferSerializer(madeOffers, many=True)
+    receivedOffersFiltered_serializer = OfferSerializer(receivedOffersFiltered, many=True)
+    acceptedOffers_serializer = OfferSerializer(acceptedOffers, many=True)
+    processedOffers_serializer = OfferSerializer(processedOffers, many=True)
+    return Response({
+        'profile': user_profile_serializer.data,
+        'user': user_serializer.data,
+        'offers_received': receivedOffersFiltered_serializer.data,
+        'offers_made': madeOffers_serializer.data,
+        'offers_accepted': acceptedOffers_serializer.data,
+        'offers_processed': processedOffers_serializer.data
+    })
+
+
+
+
+# ------------------- REST API ------------------- #
