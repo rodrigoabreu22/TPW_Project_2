@@ -1064,7 +1064,7 @@ def get_users(request):
     id = request.GET['id']
     if id:
         try:
-            user = UserProfile.objects.get(id=id)
+            user = UserProfile.objects.get(user__id=id)
         except UserProfile.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = UserProfileSerializer(user, many=False)
@@ -1117,26 +1117,99 @@ def get_user_offers(request):
     })
 
 @api_view(['GET'])
-def get_product_by_id(request):
+@permission_classes([IsAuthenticated])
+def get_offer_by_id(request):
     id = request.GET['id']
     try:
-        product = Product.objects.get(id=id)
-    except Product.DoesNotExist:
+        offer = Offer.objects.get(id=id)
+        if offer.product.seller.id != request.user.id or offer.buyer.user.id != request.user.id:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+    except Offer.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-    serializer = ProductSerializer(product, many=False)
+    serializer = OfferSerializer(offer, many=False)
     return Response(serializer.data)
 
+@api_view(['GET', 'PUT', 'DELETE'])
+def get_product_by_id(request):
+    if request.method == 'PUT':
+        id = request.GET['id']
+        try:
+            product = Product.objects.get(id=id)
+        except Product.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        serializer = ProductSerializer(product, data=request.data)
+        if serializer.is_valid():
+            serializer.update(instance=product, validated_data=request.data)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    elif request.method == 'DELETE':
+        id = request.GET['id']
+        try:
+            product = Product.objects.get(id=id)
+        except Product.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        product.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    elif request.method == 'GET':
+        id = request.GET['id']
+        try:
+            product = Product.objects.get(id=id)
+        except Product.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        serializer = ProductSerializer(product, many=False)
+        return Response(serializer.data)
+    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+@api_view(['GET', 'POST'])
+def products(request):
+    if request.method == 'POST':
+        serializer = ProductSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.create(validated_data=request.data)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    elif request.method == 'GET':
+        if 'user_id' in request.GET:
+            user_id = request.GET['user_id']
+            products = Product.objects.filter(seller__user__id=user_id)
+        else:
+            products = Product.objects.all()
+        num = 10
+        if 'num' in request.GET:
+            num = int(request.GET['num'])
+        if 'page' in request.GET:
+            page = int(request.GET['page'])
+            products = products[(page-1)*num:min(len(products), page*num)]
+        serializer = ProductSerializer(products, many=True)
+        return Response(serializer.data)
+    else:
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
 @api_view(['GET'])
-def get_products(request):
-    products = Product.objects.all()
-    num = 10
-    if 'num' in request.GET:
-        num = int(request.GET['num'])
-    if 'page' in request.GET:
-        page = int(request.GET['page'])
-        products = products[(page-1)*num:min(len(products), page*num)]
-    serializer = ProductSerializer(products, many=True)
-    return Response(serializer.data)
+def get_products_by_user(request, user_id):
+    if request.method == 'GET':
+        try:
+            user = UserProfile.objects.get(user__id=user_id)
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        products = Product.objects.filter(seller=user)
+        serializer = ProductSerializer(products, many=True)
+        return Response(serializer.data)
+    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+@api_view(['GET'])
+def get_favorites_by_user(request, user_id):
+    if request.method == 'GET':
+        try:
+            user = UserProfile.objects.get(user__id=user_id)
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        favorite = Favorite.objects.get(user=user)
+        serializer = FavoriteSerializer(favorite, many=False)
+        return Response(serializer.data)
+    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    
 
 
 

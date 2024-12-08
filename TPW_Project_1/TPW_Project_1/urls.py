@@ -51,13 +51,12 @@ urlpatterns = [
 
     # ------ REST API ------ #
 
-    path('ws/products/', views.get_products, name='api_products'),
-    path('ws/products/<int:id>/', views.get_product_by_id, name='api_product'),
-    path('ws/users/', views.get_users, name='api_users'),
-    path('ws/offers/', views.api_offers, name='api_offers'),
-    path('ws/offers/<int:id>/', views.api_offer, name='api_offer'),
-    path('ws/favorites/', views.api_favorites, name='api_favorites'),
-    path('ws/favorites/<int:id>/', views.api_favorite, name='api_favorite'),
+    path('ws/products/', views.products, name='get_products'), #can be get and post
+    path('ws/products/<int:id>/', views.get_product_by_id, name='get_product_by_id'), # can get, put and delete
+    path('ws/users/', views.get_users, name='get_users'), #optional id argument
+    path('ws/offers/', views.get_user_offers, name='get_user_offers'),
+    path('ws/offers/<int:id>/', views.get_offer_by_id, name='get_offer_by_id'),
+    path('ws/users/<int:user_id>/favorites/', views.get_favorites_by_user, name='get_favorites_by_user'),
     path('ws/reports/', views.api_reports, name='api_reports'),
     path('ws/reports/<int:id>/', views.api_report, name='api_report'),
     
