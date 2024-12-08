@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Django WebProject</title>
+
+    {% load static %}
+    <!-- Bootstrap core CSS -->
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+      <link rel="stylesheet" href="{% static 'css/login.css' %}">
+      <link rel="stylesheet" href="{% static 'css/home.css' %}">
+      <link rel="stylesheet" href="{% static 'css/pubProduct.css' %}">
+  </head>
+<body>
+<div class="login-container">
+    <div class="card login-card">
+        <div class="card-body">
+            <h2 class="card-title text-center">Iniciar Sessão</h2>
+            <p class="text-center">Se não tem uma conta, clique <a href="{% url 'createaccount'%}">aqui</a> para criar uma.</p>
+            <form action="." method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="username">Nome de Utilizador</label>
+                    {{ form.username }}
+                </div>
+                <div class="form-group">
+                    <label for="password">{{ form.password.label }}</label>
+                    {{ form.password }}
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Iniciar Sessão</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Banned Account Modal -->
+<div class="modal fade" id="bannedModal" tabindex="-1" aria-labelledby="bannedModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="bannedModalLabel">Conta Banida</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Esta conta foi banida. Iremos contactá-lo para lhe devolver o dinheiro que ficou na sua conta.
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'scripts/jquery-3.4.1.min.js' %}"></script>
+<script src="{% static 'scripts/popper.min.js' %}"></script>
+<script src="{% static 'scripts/bootstrap.min.js' %}"></script>
+
+<!-- Show the modal if banned flag is in URL -->
+<script>
+    $(document).ready(function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('banned')) {
+            $('#bannedModal').modal('show');
+        }
+    });
+</script>
+</body>

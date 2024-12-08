@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+{% load static %}
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Utilizadores</h2>
+
+    <!-- Search Form -->
+    <form action="." method="post" class="form-inline justify-content-center mb-4">
+        {% csrf_token %}
+        <label class="mr-2">{{ form.query.label_tag }}</label>
+        {{ form.query }}
+        <button type="submit" class="btn btn-primary">Procurar</button>
+    </form>
+
+    <!-- Display Popular Users -->
+    <div class="user-list">
+        {% if not query %}
+            <h5>Utilizadores populares:</h5>
+            <ul class="list-group">
+                {% for profile in popular_users_profiles %}
+                    <li class="list-group-item d-flex align-items-center">
+                        <img src="{% if profile.image %}/media/{{ profile.image.name }}{% else %}{% static 'fonts/imgs/defaultUser.png' %}{% endif %}" class="profile-img rounded-circle mr-3">
+                        <div>
+                            <a href="{% url 'profile' profile.user.username %}" class="username">{{ profile.user.username }}</a>
+                        </div>
+                    </li>
+                {% empty %}
+                    <li class="list-group-item">NNão foram encontrados resultados.</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+
+    <!-- Display Search Results -->
+    {% if query %}
+        <div class="user-list mt-4">
+            <h5>Search Results for "{{ query }}":</h5>
+            <ul class="list-group">
+                {% for profile in all_user_profiles %}
+                    <li class="list-group-item d-flex align-items-center">
+                        <img src="{% if profile.image %}/media/{{ profile.image.name }}{% else %}{% static 'fonts/imgs/defaultUser.png' %}{% endif %}" class="profile-img rounded-circle mr-3">
+                        <div>
+                            <a href="{% url 'profile' profile.user.username %}" class="username">{{ profile.user.username }}</a>
+                        </div>
+                    </li>
+                {% empty %}
+                    <li class="list-group-item">Não foram encontrados resultados.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

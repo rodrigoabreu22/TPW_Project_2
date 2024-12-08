@@ -1,0 +1,202 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block content %}
+
+<!-- Gray Header -->
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <!-- Main Product Image on the Left -->
+        <div class="col-lg-7 mb-4 d-flex flex-column">
+            <img src="{{ product.product.image.url }}" alt="{{ product.product.name }}" class="img-fluid w-100 rounded shadow mb-3">
+        
+            {% if product.product.sold %}
+                <span class="badge bg-danger text-center mt-2">Indisponível</span>
+            {% elif error != "" %}
+                <span class="badge bg-danger text-center mt-2">{{ error }}</span>
+            {% else %}
+                <button id="contactSellerButton" class="btn btn-dark btn-lg w-100 mt-2">
+                    Fazer proposta
+                </button>
+            {% endif %}
+        </div>
+    
+        <div class="col-lg-5 d-flex flex-column justify-content-between">
+            <div>
+                <h1 class="h3 text-dark mb-2">{{ product.product.name }} </h1>
+                <p>Categoria: {{ category }}</p>
+                <p>Tamanho: {{ product.size }}</p>
+                <p>Equipa: {{ product.product.team }}</p>
+                <p>Vendedor: <a href="{% url 'profile' username=product.product.seller.username %}">{{ product.product.seller.username }}</a></p>
+                <p>Contactar: </p>
+                <ul>
+                    <li class="text-muted">Telefone: <span class="text-muted">{{ sellerProfile.phone }}</span></li>
+                    <li class="text-muted">Email: <span class="text-muted">{{ product.product.seller.email }}</span></li>
+                </ul>
+                <p class="h4 text-danger fw-bold mb-3">{{ product.product.price }}€</p>
+                
+                <div class="mt-2 p-3 border rounded bg-light shadow-sm">
+                    <h2 class="h5">Descrição</h2>
+                    <p class="text-secondary">{{ product.product.description }}</p>
+                </div>
+                <button type="button" class="btn btn-outline-danger btn-sm ml-2" data-toggle="modal" data-target="#reportModal">
+                    Reportar Publicação
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+    <!-- Report Modal -->
+    <div class="modal fade" id="reportModal" tabindex="-1" role="dialog" aria-labelledby="reportModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="reportModalLabel">Reportar {{ profile_user.username }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        {{ report_form.as_p }}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" name="report_product" class="btn btn-danger">Confirmar denúncia</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    
+    <!-- Modal Structure -->
+    <div class="modal fade" id="contactSellerModal" tabindex="-1" aria-labelledby="contactSellerModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="contactSellerModalLabel">Fazer Proposta</h5>
+                </div>
+                <div class="modal-body">
+                    <!-- You can add a form or message here -->
+                    <p>Proposta a {{ product.product.seller.username }} para a compra do produto "{{ product.product.name }}".</p>
+                    Dicas: <br/>
+                    <li>A oferta deve ter um valor próximo do listado ({{ product.product.price }}€)<br/>
+                    <li>Deve contactar o vendedor antes de colocar uma proposta
+                    <hr>
+                    <form id="contactSellerForm" method="post" action="{% url 'detailedproduct' id=product.product.id %}">
+                        {% csrf_token %}
+                        {{ form }}
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="closer">Cancelar</button>
+                    <!-- Submit button triggers form submission -->
+                    <button type="submit" id="submit" name="proposta" form="contactSellerForm" class="btn btn-primary">Enviar Proposta</button>
+                </div>
+            </div>
+        </div>
+    </div>
+  
+
+
+
+<!-- JavaScript to Open Modal on Button Click -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Target the button
+        var contactSellerButton = document.getElementById('contactSellerButton');
+        var closeButton = document.getElementById('closer');
+        var contactSellerModal =  new bootstrap.Modal(document.getElementById('contactSellerModal'));
+        var submitButton = document.getElementById('submit')
+        var valueField = document.getElementById('id_value');
+        
+    
+        // Add event listener to show modal on click
+        contactSellerButton.addEventListener('click', function () {
+            // Use Bootstrap's Modal API to show the modal directly on click
+            contactSellerModal = new bootstrap.Modal(document.getElementById('contactSellerModal'));        
+            contactSellerModal.show();
+        });
+        
+        function toggleModal() {
+            if (contactSellerModal.isOpen) {
+                contactSellerModal.show();
+            }
+            else {
+                contactSellerModal.hide();
+            }
+        }
+        
+        closeButton.addEventListener('click', toggleModal);
+        
+    
+        var paymentMethodField = document.getElementById('id_payment_method');
+        var deliveryMethodField = document.getElementById('id_delivery_method');
+    
+        function toggleDeliveryMethod() {
+            if (paymentMethodField.value === 'in_person') {
+                deliveryMethodField.value = 'in_person';  // Set to in-person
+                deliveryMethodField.disabled = true;  // Disable the field
+            } else {
+                deliveryMethodField.disabled = false;  // Enable the field
+            }
+        }
+        
+        function checkIfWalletHasMoney() {
+            if (paymentMethodField.value === 'store_credit' && Number("{{ profile.wallet }}") < valueField.value) {
+                submitButton.disabled = true;
+                submitButton.innerText = 'Fundos insuficientes';
+                submitButton.className = 'btn btn-warning';
+            }
+            else {
+                submitButton.disabled = false;
+                submitButton.innerText = 'Enviar Proposta';
+                submitButton.className = 'btn btn-primary';
+            }
+        }
+        
+        paymentMethodField.addEventListener('change', checkIfWalletHasMoney);
+        valueField.addEventListener('change', checkIfWalletHasMoney);
+        
+        
+        var deliveryLocationField = document.getElementById('id_address_choice');
+        var deliveryLocation = document.getElementById('id_custom_address');
+        
+        function toggleDeliveryLocation() {
+            if (deliveryLocationField.value === 'profile_address') {
+                deliveryLocation.value = "{{ profile.address }}";
+                deliveryLocation.disabled = true;
+            } else {
+                deliveryLocation.disabled = false;
+            }
+        }
+        
+        var form = document.getElementById('contactSellerForm');
+        form.addEventListener('submit', function () {
+            // Enable all disabled fields before submission
+            if (deliveryMethodField.disabled) {
+                deliveryMethodField.disabled = false;
+            }
+            if (deliveryLocation.disabled) {
+                deliveryLocation.disabled = false;
+            }
+        });
+    
+        // Attach event listener
+        paymentMethodField.addEventListener('change', toggleDeliveryMethod);
+        deliveryLocationField.addEventListener('change', toggleDeliveryLocation);
+    
+        // Initial call to set the state correctly on page load
+        toggleDeliveryMethod();
+        toggleDeliveryLocation();
+        checkIfWalletHasMoney();
+    });
+</script>
+
+{% endblock %}
+
+
