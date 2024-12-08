@@ -48,6 +48,21 @@ urlpatterns = [
     path('productviewbymoderator/<int:product_id>/', views.product_mod_view, name='product_mod_view'),
     path('userviewbymoderator/<str:username>/', views.user_mod_view, name='user_mod_view'),
 
+
+    # ------ REST API ------ #
+
+    path('ws/products/', views.get_products, name='api_products'),
+    path('ws/products/<int:id>/', views.get_product_by_id, name='api_product'),
+    path('ws/users/', views.get_users, name='api_users'),
+    path('ws/users/<int:id>/', views.get_user, name='api_user'),
+    path('ws/offers/', views.api_offers, name='api_offers'),
+    path('ws/offers/<int:id>/', views.api_offer, name='api_offer'),
+    path('ws/favorites/', views.api_favorites, name='api_favorites'),
+    path('ws/favorites/<int:id>/', views.api_favorite, name='api_favorite'),
+    path('ws/reports/', views.api_reports, name='api_reports'),
+    path('ws/reports/<int:id>/', views.api_report, name='api_report'),
+    
+
 ]
 
 if settings.DEBUG:

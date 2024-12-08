@@ -1059,8 +1059,17 @@ def accountSettings(request):
 # ------------------- REST API ------------------- #
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_users(request):
-    users = User.objects.all()
+    id = request.GET['id']
+    if id:
+        try:
+            user = UserProfile.objects.get(id=id)
+        except UserProfile.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        serializer = UserProfileSerializer(user, many=False)
+        return Response(serializer.data)
+    users = UserProfile.objects.all()
     num = 10
     if 'num' in request.GET:
         num = int(request.GET['num'])
@@ -1070,15 +1079,17 @@ def get_users(request):
     serializer = UserSerializer(users, many=True)
     return Response(serializer.data)
 
+"""
 @api_view(['GET'])
-def get_user(request):
+def get_user(request, id):
     id = request.GET['id']
     try:
-        user = UserProfile.objects.get(id=id)
+        user = UserProfile.objects.get(user_id=id)
     except User.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     serializer = UserProfileSerializer(user, many=False)
     return Response(serializer.data)
+"""
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -1104,6 +1115,29 @@ def get_user_offers(request):
         'offers_accepted': acceptedOffers_serializer.data,
         'offers_processed': processedOffers_serializer.data
     })
+
+@api_view(['GET'])
+def get_product_by_id(request):
+    id = request.GET['id']
+    try:
+        product = Product.objects.get(id=id)
+    except Product.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    serializer = ProductSerializer(product, many=False)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def get_products(request):
+    products = Product.objects.all()
+    num = 10
+    if 'num' in request.GET:
+        num = int(request.GET['num'])
+    if 'page' in request.GET:
+        page = int(request.GET['page'])
+        products = products[(page-1)*num:min(len(products), page*num)]
+    serializer = ProductSerializer(products, many=True)
+    return Response(serializer.data)
+
 
 
 
