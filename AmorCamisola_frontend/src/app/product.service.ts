@@ -16,16 +16,16 @@ export class ProductService {
     const data :Response = await fetch(url);
     return await data.json() ?? undefined;
    }
-
-   async getProducts(user_id: number): Promise<Product> {
+   
+   async getProducts(user_id: number | null): Promise<Product[]> {
     let url = `${this.baseUrl}products/`;
-    if (user_id != null) {
-        url += `?user_id=${user_id}`;
+    if (user_id !== null) {
+      url += `?user_id=${user_id}`;
     }
-    const data :Response = await fetch(url);
-    return await data.json() ?? undefined;
-   }
-
+    const response: Response = await fetch(url);
+    return await response.json();
+  }
+  
    async createProduct(prod: Product): Promise<any> {
     const url = `${this.baseUrl}products/`;
     const data = await fetch(url, {

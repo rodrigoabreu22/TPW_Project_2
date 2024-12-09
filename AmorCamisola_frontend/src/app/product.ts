@@ -1,10 +1,12 @@
+import { User } from "./user";
+
 export interface Product {
     id: number;
     name: string;
     description: string;
     price: number;
     team: string;
-    seller: UserProfile;
+    seller: User | null;
     sold: boolean;
     is_active: boolean;
     image: string;

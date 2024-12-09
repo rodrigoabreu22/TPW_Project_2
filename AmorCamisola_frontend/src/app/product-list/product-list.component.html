@@ -1,0 +1,16 @@
+<div class="product-list">
+  <h2>Product List</h2>
+
+  <!-- Show loading state until products are fetched -->
+  <div *ngIf="isLoading">Loading products...</div>
+
+  <!-- Once products are loaded, display the list -->
+  <div *ngIf="!isLoading">
+    <div *ngFor="let product of products" class="product-item">
+      <h3>{{ product.name }}</h3>
+      <p>€{{ product.price }}</p>
+      <p>Seller: {{ product.seller?.first_name }} {{ product.seller?.last_name }}</p>
+      <button class="favorite-button">❤️ Add to Favorites</button>
+    </div>
+  </div>
+</div>

@@ -1,1 +1,14 @@
-<p>product works!</p>
+<div class="product-card" *ngIf="product">
+  <img [src]="product.image || 'placeholder.jpg'" alt="{{ product.name }}" />
+  <h3>{{ product.name }}</h3>
+  <p>{{ product.description }}</p>
+  <p>Price: €{{ product.price.toFixed(2) }}</p>
+  <p>Seller: {{ product.seller?.first_name }} {{ product.seller?.last_name }}</p>
+  <button class="favorite-button">❤️ Add to Favorites</button>
+</div>
+
+<div *ngIf="!product" class="loading">
+  Loading product details...
+</div>
+
+  
