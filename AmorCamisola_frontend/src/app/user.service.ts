@@ -12,14 +12,19 @@ export class UserService {
 
    }
 
-   async getUsers(id: number): Promise<User> {
+   async getUser(username: string): Promise<UserProfile> {
     let url = `${this.baseUrl}users/`;
-    if (id != null) {
-        url += `?user_id=${id}`;
+    if (username != null) {
+        url += `?username=${username}`;
     }
     const data :Response = await fetch(url);
     return await data.json() ?? undefined;
    }
+   async getUsers(): Promise<UserProfile[]> {
+    let url = `${this.baseUrl}users/`;
+    const data: Response = await fetch(url);
+    return await data.json() ?? [];
+  }
 
    async getUsersProfile(id: number): Promise<UserProfile> {
     let url = `${this.baseUrl}users/profile/`;

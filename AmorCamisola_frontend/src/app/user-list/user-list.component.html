@@ -1,0 +1,8 @@
+<div *ngIf="isLoading">A carregar usuários...</div>
+
+<div *ngIf="!isLoading">
+  <div *ngFor="let user of users" class="user-item">
+    <app-user [username]="user.user.username"></app-user> 
+  </div>
+</div>
+

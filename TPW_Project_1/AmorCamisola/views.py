@@ -1059,12 +1059,16 @@ def accountSettings(request):
 # ------------------- REST API ------------------- #
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+#@permission_classes([IsAuthenticated])
 def get_users(request):
-    id = request.GET['id']
-    if id:
+    username=None
+    print(request.data)
+    if 'username' in request.GET:
+        print("username")
+        username = request.GET['username']
+    if username:
         try:
-            user = UserProfile.objects.get(user__id=id)
+            user = UserProfile.objects.get(user__username=username)
         except UserProfile.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = UserProfileSerializer(user, many=False)
@@ -1076,7 +1080,7 @@ def get_users(request):
     if 'page' in request.GET:
         page = int(request.GET['page'])
         users = users[(page-1)*num:min(len(users), page*num)]
-    serializer = UserSerializer(users, many=True)
+    serializer = UserProfileSerializer(users, many=True)
     return Response(serializer.data)
 
 """

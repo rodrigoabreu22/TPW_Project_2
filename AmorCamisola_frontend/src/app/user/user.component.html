@@ -1,0 +1,23 @@
+<div class="col-md-4 col-sm-6 mb-4" *ngIf="user">
+    <!-- Product Card -->
+    <div class="card shadow-sm border-light">
+      <!-- Product Image -->
+      <!-- <img [src]="user.image || 'placeholder.jpg'" class="card-img-top" alt="{{ user.username }}" />-->
+  
+      <!-- Card Body -->
+      <div class="card-body">
+        <h5 class="card-title">{{ username }}</h5>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Loading Placeholder -->
+  <div *ngIf="!user" class="col-md-4 col-sm-6 mb-4">
+    <div class="card shadow-sm border-light">
+      <div class="card-body text-center">
+        <p class="loading-text">Loading user</p>
+      </div>
+    </div>
+  </div>
+  
+    
