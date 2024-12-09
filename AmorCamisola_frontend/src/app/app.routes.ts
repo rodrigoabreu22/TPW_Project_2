@@ -5,6 +5,6 @@ import { ProductListComponent } from './product-list/product-list.component';
 import { UserProfile } from './user-profile';
 
 export const routes: Routes = [
-    {path: '', redirectTo: '/top', pathMatch: 'full'},
+    {path: '', redirectTo: '/products', pathMatch: 'full'},
     {path: 'products', component: ProductListComponent},
 ];

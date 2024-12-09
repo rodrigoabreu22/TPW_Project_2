@@ -19,7 +19,7 @@ export class ProductService {
    
    async getProducts(user_id: number | null): Promise<Product[]> {
     let url = `${this.baseUrl}products/`;
-    if (user_id !== null) {
+    if (user_id !== null && user_id!==0) {
       url += `?user_id=${user_id}`;
     }
     const response: Response = await fetch(url);

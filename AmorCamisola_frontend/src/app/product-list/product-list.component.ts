@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, Input } from '@angular/core';
 import { ProductService } from '../product.service';
 import { Product } from '../product';
 import { CommonModule } from '@angular/common';
@@ -13,6 +13,7 @@ import { RouterModule } from '@angular/router';
   styleUrls: ['./product-list.component.css']
 })
 export class ProductListComponent implements OnInit {
+  @Input() userId: number = 0;
   products: Product[] = [];
   isLoading: boolean = true;
   productService: ProductService = inject(ProductService);
@@ -20,7 +21,7 @@ export class ProductListComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    this.productService.getProducts(null)
+    this.productService.getProducts(this.userId)
       .then((products: Product[]) => {
         this.products = products;
         this.isLoading = false;
