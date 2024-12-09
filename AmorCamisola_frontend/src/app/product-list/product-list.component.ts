@@ -1,34 +1,34 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ProductService } from '../product.service';
 import { Product } from '../product';
 import { CommonModule } from '@angular/common';
+import { ProductComponent } from '../product/product.component';  
 import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, ProductComponent], 
   templateUrl: './product-list.component.html',
-  styleUrls: ['./product-list.component.css'],
+  styleUrls: ['./product-list.component.css']
 })
 export class ProductListComponent implements OnInit {
-  products: Product[] = []; // Array to hold the list of products
-  isLoading: boolean = true; // Flag to indicate loading state
+  products: Product[] = [];
+  isLoading: boolean = true;
+  productService: ProductService = inject(ProductService);
 
-  constructor(private productService: ProductService) {}
+  constructor() {}
 
   ngOnInit(): void {
-    this.loadProducts();
-  }
-
-  async loadProducts(): Promise<void> {
-    try {
-      this.products = await this.productService.getProducts(null); // Fetch all products
-      this.isLoading = false; // Once products are loaded, set loading to false
-    } catch (error) {
-      console.error('Error fetching products:', error);
-      this.isLoading = false; // Set loading to false even on error
-    }
+    this.productService.getProducts(null)
+      .then((products: Product[]) => {
+        this.products = products;
+        this.isLoading = false;
+      })
+      .catch(error => {
+        console.error('Error fetching products:', error);
+        this.isLoading = false;
+      });
   }
 }
 

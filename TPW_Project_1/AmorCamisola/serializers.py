@@ -80,16 +80,16 @@ class FollowingSerializer(serializers.ModelSerializer):
         return instance
     
 class ProductSerializer(serializers.ModelSerializer):
-    seller = UserProfileSerializer(many=False)
+    seller = UserSerializer(many=False)
 
     class Meta:
         model = Product
-        fields = ['name', 'seller', 'image', 'price', 'team', 'description', 'sold', 'is_active']
+        fields = ['id', 'name', 'seller', 'image', 'price', 'team', 'description', 'sold', 'is_active']
 
     def create(self, validated_data):
         seller_data = validated_data.pop('seller')
         if seller_data:
-            seller, _ = UserProfile.objects.get_or_create(**seller_data)
+            seller, _ = User.objects.get_or_create(**seller_data)
             validated_data['seller'] = seller
         
         product = Product.objects.create(**validated_data)

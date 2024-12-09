@@ -4,7 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0651ba9e-7f9c-431d-9010-36bdefdb3564" name="Changes" comment="" />
+    <list default="true" id="0651ba9e-7f9c-431d-9010-36bdefdb3564" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../AmorCamisola_frontend/src/app/app.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../AmorCamisola_frontend/src/app/app.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../AmorCamisola_frontend/src/app/app.routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../AmorCamisola_frontend/src/app/app.routes.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../AmorCamisola_frontend/src/app/login/login.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../AmorCamisola_frontend/src/app/login/login.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../AmorCamisola_frontend/src/app/product.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../AmorCamisola_frontend/src/app/product.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../AmorCamisola_frontend/src/app/product.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../AmorCamisola_frontend/src/app/product.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../AmorCamisola_frontend/src/app/product/product.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../AmorCamisola_frontend/src/app/product/product.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../AmorCamisola_frontend/src/app/product/product.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../AmorCamisola_frontend/src/app/product/product.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../AmorCamisola_frontend/src/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../AmorCamisola_frontend/src/index.html" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -28,7 +37,7 @@
         <entry key="$PROJECT_DIR$" value="10-criar-template-da-pagina-de-um-perfil" />
       </map>
     </option>
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 7
@@ -39,26 +48,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;Django Server.TPW_Project_1.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenDjangoStructureViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.pycharm.django.structure.promotion.once.per.project&quot;: &quot;true&quot;,
-    &quot;django.template.preview.state&quot;: &quot;SHOW_EDITOR&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/rodrigoabreu/Desktop/LEI/TerceiroAno/TPW/projeto1/TPW_Project_1&quot;,
-    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "Django Server.TPW_Project_1.executor": "Run",
+    "RunOnceActivity.OpenDjangoStructureViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.pycharm.django.structure.promotion.once.per.project": "true",
+    "django.template.preview.state": "SHOW_EDITOR",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "/home/rodrigoabreu/Desktop/LEI/TerceiroAno/TPW/projeto2/TPW_Project_2/TPW_Project_1",
+    "list.type.of.created.stylesheet": "CSS",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
@@ -78,12 +87,12 @@
       </envs>
       <option name="SDK_HOME" value="" />
       <option name="SDK_NAME" value="Python 3.10" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="WORKING_DIRECTORY" value="" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="launchJavascriptDebuger" value="false" />
-      <option name="port" value="9050" />
+      <option name="port" value="9000" />
       <option name="host" value="localhost" />
       <option name="additionalOptions" value="" />
       <option name="browserUrl" value="" />
@@ -97,8 +106,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-PY-242.23726.102" />
-        <option value="bundled-python-sdk-5e1850174b45-399fe30bd8c1-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-242.23726.102" />
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-PY-242.24807.21" />
+        <option value="bundled-python-sdk-00717045f1d3-399fe30bd8c1-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-242.24807.21" />
       </set>
     </attachedChunks>
   </component>
@@ -127,6 +136,7 @@
       <workItem from="1731075872247" duration="6317000" />
       <workItem from="1731420416101" duration="5314000" />
       <workItem from="1731431075796" duration="467000" />
+      <workItem from="1733764319563" duration="136000" />
     </task>
     <servers />
   </component>

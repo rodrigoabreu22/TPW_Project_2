@@ -1130,9 +1130,8 @@ def get_offer_by_id(request):
     return Response(serializer.data)
 
 @api_view(['GET', 'PUT', 'DELETE'])
-def get_product_by_id(request):
+def get_product_by_id(request, id):
     if request.method == 'PUT':
-        id = request.GET['id']
         try:
             product = Product.objects.get(id=id)
         except Product.DoesNotExist:
@@ -1143,7 +1142,6 @@ def get_product_by_id(request):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     elif request.method == 'DELETE':
-        id = request.GET['id']
         try:
             product = Product.objects.get(id=id)
         except Product.DoesNotExist:
@@ -1151,12 +1149,12 @@ def get_product_by_id(request):
         product.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     elif request.method == 'GET':
-        id = request.GET['id']
         try:
             product = Product.objects.get(id=id)
         except Product.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = ProductSerializer(product, many=False)
+        print(serializer.data)
         return Response(serializer.data)
     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
@@ -1171,15 +1169,19 @@ def products(request):
     elif request.method == 'GET':
         if 'user_id' in request.GET:
             user_id = request.GET['user_id']
-            products = Product.objects.filter(seller__user__id=user_id)
+            products = Product.objects.filter(seller__id=user_id)
         else:
             products = Product.objects.all()
         num = 10
-        if 'num' in request.GET:
-            num = int(request.GET['num'])
-        if 'page' in request.GET:
-            page = int(request.GET['page'])
-            products = products[(page-1)*num:min(len(products), page*num)]
+        #try:
+        #    num = int(request.GET.get('num', 10))  # Default to 10 if not provided
+        #    page = int(request.GET.get('page', 1))  # Default to 1 if not provided
+        #    start = (page - 1) * num
+        #    end = start + num
+        #    products = products[start:end]
+        #except ValueError as e:
+        #    return Response({'error': 'Invalid pagination parameters'}, status=status.HTTP_400_BAD_REQUEST)
+        
         serializer = ProductSerializer(products, many=True)
         return Response(serializer.data)
     else:

@@ -1,14 +1,30 @@
-<div class="product-card" *ngIf="product">
-  <img [src]="product.image || 'placeholder.jpg'" alt="{{ product.name }}" />
-  <h3>{{ product.name }}</h3>
-  <p>{{ product.description }}</p>
-  <p>Price: €{{ product.price.toFixed(2) }}</p>
-  <p>Seller: {{ product.seller?.first_name }} {{ product.seller?.last_name }}</p>
-  <button class="favorite-button">❤️ Add to Favorites</button>
+<div class="col-md-4 col-sm-6 mb-4" *ngIf="product">
+  <!-- Product Card -->
+  <div class="card shadow-sm border-light">
+    <!-- Product Image -->
+    <img [src]="product.image || 'placeholder.jpg'" class="card-img-top" alt="{{ product.name }}" />
+
+    <!-- Card Body -->
+    <div class="card-body">
+      <h5 class="card-title">{{ product.name }}</h5>
+      <p class="card-text text-muted">Preço: €{{ product.price }}</p>
+      <p class="card-text">
+        <strong>Vendedor:</strong> {{ product.seller?.first_name }} {{ product.seller?.last_name }}
+      </p>
+      <button class="btn btn-outline-danger btn-sm w-100">
+        ❤️ Adicionar aos favoritos
+      </button>
+    </div>
+  </div>
 </div>
 
-<div *ngIf="!product" class="loading">
-  Loading product details...
+<!-- Loading Placeholder -->
+<div *ngIf="!product" class="col-md-4 col-sm-6 mb-4">
+  <div class="card shadow-sm border-light">
+    <div class="card-body text-center">
+      <p class="loading-text">Loading product details...</p>
+    </div>
+  </div>
 </div>
 
   
