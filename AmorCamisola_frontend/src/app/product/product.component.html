@@ -2,7 +2,7 @@
   <!-- Product Card -->
   <div class="card shadow-sm border-light">
     <!-- Product Image -->
-    <img [src]="product.image || 'placeholder.jpg'" class="card-img-top" alt="{{ product.name }}" />
+    <img [src]="'http://127.0.0.1:8080' + product.image || 'placeholder.jpg'" class="card-img-top" alt="{{ product.name }}" />
 
     <!-- Card Body -->
     <div class="card-body">

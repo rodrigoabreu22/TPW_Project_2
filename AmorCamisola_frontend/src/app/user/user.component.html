@@ -1,15 +1,13 @@
-<div class="col-md-4 col-sm-6 mb-4" *ngIf="user">
-    <!-- Product Card -->
-    <div class="card shadow-sm border-light">
+<li class="list-group-item d-flex align-items-center" *ngIf="user">
       <!-- Product Image -->
-      <!-- <img [src]="user.image || 'placeholder.jpg'" class="card-img-top" alt="{{ user.username }}" />-->
+      <img [src]="'http://127.0.0.1:8080' + user.image || 'placeholder.jpg'" class="profile-img rounded-circle mr-3" alt="{{ username }}" />
   
       <!-- Card Body -->
-      <div class="card-body">
+      <div>
         <h5 class="card-title">{{ username }}</h5>
+        <!--<a href="{% url 'profile' profile.user.username %}" class="username">{{ profile.user.username }}</a>-->
       </div>
-    </div>
-  </div>
+  </li>
   
   <!-- Loading Placeholder -->
   <div *ngIf="!user" class="col-md-4 col-sm-6 mb-4">
