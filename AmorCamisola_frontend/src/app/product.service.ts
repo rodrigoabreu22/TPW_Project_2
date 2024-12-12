@@ -25,6 +25,15 @@ export class ProductService {
     const response: Response = await fetch(url);
     return await response.json();
   }
+
+  async getProductsByUsername(username: string | null): Promise<Product[]> {
+    let url = `${this.baseUrl}products/`;
+    if (username !== null && username!=="") {
+      url += `?username=${username}`;
+    }
+    const response: Response = await fetch(url);
+    return await response.json();
+  }
   
    async createProduct(prod: Product): Promise<any> {
     const url = `${this.baseUrl}products/`;

@@ -13,7 +13,7 @@ import { RouterModule } from '@angular/router';
   styleUrls: ['./product-list.component.css']
 })
 export class ProductListComponent implements OnInit {
-  @Input() userId: number = 0;
+  @Input() username: string = "";
   products: Product[] = [];
   isLoading: boolean = true;
   productService: ProductService = inject(ProductService);
@@ -21,7 +21,7 @@ export class ProductListComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    this.productService.getProducts(this.userId)
+    this.productService.getProductsByUsername(this.username)
       .then((products: Product[]) => {
         this.products = products;
         this.isLoading = false;

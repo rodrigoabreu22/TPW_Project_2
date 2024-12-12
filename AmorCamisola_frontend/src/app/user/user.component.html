@@ -4,8 +4,7 @@
   
       <!-- Card Body -->
       <div>
-        <h5 class="card-title">{{ username }}</h5>
-        <!--<a href="{% url 'profile' profile.user.username %}" class="username">{{ profile.user.username }}</a>-->
+        <a [routerLink]="['/profile', username]" class="username">{{ username }}</a>
       </div>
   </li>
   

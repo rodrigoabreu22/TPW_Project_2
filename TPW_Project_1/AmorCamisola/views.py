@@ -1171,7 +1171,12 @@ def products(request):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     elif request.method == 'GET':
-        if 'user_id' in request.GET:
+        username=None
+        print(request.data)
+        if 'username' in request.GET:
+            username = request.GET["username"]
+            products = Product.objects.filter(seller__username=username)
+        elif 'user_id' in request.GET:
             user_id = request.GET['user_id']
             products = Product.objects.filter(seller__id=user_id)
         else:
@@ -1214,6 +1219,34 @@ def get_favorites_by_user(request, user_id):
         favorite = Favorite.objects.get(user=user)
         serializer = FavoriteSerializer(favorite, many=False)
         return Response(serializer.data)
+    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+@api_view(['GET'])
+def follows(request):
+    username=None
+    print(request.data)
+    if 'username' in request.GET:
+        print("username")
+        username = request.GET['username']
+    if username:
+        #if verifyIfAdmin(request):
+            #return redirect("/admin")
+        if request.method == 'GET':
+            try:
+                following = Following.objects.filter(following__username = username)
+                followers = Following.objects.filter(followed__username=username)
+            except Following.DoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+            following_serializer = FollowingSerializer(following, many=True)
+            followers_serializer = FollowingSerializer(followers, many=True)
+
+            # Prepare the response data
+            response_data = {
+                'following': following_serializer.data,
+                'followed': followers_serializer.data
+            }
+
+            return Response(response_data)
     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
     
 

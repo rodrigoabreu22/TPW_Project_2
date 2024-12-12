@@ -38,41 +38,41 @@ class UserProfileSerializer(serializers.ModelSerializer):
         return instance
     
 class FollowingSerializer(serializers.ModelSerializer):
-    follower = UserProfileSerializer(many=False)
-    followed = UserProfileSerializer(many=False)
+    following = UserSerializer(many=False)
+    followed = UserSerializer(many=False)
 
     class Meta:
         model = Following
-        fields = ['follower', 'followed']
+        fields = ['following', 'followed']
 
     def create(self, validated_data):
-        follower_data = validated_data.pop('follower')
+        following_data = validated_data.pop('following')
         followed_data = validated_data.pop('followed')
-        if follower_data:
-            follower, _ = UserProfile.objects.get_or_create(**follower_data)
-            validated_data['follower'] = follower
+        if following_data:
+            following, _ = User.objects.get_or_create(**following_data)
+            validated_data['following'] = following
         if followed_data:
-            followed, _ = UserProfile.objects.get_or_create(**followed_data)
+            followed, _ = User.objects.get_or_create(**followed_data)
             validated_data['followed'] = followed
-        
-        following = Following.objects.create(**validated_data)
 
-        return following
-    
+        following_instance = Following.objects.create(**validated_data)
+
+        return following_instance
+
     def update(self, instance, validated_data):
-        follower_data = validated_data.pop('follower')
+        following_data = validated_data.pop('following')
         followed_data = validated_data.pop('followed')
-        if follower_data:
-            follower = instance.follower
-            for attr, value in follower_data.items():
-                setattr(follower, attr, value)
-            follower.save()
+        if following_data:
+            following = instance.following
+            for attr, value in following_data.items():
+                setattr(following, attr, value)
+            following.save()
         if followed_data:
             followed = instance.followed
             for attr, value in followed_data.items():
                 setattr(followed, attr, value)
             followed.save()
-        
+
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()
