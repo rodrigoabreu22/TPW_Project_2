@@ -20,14 +20,23 @@ export class LoginService {
         password: password
       })
     });
-    
-    const response: any = await data.json();
+    let response: any;
+    if (!data.ok) {
+      response = await data.text();
+      console.log('Error logging in:', response);
+      return false;
+    }
+    else {
+      response = await data.json();
+      console.log('Login response:', response);
+    }
     if (response.token) {
       localStorage.setItem('token', response.token);
       localStorage.setItem('id', response.user.id);
       return true;
     } else {
-      return false;
+      localStorage.setItem('id', response.user.id);
+      return true;
     }
   }
 }

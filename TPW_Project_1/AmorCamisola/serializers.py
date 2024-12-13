@@ -4,20 +4,22 @@ from AmorCamisola.models import User, UserProfile, Following, Product, Report, F
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['username', 'email', 'first_name', 'last_name']
+        fields = ['id', 'username', 'email', 'first_name', 'last_name']
 
 class UserProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer(many=False)
 
     class Meta:
         model = UserProfile
-        fields = ['user', 'address', 'phone', 'image', 'wallet']
+        fields = ['id', 'user', 'address', 'phone', 'image', 'wallet']
 
     def create(self, validated_data):
         user_data = validated_data.pop('user')
         if user_data:
             user, _ = User.objects.get_or_create(**user_data)
             validated_data['user'] = user
+        else:
+            return None
         
         user_profile = UserProfile.objects.create(**validated_data)
 
@@ -351,7 +353,7 @@ class OfferSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Offer
-        fields = ['buyer', 'product', 'value', 'payment_method', 'delivery_method', 'address', 'sent_by', 'offer_status', 'delivered']
+        fields = ['id', 'buyer', 'product', 'value', 'payment_method', 'delivery_method', 'address', 'sent_by', 'offer_status', 'delivered']
 
     def create(self, validated_data):
         buyer_data = validated_data.pop('buyer')

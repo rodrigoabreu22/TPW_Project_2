@@ -51,6 +51,8 @@ urlpatterns = [
 
     # ------ REST API ------ #
 
+    path('ws/login', views.login, name='login'),
+    path('ws/register', views.register, name='register'),
     path('ws/products/', views.products, name='get_products'), #can be get and post
     path('ws/products/<int:id>/', views.get_product_by_id, name='get_product_by_id'), # can get, put and delete
     path('ws/users/', views.get_users, name='get_users'), #optional id argument

@@ -1289,10 +1289,38 @@ def get_user_profiles(request):
             {"error": str(e)},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
+
+@api_view(['POST'])
+def login(request):
+    if request.method == 'POST':
+        try:
+            username = request.data.get('username')
+            password = request.data.get('password')
+            print(username, password)
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                user_profile = UserProfile.objects.get(user=user)
+                user_serializer = UserProfileSerializer(user_profile, many=False)
+                return Response(user_serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
+        except Exception as e:
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+@api_view(['POST'])
+def register(request):
+    if request.method == 'POST':
+        profile_serializer = UserProfileSerializer(data=request.data)
+        user_profile = profile_serializer.create(validated_data=request.data)
+        if not user_profile:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        new_profile_serializer = UserProfileSerializer(user_profile, many=False)
+        return Response(new_profile_serializer.data, status=status.HTTP_201_CREATED)
+    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
     
-
-
-
-
 
 # ------------------- REST API ------------------- #
