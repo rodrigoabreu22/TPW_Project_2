@@ -1,30 +1,27 @@
 <div class="col-md-4 col-sm-6 mb-4" *ngIf="product">
   <!-- Product Card -->
   <div class="card shadow-sm border-light">
-    <!-- Product Image -->
-    <img [src]="'http://127.0.0.1:8080' + product.image || 'placeholder.jpg'" class="card-img-top" alt="{{ product.name }}" />
+    <!-- Make the card clickable with RouterLink -->
+    <a [routerLink]="['/product', product.id]" class="text-decoration-none">
+      <!-- Product Image -->
+      <img [src]="'http://127.0.0.1:8080' + product.image || 'placeholder.jpg'" class="card-img-top" alt="{{ product.name }}" />
+    </a>
 
     <!-- Card Body -->
     <div class="card-body">
-      <h5 class="card-title">{{ product.name }}</h5>
+      <h5 class="card-title">
+        <a [routerLink]="['/product', product.id]" class="text-dark text-decoration-none">
+          {{ product.name }}
+        </a>
+      </h5>
       <p class="card-text text-muted">Preço: €{{ product.price }}</p>
       <p class="card-text">
-        <strong>Vendedor:</strong> {{ product.seller?.first_name }} {{ product.seller?.last_name }}
+        <strong>Vendedor:</strong> {{ product.seller.first_name }} {{ product.seller.last_name }}
       </p>
-      <button class="btn btn-outline-danger btn-sm w-100">
+      <!-- Favorite Button -->
+      <button class="btn btn-outline-danger btn-sm w-100" (click)="addToFavorites($event, product)">
         ❤️ Adicionar aos favoritos
       </button>
     </div>
   </div>
 </div>
-
-<!-- Loading Placeholder -->
-<div *ngIf="!product" class="col-md-4 col-sm-6 mb-4">
-  <div class="card shadow-sm border-light">
-    <div class="card-body text-center">
-      <p class="loading-text">Loading product details...</p>
-    </div>
-  </div>
-</div>
-
-  

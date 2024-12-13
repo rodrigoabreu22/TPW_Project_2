@@ -1,0 +1,14 @@
+.container {
+    max-width: 900px;
+  }
+  
+  .img-fluid {
+    border: 1px solid #ddd;
+    padding: 5px;
+    background-color: #f9f9f9;
+  }
+  
+  .text-muted {
+    font-size: 0.9rem;
+  }
+  
