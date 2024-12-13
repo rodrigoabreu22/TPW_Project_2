@@ -81,10 +81,34 @@ class FollowingSerializer(serializers.ModelSerializer):
     
 class ProductSerializer(serializers.ModelSerializer):
     seller = UserSerializer(many=False)
+    category = serializers.SerializerMethodField()
+    size = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
-        fields = ['id', 'name', 'seller', 'image', 'price', 'team', 'description', 'sold', 'is_active']
+        fields = ['id', 'name', 'seller', 'image', 'price', 'team', 'description', 'sold', 'is_active', 'category', 'size']
+
+    def get_category(self, obj):
+        if hasattr(obj, 'jersey'):
+            return 'Jersey'
+        elif hasattr(obj, 'shorts'):
+            return 'Shorts'
+        elif hasattr(obj, 'socks'):
+            return 'Socks'
+        elif hasattr(obj, 'boots'):
+            return 'Boots'
+        return None
+
+    def get_size(self, obj):
+        if hasattr(obj, 'jersey'):
+            return obj.jersey.size
+        elif hasattr(obj, 'shorts'):
+            return obj.shorts.size
+        elif hasattr(obj, 'socks'):
+            return obj.socks.size
+        elif hasattr(obj, 'boots'):
+            return obj.boots.size
+        return None
 
     def create(self, validated_data):
         seller_data = validated_data.pop('seller')
@@ -109,6 +133,7 @@ class ProductSerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
+
     
 class ReportSerializer(serializers.ModelSerializer):
     sent_by = UserProfileSerializer(many=False)

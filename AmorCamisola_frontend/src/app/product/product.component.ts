@@ -35,4 +35,11 @@ export class ProductComponent implements OnInit {
       console.warn('Invalid or missing product ID.');
     }
   }
+
+  addToFavorites(event: Event, product: Product): void {
+    event.stopPropagation(); // Prevents navigation
+    console.log(`Product ${product.name} added to favorites.`);
+    // Add your logic for adding the product to the favorites list
+  }
+  
 }

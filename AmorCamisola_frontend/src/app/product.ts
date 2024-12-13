@@ -6,9 +6,11 @@ export interface Product {
     description: string;
     price: number;
     team: string;
-    seller: User | null;
+    seller: User;
     sold: boolean;
     is_active: boolean;
     image: string;
     image_base64: string;
+    category: string | null;
+    size: string | number | null;
   }
