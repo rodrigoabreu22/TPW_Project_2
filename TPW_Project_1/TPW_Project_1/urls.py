@@ -54,6 +54,7 @@ urlpatterns = [
     path('ws/products/', views.products, name='get_products'), #can be get and post
     path('ws/products/<int:id>/', views.get_product_by_id, name='get_product_by_id'), # can get, put and delete
     path('ws/users/', views.get_users, name='get_users'), #optional id argument
+    path('ws/usersprofiles/', views.get_user_profiles, name='get_user_profiles'),
     path('ws/offers/', views.get_user_offers, name='get_user_offers'),
     path('ws/follows/', views.follows, name='follows'),
     path('ws/offers/<int:id>/', views.get_offer_by_id, name='get_offer_by_id'),

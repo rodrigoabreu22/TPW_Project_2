@@ -13,6 +13,7 @@ import { RouterModule } from '@angular/router';
 })
 export class UserComponent implements OnInit {
   @Input() username: string = "";
+  @Input() perfil: boolean = false;
 
   user: UserProfile | null = null;
 

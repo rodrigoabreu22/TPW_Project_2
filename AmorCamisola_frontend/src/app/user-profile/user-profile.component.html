@@ -29,12 +29,14 @@
                     <strong>{{ pnumber }}</strong> produtos
                 </div>
                 <div class="mr-4">
-                    <a class="text-dark">
+                    <a href="#" class="text-dark" data-bs-toggle="modal" data-bs-target="#followersModal">
                         <strong>{{ followers }}</strong> seguidores
                     </a>
                 </div>
                 <div>
-                    <strong>{{ following }}</strong> seguindo
+                    <a href="#" class="text-dark" data-bs-toggle="modal" data-bs-target="#followingModal">
+                        <strong>{{ following }}</strong> seguindo
+                    </a>
                 </div>
             </div>
                 <p>Nome: {{ userprofile.user.first_name }} {{ userprofile.user.last_name }}</p>
@@ -69,7 +71,7 @@
     -->
 
     <!--{% if not is_banned %}-->
-    <app-product-list [username]="userprofile.user.username"></app-product-list>
+    <app-product-list *ngIf="userprofile.user.username" [username]="userprofile.user.username"></app-product-list>
     <!--
         <div class="row">
         {% for product in products %}
@@ -106,23 +108,18 @@
         {% endif %}
         </div>
 
+-->
 </div>
 
-<div class="modal fade" id="followersModal" tabindex="-1" aria-labelledby="followersModalLabel" aria-hidden="true"></div>
+<div class="modal fade" id="followersModal" tabindex="-1" aria-labelledby="followersModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="followersModalLabel">Seguidores</h5>
-                <button type="button" class="btn-close btn-danger" data-bs-dismiss="modal" aria-label="Close">X</button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                    {% for follower in followers %}
-                        <a href="{% url 'profile' follower.following.username %}">
-                            <p>{{ follower.following.username }}</p>
-                        </a>
-                    {% empty %}
-                        <p>Ainda não tens nenhum seguidor.</p>
-                    {% endfor %}
+                <app-user-list *ngIf="seguidores && seguidores.length > 0" [simple_user]="seguidores" [perfil]="true"></app-user-list>
             </div>
         </div>
     </div>
@@ -136,15 +133,8 @@
                 <button type="button" class="btn-close btn-danger" data-bs-dismiss="modal" aria-label="Close">X</button>
             </div>
             <div class="modal-body">
-                {% for follow in following %}
-                    <a href="{% url 'profile' follow.followed.username %}">
-                        <p>{{ follow.followed.username }}</p>
-                    </a>
-                {% empty %}
-                    <p>Ainda não segues nenhum utilizador.</p>
-                {% endfor %}
+                <app-user-list *ngIf="seguindo && seguindo.length > 0" [simple_user]="seguindo" [perfil]="true"></app-user-list>
             </div>
         </div>
     </div>
 </div>
--->

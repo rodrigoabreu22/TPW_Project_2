@@ -11,11 +11,12 @@ import {ProductComponent} from "../product/product.component";
 import { RouterModule, ActivatedRoute } from '@angular/router';
 import { Following } from '../following';
 import { ProductListComponent } from '../product-list/product-list.component';
+import { UserListComponent } from '../user-list/user-list.component';
 
 @Component({
   selector: 'app-user-profile',
   standalone: true,
-  imports: [CommonModule, RouterModule,ProductListComponent],
+  imports: [CommonModule, RouterModule,ProductListComponent, UserListComponent],
   templateUrl: './user-profile.component.html',
   styleUrl: './user-profile.component.css'
 })
@@ -35,6 +36,8 @@ export class UserProfileComponent {
   following: number = 0;
   pnumber: number = 0;
   products: Product[] = [];
+  seguidores: User[] = [];
+  seguindo: User[] = [];
   follow: Following = {
     followed: [],
     following: []
@@ -76,10 +79,11 @@ export class UserProfileComponent {
         .getFollowers(this.username)
         .then((fetchedFollow: Following) => {
           this.follow = fetchedFollow;
+          console.log("follow",this.follow)
           this.followers = fetchedFollow.followed.length;
-          console.log("followed",fetchedFollow.followed, fetchedFollow.followed.length)
+          this.seguidores = fetchedFollow.followed
+          this.seguindo = fetchedFollow.following
           this.following = fetchedFollow.following.length;
-          console.log(this.follow)
         })
         .catch((error) => {
           console.error('Error fetching products from user:', error);

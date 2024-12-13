@@ -1,9 +1,9 @@
 <div *ngIf="isLoading">A carregar usuários...</div>
 
 <div class="user-list" *ngIf="!isLoading">
-  <h5>Utilizatores populares: </h5>
+  <h5 *ngIf="!perfil">Utilizadores populares:</h5>
   <ul *ngFor="let user of users" class="list-group">
-    <app-user [username]="user.user.username"></app-user> 
+    <app-user [username]="user.user.username" [perfil] ="perfil"></app-user> 
   </ul>
 </div>
 

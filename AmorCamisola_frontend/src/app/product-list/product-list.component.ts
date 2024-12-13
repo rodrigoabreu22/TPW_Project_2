@@ -21,6 +21,7 @@ export class ProductListComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
+    console.log('Received username:', this.username);
     this.productService.getProductsByUsername(this.username)
       .then((products: Product[]) => {
         this.products = products;

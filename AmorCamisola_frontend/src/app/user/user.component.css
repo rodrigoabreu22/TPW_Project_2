@@ -21,6 +21,12 @@
     text-decoration: none;
 }
 
+.username_ {
+    font-weight: 500;
+    color: #000000;
+    text-decoration: none;
+}
+
 .username:hover {
     text-decoration: underline;
 }

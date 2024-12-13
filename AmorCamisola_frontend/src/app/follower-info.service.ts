@@ -10,6 +10,7 @@ export class FollowerInfoService {
   constructor() { }
 
   async getFollowers(username: string): Promise<Following> {
+    console.log(username)
     let url = `${this.baseUrl}follows/`;
     if (username != null) {
         url += `?username=${username}`;

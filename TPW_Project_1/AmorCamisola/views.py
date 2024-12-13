@@ -1,3 +1,4 @@
+import json
 from AmorCamisola.forms import *
 from AmorCamisola.models import *
 from django.contrib.auth.models import Group
@@ -1224,6 +1225,7 @@ def get_favorites_by_user(request, user_id):
 @api_view(['GET'])
 def follows(request):
     username=None
+    print("FOLLOWSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS")
     print(request.data)
     if 'username' in request.GET:
         print("username")
@@ -1235,19 +1237,58 @@ def follows(request):
             try:
                 following = Following.objects.filter(following__username = username)
                 followers = Following.objects.filter(followed__username=username)
+                
             except Following.DoesNotExist:
                 return Response(status=status.HTTP_404_NOT_FOUND)
             following_serializer = FollowingSerializer(following, many=True)
             followers_serializer = FollowingSerializer(followers, many=True)
 
+            # Extract and restructure serialized data
+            following_data = [
+                entry['followed'] for entry in following_serializer.data
+            ]
+            followers_data = [
+                entry['following'] for entry in followers_serializer.data
+            ]
+            print("OLLLLLLLLLLLLLLA")
+            print(following_data)
+            print(followers_data)
             # Prepare the response data
             response_data = {
-                'following': following_serializer.data,
-                'followed': followers_serializer.data
+                'following': following_data,
+                'followed': followers_data
             }
-
             return Response(response_data)
     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+@api_view(['GET'])
+def get_user_profiles(request):
+    try:
+        # Extract usernames from the query parameters
+        usernames = request.GET.get('usernames')
+        if not usernames:
+            return Response(
+                {"error": "No 'usernames' parameter provided in the query string."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Split the usernames into a list
+        usernames_list = usernames.split(',')
+
+        # Fetch UserProfiles corresponding to the usernames
+        user_profiles = UserProfile.objects.filter(user__username__in=usernames_list)
+
+        # Serialize the UserProfiles
+        serializer = UserProfileSerializer(user_profiles, many=True)
+
+        # Return serialized data
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        return Response(
+            {"error": str(e)},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
     
 
 

@@ -4,7 +4,8 @@
   
       <!-- Card Body -->
       <div>
-        <a [routerLink]="['/profile', username]" class="username">{{ username }}</a>
+        <a *ngIf="username && !perfil" [routerLink]="['/profile', username]" class="username">{{ username }}</a>
+        <a *ngIf="perfil" class="username_">{{ username }}</a>
       </div>
   </li>
   
