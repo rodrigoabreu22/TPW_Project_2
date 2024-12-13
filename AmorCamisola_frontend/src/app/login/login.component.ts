@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import {CommonModule} from "@angular/common";
 import { LoginService } from '../login.service';
 import {RouterLink} from "@angular/router";
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +17,9 @@ export class LoginComponent implements OnInit {
   loginUserService: LoginService = inject(LoginService);
   invalidCredentials: boolean = false;
 
-  constructor(private formBuilder: FormBuilder) { }
+  constructor(private formBuilder: FormBuilder, private location: Location) { 
+    this.ngOnInit();
+  }
 
   ngOnInit(): void {
     this.loginForm = this.formBuilder.group({
@@ -25,7 +28,7 @@ export class LoginComponent implements OnInit {
     });
 
     if (localStorage.getItem('token')) {
-      window.location.href = "/";
+      this.location.back();
     }
   }
 
@@ -37,10 +40,9 @@ export class LoginComponent implements OnInit {
       this.loginUserService.login(username, password)
         .then((success: boolean) => {
           if (success) {
-
-            window.location.href = "/";
+            console.log("Success!!!")
+            this.location.back();
           } else {
-
             this.invalidCredentials = true;
           }
         })
