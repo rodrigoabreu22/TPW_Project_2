@@ -7,6 +7,7 @@ import { UserListComponent } from './user-list/user-list.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { ProductDetailsComponent } from './product-details/product-details.component';
 import { LoginComponent } from './login/login.component';
+import { FavoritesComponent } from './favorites/favorites.component';
 
 export const routes: Routes = [
     {path: '', redirectTo: '/products', pathMatch: 'full'},
@@ -15,4 +16,5 @@ export const routes: Routes = [
     {path: 'users', component: UserListComponent},
     {path: 'profile/:username', component: UserProfileComponent},
     {path: 'login', component: LoginComponent},
+    {path: 'favorites', component: FavoritesComponent}
 ];

@@ -1,41 +1,48 @@
-import { Injectable, inject } from '@angular/core';
-import { Product } from './product';
+import { Injectable } from '@angular/core';
+import { LoginService } from './login.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class FavoritesService {
-  private baseUrl :string = 'http://localhost:8080/ws/';
+  private baseUrl: string = 'http://localhost:8080/ws/';
 
-  constructor() { }
+  constructor(private loginService: LoginService) {}
 
-  async getFavorites(): Promise<Product[]>{
-    //const userId = this.loginService.getLoggedUserId();
-    //if (!userId) {
-    //  throw new Error('User is not logged in.');
-    //}
-    //ws/users/<int:user_id>/favorites/
-    //let url = `${this.baseUrl}users/${userId}/favorites`;
-    const url = `${this.baseUrl}users/1/favorites`;
-    const data :Response = await fetch(url);
-    return await data.json() ?? undefined;
- }
+  async getFavorites(userId: number): Promise<any[]> {
+    const url = `${this.baseUrl}users/${userId}/favorites/`;
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch favorites: ${response.statusText}`);
+    }
+    return await response.json();
+  }
 
- async addFavorite(): Promise<Product[]>{
-  
-  const url = `${this.baseUrl}users/1/favorites`;
-  const data :Response = await fetch(url);
-  return await data.json() ?? undefined;
-}
+  async addFavorite(userId: number, productId: number): Promise<void> {
+    const url = `${this.baseUrl}users/${userId}/favorites/`;
+    const response = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ product_id: productId }),
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to add favorite: ${response.statusText}`);
+    }
+  }
 
-async removeFavorite(productId: number): Promise<Product[]>{
-  //const userId = this.loginService.getLoggedUserId();
-    //if (!userId) {
-    //  throw new Error('User is not logged in.');
-    //}
-  let userId=1
-  let url = `${this.baseUrl}users/${userId}/favorites/${productId}`
-  const data = await fetch(url, {method: "DELETE", headers?})
-}
-
+  async removeFavorite(userId: number, productId: number): Promise<void> {
+    const url = `${this.baseUrl}users/${userId}/favorites/`;
+    const response = await fetch(url, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ product_id: productId }),
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to remove favorite: ${response.statusText}`);
+    }
+  }
 }
