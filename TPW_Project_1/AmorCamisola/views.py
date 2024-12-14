@@ -5,6 +5,8 @@ from django.contrib.auth.models import Group
 
 from django.contrib.auth import authenticate, login as auth_login
 from django.shortcuts import render, redirect, get_object_or_404
+from rest_framework.authtoken.models import Token
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 
 from django.db.models import Count, Case, When
 
@@ -17,7 +19,7 @@ from django.contrib.auth import views as auth_views
 from django.urls import reverse
 
 from rest_framework import status
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from AmorCamisola.serializers import *
@@ -1211,6 +1213,7 @@ def get_products_by_user(request, user_id):
     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_favorites_by_user(request, user_id):
     if request.method == 'GET':
         try:
@@ -1225,8 +1228,6 @@ def get_favorites_by_user(request, user_id):
 @api_view(['GET'])
 def follows(request):
     username=None
-    print("FOLLOWSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS")
-    print(request.data)
     if 'username' in request.GET:
         print("username")
         username = request.GET['username']
@@ -1250,9 +1251,6 @@ def follows(request):
             followers_data = [
                 entry['following'] for entry in followers_serializer.data
             ]
-            print("OLLLLLLLLLLLLLLA")
-            print(following_data)
-            print(followers_data)
             # Prepare the response data
             response_data = {
                 'following': following_data,
@@ -1301,7 +1299,8 @@ def login(request):
             if user is not None:
                 user_profile = UserProfile.objects.get(user=user)
                 user_serializer = UserProfileSerializer(user_profile, many=False)
-                return Response(user_serializer.data, status=status.HTTP_200_OK)
+                token, _ = Token.objects.get_or_create(user=user)
+                return Response({"userProfile": user_serializer.data, "token": token}, status=status.HTTP_200_OK)
             else:
                 return Response(status=status.HTTP_401_UNAUTHORIZED)
         except Exception as e:
@@ -1314,12 +1313,15 @@ def login(request):
 @api_view(['POST'])
 def register(request):
     if request.method == 'POST':
-        profile_serializer = UserProfileSerializer(data=request.data)
-        user_profile = profile_serializer.create(validated_data=request.data)
+        password = request.data.get('password')
+        user_profile_data = request.data.get('userProfile')
+        profile_serializer = UserProfileSerializer(data=user_profile_data)
+        user_profile = profile_serializer.create(validated_data=user_profile_data, password=password)
         if not user_profile:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         new_profile_serializer = UserProfileSerializer(user_profile, many=False)
-        return Response(new_profile_serializer.data, status=status.HTTP_201_CREATED)
+        token, _ = Token.objects.get_or_create(user=user_profile.user)
+        return Response({"userProfile": new_profile_serializer.data, "token": token}, status=status.HTTP_201_CREATED)
     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
     
 

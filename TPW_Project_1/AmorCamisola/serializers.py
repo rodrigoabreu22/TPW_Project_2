@@ -13,24 +13,30 @@ class UserProfileSerializer(serializers.ModelSerializer):
         model = UserProfile
         fields = ['id', 'user', 'address', 'phone', 'image', 'wallet']
 
-    def create(self, validated_data):
+    def create(self, validated_data, password):
         user_data = validated_data.pop('user')
         if user_data:
+            user_data['id'] = User.objects.count() + 1
             user, _ = User.objects.get_or_create(**user_data)
+            if password:
+                user.set_password(password)
+                user.save()
             validated_data['user'] = user
         else:
             return None
-        
+        validated_data['id'] = UserProfile.objects.count() + 1
         user_profile = UserProfile.objects.create(**validated_data)
 
         return user_profile
     
-    def update(self, instance, validated_data):
+    def update(self, instance, validated_data, password):
         user_data = validated_data.pop('user')
         if user_data:
             user = instance.user
             for attr, value in user_data.items():
                 setattr(user, attr, value)
+            if password:
+                user.set_password(password)
             user.save()
         
         for attr, value in validated_data.items():

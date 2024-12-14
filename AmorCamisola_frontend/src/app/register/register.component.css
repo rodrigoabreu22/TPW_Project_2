@@ -1,0 +1,29 @@
+/* Scope all styles under the account-container class */
+.account-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .account-container .account-card {
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #ffffff;
+    padding: 20px;
+  }
+  
+  .account-container .btn-primary {
+    background-color: #007bff;
+    border: none;
+  }
+  
+  .account-container .btn-primary:hover {
+    background-color: #0056b3;
+  }
+  
+  .account-container .text-danger {
+    font-size: 0.875rem;
+  }
+  

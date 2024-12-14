@@ -24,12 +24,12 @@ import { UserListComponent } from '../user-list/user-list.component';
 export class UserProfileComponent {
   username: string = "";
   userprofile: UserProfile = {
+    id : 0,
     user: {} as User,
     address: '',
     phone: '',
     wallet: 0,
     image: '',
-    image_base64: '',
   };
   
   followers: number = 0;
