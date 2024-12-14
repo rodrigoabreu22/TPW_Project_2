@@ -1099,6 +1099,7 @@ def get_user(request, id):
 """
 
 @api_view(['GET'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def get_user_offers(request):
     userProfile = UserProfile.objects.get(user__id=request.user.id)
@@ -1124,6 +1125,7 @@ def get_user_offers(request):
     })
 
 @api_view(['GET'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def get_offer_by_id(request):
     id = request.GET['id']
@@ -1213,6 +1215,7 @@ def get_products_by_user(request, user_id):
     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 @api_view(['GET', 'PUT', 'DELETE'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def user_favorites(request, user_id, product_id=None):
     if request.method == 'GET':

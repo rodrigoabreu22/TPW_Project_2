@@ -14,6 +14,7 @@ import { ActivatedRoute } from '@angular/router';
 export class FavoritesComponent{
   favorites: Product[] = [];
   userId: number | null = null;
+  token: string | null = null;
 
   favoriteService: FavoritesService = inject(FavoritesService);
 
@@ -22,6 +23,7 @@ export class FavoritesComponent{
   ngOnInit(): void {
     if (this.isBrowser()) {
       const storedId = localStorage.getItem("id");
+      this.token = localStorage.getItem("token");
       console.log("ola",storedId)
       if(storedId !== null){
         this.userId = parseInt(storedId, 10);
@@ -32,7 +34,7 @@ export class FavoritesComponent{
     console.log(this.userId)
     if(this.userId){  
     this.favoriteService
-      .getFavorites(this.userId)
+      .getFavorites(this.userId, this.token!)
       .then((fetchedFavorites: Product[])=>{
         this.favorites = fetchedFavorites;
         console.log(this.favorites)
