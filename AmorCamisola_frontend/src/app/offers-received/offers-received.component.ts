@@ -17,15 +17,34 @@ export class OffersReceivedComponent {
     ngOnInit(): void {
     }
   
-    deleteOffer(id: number | undefined) {
-      console.log('deleteOffer', id);
+    rejectOffer(id: number | undefined) {
+      console.log('rejectOffer', id);
+    }
+
+    acceptOffer(id: number | undefined) {
+      console.log('acceptOffer', id);
+    }
+
+    counterOffer(id: number | undefined) {
+      console.log('counterOffer', id);
     }
   
     getActions(offer: Offer) {
       return [
         {
-          label: 'apagar',
-          handler: this.deleteOffer.bind(this)
+          label: 'aceitar',
+          handler: this.acceptOffer.bind(this),
+          color: 'btn-success'
+        },
+        {
+          label: 'rejeitar',
+          handler: this.rejectOffer.bind(this),
+          color: 'btn-danger'
+        },
+        {
+          label: 'contra-oferta',
+          handler: this.counterOffer.bind(this),
+          color: 'btn-warning'
         }
       ]
     }

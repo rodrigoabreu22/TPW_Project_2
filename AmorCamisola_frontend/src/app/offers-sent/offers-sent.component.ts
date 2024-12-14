@@ -25,7 +25,8 @@ export class OffersSentComponent {
       return [
         {
           label: 'apagar',
-          handler: this.deleteOffer.bind(this)
+          handler: this.deleteOffer.bind(this),
+          color: 'btn-danger'
         }
       ]
     }

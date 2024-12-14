@@ -11,7 +11,26 @@ import { RouterModule } from '@angular/router';
 })
 export class OfferCardComponent {
   @Input() offer?: Offer;
-  @Input() actions?: { label: string; handler: (id: number | undefined) => void }[];
+  @Input() actions?: { label: string; handler: (id: number | undefined) => void, color: string }[];
 
   constructor() {}
+
+  getStatusLabel(status: string | undefined): string {
+    
+    switch (status) {
+      case 'completed':
+        return 'Concluído';
+      case 'in_progress':
+        return 'Em Progresso';
+      case 'cancelled':
+        return 'Cancelado';
+      case 'rejected':
+        return 'Rejeitado';
+      case 'sold':
+        return 'Vendido';
+      default:
+        return 'Sem Status';
+    }
+  }
+  
 }

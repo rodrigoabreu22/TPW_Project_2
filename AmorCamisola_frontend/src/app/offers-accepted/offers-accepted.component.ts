@@ -31,14 +31,16 @@ export class OffersAcceptedComponent implements OnInit {
       return [
         {
           label: 'entrega',
-          handler: this.confirmDelivery.bind(this)
+          handler: this.confirmDelivery.bind(this),
+          color: 'btn-success'
         }
       ];
     } else {
       return [
         {
           label: 'pagamento',
-          handler: this.confirmPayment.bind(this)
+          handler: this.confirmPayment.bind(this),
+          color: 'btn-success'
         }
       ];
     }

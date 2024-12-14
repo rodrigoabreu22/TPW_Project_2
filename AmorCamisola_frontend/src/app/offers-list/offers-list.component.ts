@@ -29,6 +29,7 @@ export class OffersListComponent {
     this.token = localStorage.getItem("token") || "";
     this.offerService.getOffersByUser(this.user_id, this.token)
       .then((listOffers: Offer[][]) => {
+        console.log(listOffers);
         this.receivedOffers = listOffers[0];
         this.sentOffers = listOffers[1];
         this.acceptedOffers = listOffers[2];
@@ -37,6 +38,7 @@ export class OffersListComponent {
       .catch((error: any) => {
         console.error('Error getting offers:', error);
       });
+
   }
 
   acceptOffer(offer: Offer) {
