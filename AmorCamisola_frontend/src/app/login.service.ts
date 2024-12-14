@@ -1,13 +1,23 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { UserProfile } from './user-profile';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LoginService {
   private baseUrl: string = 'http://localhost:8080/ws/';
+  userService: UserService = inject(UserService);
 
   constructor() {}
+
+    async getLoggedUser(): Promise<UserProfile> {
+      const userId = localStorage.getItem('id');
+      if (!userId) {
+        throw new Error('User is not logged in.');
+      }
+      return this.userService.getUsersProfile(parseInt(userId, 10));
+    }
 
   private setCurrentUser(user: UserProfile | null): void {
     console.log('Setting current user:', user);
