@@ -20,7 +20,13 @@ export class OffersService {
         'Authorization': `Token ${token}`,
       }
     });
-    return await response.json();
+    //process response and create array that separates all types of offers
+    const offers = await response.json();
+    const receivedOffers = offers.offers_received;
+    const sentOffers = offers.offers_made;
+    const acceptedOffers = offers.offers_accepted;
+    const processedOffers = offers.offers_processed;
+    return [receivedOffers, sentOffers, acceptedOffers, processedOffers];
   }
 
   async createOffer(offer: any, token:string): Promise<any> {

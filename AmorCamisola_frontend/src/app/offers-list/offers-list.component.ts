@@ -27,6 +27,16 @@ export class OffersListComponent {
   constructor() {
     this.user_id = parseInt(localStorage.getItem("id") || "0", 10);
     this.token = localStorage.getItem("token") || "";
+    this.offerService.getOffersByUser(this.user_id, this.token)
+      .then((listOffers: Offer[][]) => {
+        this.receivedOffers = listOffers[0];
+        this.sentOffers = listOffers[1];
+        this.acceptedOffers = listOffers[2];
+        this.processedOffers = listOffers[3];
+      })
+      .catch((error: any) => {
+        console.error('Error getting offers:', error);
+      });
   }
 
   acceptOffer(offer: Offer) {

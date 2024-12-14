@@ -1,0 +1,22 @@
+<div class="card mb-3 shadow-sm">
+    <div class="card-header">
+      <h5 class="card-title mb-1">{{ offer?.product?.name }}</h5>
+    </div>
+    <div class="card-body">
+      <p class="card-text"><strong>Valor:</strong> €{{ offer?.value }}</p>
+      <p class="card-text"><strong>Método de Pagamento:</strong> {{ offer?.payment_method }}</p>
+      <p class="card-text"><strong>Método de Entrega:</strong> {{ offer?.delivery_method }}</p>
+      <p class="card-text"><strong>Endereço:</strong> {{ offer?.address }}</p>
+    </div>
+    <div class="card-footer text-muted text-end">
+      <ng-container *ngIf="actions">
+        <button
+          *ngFor="let action of actions"
+          class="btn btn-sm btn-primary me-1"
+          (click)="action.handler(offer?.id)">
+          {{ action.label }}
+        </button>
+      </ng-container>
+    </div>
+  </div>
+  
