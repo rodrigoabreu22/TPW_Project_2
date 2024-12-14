@@ -197,7 +197,7 @@ class ReportSerializer(serializers.ModelSerializer):
         return instance
     
 class FavoriteSerializer(serializers.ModelSerializer):
-    user = UserProfileSerializer(many=False)
+    user = UserSerializer(many=False)
     products = ProductSerializer(many=True)
 
     class Meta:
@@ -207,7 +207,7 @@ class FavoriteSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user_data = validated_data.pop('user')
         if user_data:
-            user, _ = UserProfile.objects.get_or_create(**user_data)
+            user, _ = User.objects.get_or_create(**user_data)
             validated_data['user'] = user
         
         favorite = Favorite.objects.create(**validated_data)

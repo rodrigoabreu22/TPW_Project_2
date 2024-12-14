@@ -1212,18 +1212,102 @@ def get_products_by_user(request, user_id):
         return Response(serializer.data)
     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
+<<<<<<< HEAD
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_favorites_by_user(request, user_id):
+=======
+@api_view(['GET', 'PUT', 'DELETE'])
+def user_favorites(request, user_id, product_id=None):
+>>>>>>> main
     if request.method == 'GET':
         try:
-            user = UserProfile.objects.get(user__id=user_id)
-        except User.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-        favorite = Favorite.objects.get(user=user)
-        serializer = FavoriteSerializer(favorite, many=False)
-        return Response(serializer.data)
-    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+            # Fetch the favorite object associated with the user
+            favorite = Favorite.objects.get(user_id=user_id)
+        except Favorite.DoesNotExist:
+            return Response(
+                {"detail": "Favorites not found for this user."}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        # Retrieve all products in the user's favorites
+        products = favorite.products.all()
+        print("PRODUCTs FOR USER:", favorite.user, " -> ", products)
+        serializer = ProductSerializer(products, many=True)
+        
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    elif request.method == 'PUT':
+        if product_id is None:
+            return Response(
+                {"detail": "Product ID is required to add to favorites."}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        try:
+            # Fetch the favorite object and the product to be added
+            favorite = Favorite.objects.get(user_id=user_id)
+            product = Product.objects.get(id=product_id)
+
+            # Add the product to the user's favorites (many-to-many relationship)
+            favorite.products.add(product)
+            favorite.save()
+
+            return Response(
+                {"detail": "Product added to favorites."}, 
+                status=status.HTTP_200_OK
+            )
+
+        except Favorite.DoesNotExist:
+            return Response(
+                {"detail": "Favorites not found for this user."}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except Product.DoesNotExist:
+            return Response(
+                {"detail": "Product not found."}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
+    
+    elif request.method == 'DELETE':
+        if product_id is None:
+            return Response(
+                {"detail": "Product ID is required to remove from favorites."}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            # Fetch the favorite object and the product to be removed
+            favorite = Favorite.objects.get(user_id=user_id)
+            product = Product.objects.get(id=product_id)
+
+            # Remove the product from the user's favorites
+            favorite.products.remove(product)
+            favorite.save()
+
+            return Response(
+                {"detail": "Product removed from favorites."}, 
+                status=status.HTTP_200_OK
+            )
+        
+        except Favorite.DoesNotExist:
+            return Response(
+                {"detail": "Favorites not found for this user."}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except Product.DoesNotExist:
+            return Response(
+                {"detail": "Product not found."}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
+    
+    else:
+        return Response(
+            {"detail": "Method not allowed."}, 
+            status=status.HTTP_405_METHOD_NOT_ALLOWED
+        )
+
+
 
 @api_view(['GET'])
 def follows(request):
@@ -1262,7 +1346,6 @@ def follows(request):
 @api_view(['GET'])
 def get_user_profiles(request):
     try:
-        # Extract usernames from the query parameters
         usernames = request.GET.get('usernames')
         if not usernames:
             return Response(
@@ -1270,16 +1353,12 @@ def get_user_profiles(request):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # Split the usernames into a list
         usernames_list = usernames.split(',')
 
-        # Fetch UserProfiles corresponding to the usernames
         user_profiles = UserProfile.objects.filter(user__username__in=usernames_list)
 
-        # Serialize the UserProfiles
         serializer = UserProfileSerializer(user_profiles, many=True)
 
-        # Return serialized data
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     except Exception as e:
@@ -1323,6 +1402,21 @@ def register(request):
         token, _ = Token.objects.get_or_create(user=user_profile.user)
         return Response({"userProfile": new_profile_serializer.data, "token": token}, status=status.HTTP_201_CREATED)
     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+@api_view(['GET'])
+def moderator(request):
+    username=None
+    if 'username' in request.GET:
+        print("username")
+        username = request.GET['username']
+    if username:
+        user = User.objects.get(username=username)
+        print(username)
+        print(user)
+        return Response(user.groups.filter(name='Moderators').exists(),status=status.HTTP_200_OK)
+    else:
+        return Response(False,status=status.HTTP_200_OK)
+        
     
 
 # ------------------- REST API ------------------- #

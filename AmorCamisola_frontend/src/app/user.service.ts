@@ -1,6 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { UserProfile } from './user-profile';
 import { User } from './user';
+import { Product } from './product';
+import { LoginService } from './login.service';
 
 @Injectable({
   providedIn: 'root'
@@ -38,6 +40,14 @@ export class UserService {
 
     return await response.json();
   }
+  async checkModerator(username: string): Promise<boolean> {
+    let url = `${this.baseUrl}moderator`;
+    if (username != null){
+      url += `?username=${username}`;
+    }
+    const data :Response = await fetch(url);
+    return await data.json() ?? undefined;
+  }
   
 
    async getUsersProfile(id: number): Promise<UserProfile> {
@@ -47,6 +57,18 @@ export class UserService {
     }
     const data :Response = await fetch(url);
     return await data.json() ?? undefined;
+   }
+
+   async getUserFavorites(): Promise<Product[]>{
+      //const userId = this.loginService.getLoggedUserId();
+      //if (!userId) {
+      //  throw new Error('User is not logged in.');
+      //}
+      //ws/users/<int:user_id>/favorites/
+      //let url = `${this.baseUrl}users/${userId}/favorites`;
+      let url = `${this.baseUrl}users/1/favorites`;
+      const data :Response = await fetch(url);
+      return await data.json() ?? undefined;
    }
 
   }

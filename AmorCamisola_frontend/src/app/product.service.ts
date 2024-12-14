@@ -41,5 +41,20 @@ export class ProductService {
       method: "POST", headers: new Headers({"Content-Type": "application/json"}), body: JSON.stringify(prod)});
     return await data.json();
     }
+
+    async filterProducts(filters: any): Promise<Product[]> {
+      const params = new URLSearchParams();
+      for (const key in filters) {
+        if (filters[key]) {
+          params.append(
+            key,
+            Array.isArray(filters[key]) ? filters[key].join(',') : filters[key]
+          );
+        }
+      }
+      const url = `${this.baseUrl}products/?${params.toString()}`;
+      const response: Response = await fetch(url);
+      return await response.json();
+    }
   }
 

@@ -34,6 +34,7 @@ export class UserProfileComponent {
   
   followers: number = 0;
   following: number = 0;
+  myprofile: boolean = false;
   pnumber: number = 0;
   products: Product[] = [];
   seguidores: User[] = [];
@@ -52,6 +53,15 @@ export class UserProfileComponent {
 
   ngOnInit(): void {
     this.username = this.route.snapshot.paramMap.get('username') || "";
+    if (this.isBrowser()) {
+      const storedUsername = localStorage.getItem("username");
+      if (this.username === storedUsername) {
+        console.log("Banana");
+        this.myprofile = true
+      }
+    } else {
+      console.warn("localStorage não está disponível no ambiente atual.");
+    }
     if (this.username != "") {
       console.log("Username  ", this.username)
       this.userService
@@ -91,6 +101,10 @@ export class UserProfileComponent {
     } else {
       console.warn('Invalid or missing user ID.');
     }
+  }
+
+  private isBrowser(): boolean {
+    return typeof window !== 'undefined' && typeof localStorage !== 'undefined';
   }
   
 }
