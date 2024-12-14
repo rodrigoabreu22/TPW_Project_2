@@ -33,8 +33,8 @@ export class FavoritesComponent{
     if(this.userId){  
     this.favoriteService
       .getFavorites(this.userId)
-      .then((fetchedFvorites: Product[])=>{
-        this.favorites = fetchedFvorites;
+      .then((fetchedFavorites: Product[])=>{
+        this.favorites = fetchedFavorites;
         console.log(this.favorites)
     })
     .catch((error) => {

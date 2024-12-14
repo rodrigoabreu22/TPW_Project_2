@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { LoginService } from './login.service';
 
 @Injectable({
   providedIn: 'root',
@@ -7,10 +6,11 @@ import { LoginService } from './login.service';
 export class FavoritesService {
   private baseUrl: string = 'http://localhost:8080/ws/';
 
-  constructor(private loginService: LoginService) {}
+  constructor() {}
 
   async getFavorites(userId: number): Promise<any[]> {
     const url = `${this.baseUrl}users/${userId}/favorites/`;
+    console.log("user url: ",url)
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`Failed to fetch favorites: ${response.statusText}`);
@@ -19,13 +19,13 @@ export class FavoritesService {
   }
 
   async addFavorite(userId: number, productId: number): Promise<void> {
-    const url = `${this.baseUrl}users/${userId}/favorites/`;
+    const url = `${this.baseUrl}users/${userId}/favorites/${productId}/`;  // productId is now required here
+    console.log("user url: ",url)
     const response = await fetch(url, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ product_id: productId }),
+      }
     });
     if (!response.ok) {
       throw new Error(`Failed to add favorite: ${response.statusText}`);
@@ -33,16 +33,17 @@ export class FavoritesService {
   }
 
   async removeFavorite(userId: number, productId: number): Promise<void> {
-    const url = `${this.baseUrl}users/${userId}/favorites/`;
+    const url = `${this.baseUrl}users/${userId}/favorites/${productId}/`;  // productId is now required here
+    console.log("user url: ",url)
     const response = await fetch(url, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ product_id: productId }),
+      }
     });
     if (!response.ok) {
       throw new Error(`Failed to remove favorite: ${response.statusText}`);
     }
   }
 }
+

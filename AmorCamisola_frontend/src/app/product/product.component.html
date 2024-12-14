@@ -19,9 +19,14 @@
         <strong>Vendedor:</strong> {{ product.seller.first_name }} {{ product.seller.last_name }}
       </p>
       <!-- Favorite Button -->
-      <button class="btn btn-outline-danger btn-sm w-100" (click)="addToFavorites($event, product)">
-        ❤️ Adicionar aos favoritos
+      <button
+        class="btn"
+        [ngClass]="isFavorite ? 'btn-danger' : 'btn-outline-danger'"
+        (click)="toggleFavorite($event, product)">
+        ❤️ 
+        {{ isFavorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos' }}
       </button>
+
     </div>
   </div>
 </div>
