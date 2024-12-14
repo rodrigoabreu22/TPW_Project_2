@@ -1,0 +1,90 @@
+<div class="card mb-3 shadow-sm">
+    <!-- Card Header: Product Name -->
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <div>
+        <h5 
+        routerLink="/product/{{offer?.product?.id}}" 
+        class="card-title mb-1 clickable-title"
+        title="Clique para visualizar o produto">
+        {{ offer?.product?.name }}
+      </h5>
+      
+        <small class="text-muted">Categoria: {{ offer?.product?.category }} | Tamanho: {{ offer?.product?.size }}</small>
+      </div>
+      <!-- Status Badge -->
+        <span
+        class="badge"
+        [ngClass]="{
+            'bg-success': offer?.offer_status === 'completed' || offer?.offer_status === 'accepted' || offer?.offer_status === 'sold',
+            'bg-danger': offer?.offer_status === 'rejected',
+            'bg-secondary': !offer?.offer_status
+        }"
+        >
+        {{ getStatusLabel(offer?.offer_status) }}
+        </span>
+    </div>
+  
+    <!-- Card Body: Product and Offer Details -->
+    <div class="card-body row">
+      <!-- Product Image -->
+      <div class="col-md-4 d-flex align-items-center">
+        <img
+          [src]="'http://127.0.0.1:8080' + offer?.product?.image"
+          alt="Product Image"
+          class="img-fluid rounded border"
+          style="max-height: 150px; object-fit: cover; width: 100%;"
+        />
+      </div>
+  
+      <!-- Product Details -->
+      <div class="col-md-8">
+        <p class="card-text mb-1"><strong>Valor:</strong> €{{ offer?.value }}</p>
+        <p class="card-text mb-1"><strong>Método de Pagamento:</strong> {{ offer?.payment_method }}</p>
+        <p class="card-text mb-1"><strong>Método de Entrega:</strong> {{ offer?.delivery_method }}</p>
+        <p class="card-text mb-1"><strong>Endereço de Entrega:</strong> {{ offer?.address }}</p>
+      </div>
+    </div>
+  
+    <!-- Negotiator Section -->
+    <div class="card-footer bg-white">
+      <div class="row align-items-center">
+        <!-- Buyer Information -->
+        <div class="col-md-6 d-flex">
+          <img
+            [src]="'http://127.0.0.1:8080' + offer?.buyer?.image"
+            alt="Buyer Image"
+            class="rounded-circle border me-2"
+            style="width: 50px; height: 50px; object-fit: cover;"
+          />
+          <div>
+            <p class="mb-0"><strong>Comprador:</strong> {{ offer?.buyer?.user?.first_name }} {{ offer?.buyer?.user?.last_name }}</p>
+            <small class="text-muted">Email: {{ offer?.buyer?.user?.email }}</small><br />
+            <small class="text-muted">Telefone: {{ offer?.buyer?.phone }}</small>
+          </div>
+        </div>
+  
+        <!-- Seller Information -->
+        <div class="col-md-6 d-flex">
+          <div>
+            <p class="mb-0"><strong>Vendedor:</strong> {{ offer?.product?.seller?.first_name }} {{ offer?.product?.seller?.last_name }}</p>
+            <small class="text-muted">Email: {{ offer?.product?.seller?.email }}</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Action Buttons -->
+    <div class="card-footer text-muted text-end">
+      <ng-container *ngIf="actions">
+        <button
+          *ngFor="let action of actions"
+          class="btn btn-sm me-1"
+          [ngClass]="action.color"
+          (click)="action.handler(offer?.id)"
+        >
+          {{ action.label }}
+        </button>
+      </ng-container>
+    </div>
+  </div>
+  

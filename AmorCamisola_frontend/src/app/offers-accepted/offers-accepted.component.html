@@ -1,0 +1,16 @@
+<div class="mb-5">
+    <h3 class="text-success">Propostas aceites</h3>
+    <div *ngIf="acceptedOffers.length; else noAcceptedOffers">
+      <app-offer-card
+        *ngFor="let offer of acceptedOffers"
+        [offer]="offer"
+        [actions]="getActions(offer)">
+      </app-offer-card>
+    </div>
+    <ng-template #noAcceptedOffers>
+      <div class="alert alert-info mt-3" role="alert">
+        Não tem nenhuma proposta aceite
+      </div>
+    </ng-template>
+  </div>
+  

@@ -1,0 +1,16 @@
+<div class="mb-5">
+    <h3 class="text-danger">Propostas processadas</h3>
+    <div *ngIf="processedOffers.length; else noProcessedOffers">
+      <app-offer-card
+        *ngFor="let offer of processedOffers"
+        [offer]="offer"
+        [actions]="getActions(offer)">
+      </app-offer-card>
+    </div>
+    <ng-template #noProcessedOffers>
+      <div class="alert alert-info mt-3" role="alert">
+        Não tem nenhuma proposta processada
+      </div>
+    </ng-template>
+  </div>
+  

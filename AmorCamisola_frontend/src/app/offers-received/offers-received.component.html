@@ -1,0 +1,16 @@
+<div class="mb-5">
+    <h3 class="text-primary">Propostas recebidas</h3>
+    <div *ngIf="receivedOffers.length; else noReceivedOffers">
+      <app-offer-card
+        *ngFor="let offer of receivedOffers"
+        [offer]="offer"
+        [actions]="getActions(offer)">
+      </app-offer-card>
+    </div>
+    <ng-template #noReceivedOffers>
+      <div class="alert alert-info mt-3" role="alert">
+        Não tem nenhuma proposta enviada
+      </div>
+    </ng-template>
+  </div>
+  
