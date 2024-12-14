@@ -25,10 +25,6 @@ export class LoginComponent implements OnInit {
       username: ['', [Validators.required, Validators.minLength(3)]],
       password: ['', Validators.required]
     });
-
-    if (localStorage.getItem('token')) {
-      this.location.back();
-    }
   }
 
   onSubmit(): void {

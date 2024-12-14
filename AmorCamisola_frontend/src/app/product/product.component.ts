@@ -17,8 +17,8 @@ export class ProductComponent implements OnInit {
 
   product: Product | null = null;
   userId: number | null = null;
-  isFavorite: boolean = false; // Variable to track if the product is in the favorites
-
+  isFavorite: boolean = false;
+  myproduct: boolean = false;
   productService: ProductService = inject(ProductService);
   favoriteService: FavoritesService = inject(FavoritesService); // Injecting the FavoritesService
 
@@ -40,7 +40,12 @@ export class ProductComponent implements OnInit {
         .getProduct(this.productId)
         .then((fetchedProduct: Product) => {
           this.product = fetchedProduct;
-          this.checkIfFavorite(); // Check if the product is in the user's favorites
+          this.checkIfFavorite();
+          console.log("produto", fetchedProduct)
+          if (this.product.seller.username == localStorage.getItem("username")){
+            console.log("Meu produto")
+            this.myproduct = true
+          }
         })
         .catch((error) => {
           console.error('Error fetching product:', error);

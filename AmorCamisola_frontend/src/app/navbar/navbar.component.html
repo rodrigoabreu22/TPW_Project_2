@@ -4,11 +4,35 @@
             <img src="http://127.0.0.1:8080/static/images/Amor_camisola.png" alt="Logo" class="logo-image">
             <span class="company-name">Amor à Camisola</span>
         </a>
+        <a routerLink="/sell" routerLinkActive="active">
+            Vender Produto
+        </a>
+        <a *ngIf="moderator" routerLink="/moderator" routerLinkActive="active">
+            Denúncias
+        </a>
         <!--<a routerLink="/sellproduct" routerLinkActive="active">Vender Produto</a>-->
         <!--<a href="{% url 'moderator_dashboard' %}">Denúncias</a>    A tratar -->
     </div>
     <div class="navbar-right">
         <a routerLink="/users" routerLinkActive="active"><i class="fa-solid fa-users"></i></a>
+        <a routerLink="/offers" routerLinkActive="active" class="notification-icon" style="position: relative;">
+            <i class="fa-regular fa-comments mx-3" style="color: #ffffff; cursor: pointer;" data-toggle="tooltip" title="Ofertas"></i>
+            <!--<span class="notification-bubble">{{ offer_count }}</span>-->
+        </a>
+        <div *ngIf="logged_in">
+            <a routerLink="/wallet" routerLinkActive="active">
+                <i class="fas fa-wallet"></i>
+                <!--{{ profile.wallet }}-->
+            </a>
+            <a routerLink="/favorites" routerLinkActive="active">
+                <i class="fas fa-heart"></i>
+                <!--{{ profile.wallet }}-->
+            </a>
+            <app-navbar-login></app-navbar-login>
+        </div>
+        <div *ngIf="!logged_in">
+            <a routerLink="/login" routerLinkActive="active">Login</a>
+        </div>
         <!--<a href="{% url 'offers' %}" class="notification-icon" style="position: relative;"></a>    A tratar -->
         <!--<a routerLink="/wallet" routerLinkActive="active"><i class="fas fa-wallet"></i>{{ profile.wallet }}€</a>-->
         <!--<a routerLink="/favorite_list" routerLinkActive="active"><i class="fas fa-heart"></i></a>-->

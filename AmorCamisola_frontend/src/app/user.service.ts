@@ -40,6 +40,14 @@ export class UserService {
 
     return await response.json();
   }
+  async checkModerator(username: string): Promise<boolean> {
+    let url = `${this.baseUrl}moderator`;
+    if (username != null){
+      url += `?username=${username}`;
+    }
+    const data :Response = await fetch(url);
+    return await data.json() ?? undefined;
+  }
   
 
    async getUsersProfile(id: number): Promise<UserProfile> {

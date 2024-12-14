@@ -8,6 +8,9 @@
         <div class="col-md-8">
             <div class="d-flex align-items-center mb-3">
                  <h2 class="mr-3">{{ userprofile.user.username }}</h2>
+                 <div *ngIf="!myprofile">
+                    <h6>SIUUUUUUUUUUUUUU</h6>
+                 </div>
                  <!--
                 {% if follows %}
                     <a href="{% url 'unfollow' profile_user.username %}" class="btn btn-outline-primary btn-sm">Não seguir</a>
@@ -71,7 +74,7 @@
     -->
 
     <!--{% if not is_banned %}-->
-    <app-product-list *ngIf="userprofile.user.username" [username]="userprofile.user.username"></app-product-list>
+    <app-product-list *ngIf="userprofile.user.username" [username]="userprofile.user.username" ></app-product-list>
     <!--
         <div class="row">
         {% for product in products %}
@@ -130,7 +133,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="followingModalLabel">A Seguir</h5>
-                <button type="button" class="btn-close btn-danger" data-bs-dismiss="modal" aria-label="Close">X</button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <app-user-list *ngIf="seguindo && seguindo.length > 0" [simple_user]="seguindo" [perfil]="true"></app-user-list>
