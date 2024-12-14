@@ -1264,7 +1264,6 @@ def follows(request):
 @api_view(['GET'])
 def get_user_profiles(request):
     try:
-        # Extract usernames from the query parameters
         usernames = request.GET.get('usernames')
         if not usernames:
             return Response(
@@ -1272,16 +1271,12 @@ def get_user_profiles(request):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # Split the usernames into a list
         usernames_list = usernames.split(',')
 
-        # Fetch UserProfiles corresponding to the usernames
         user_profiles = UserProfile.objects.filter(user__username__in=usernames_list)
 
-        # Serialize the UserProfiles
         serializer = UserProfileSerializer(user_profiles, many=True)
 
-        # Return serialized data
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     except Exception as e:
@@ -1321,6 +1316,21 @@ def register(request):
         new_profile_serializer = UserProfileSerializer(user_profile, many=False)
         return Response(new_profile_serializer.data, status=status.HTTP_201_CREATED)
     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+@api_view(['GET'])
+def moderator(request):
+    username=None
+    if 'username' in request.GET:
+        print("username")
+        username = request.GET['username']
+    if username:
+        user = User.objects.get(username=username)
+        print(username)
+        print(user)
+        return Response(user.groups.filter(name='Moderators').exists(),status=status.HTTP_200_OK)
+    else:
+        return Response(False,status=status.HTTP_200_OK)
+        
     
 
 # ------------------- REST API ------------------- #

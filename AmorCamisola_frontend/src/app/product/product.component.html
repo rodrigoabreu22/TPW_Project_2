@@ -1,25 +1,25 @@
-<div class="col-md-4 col-sm-6 mb-4" *ngIf="product">
+<div class="product-card card shadow-sm h-100 border-0" *ngIf="product">
   <!-- Product Card -->
   <div class="card shadow-sm border-light">
     <!-- Make the card clickable with RouterLink -->
     <a [routerLink]="['/product', product.id]" class="text-decoration-none">
       <!-- Product Image -->
-      <img [src]="'http://127.0.0.1:8080' + product.image || 'placeholder.jpg'" class="card-img-top" alt="{{ product.name }}" />
-    </a>
+      <div class="image-container bg-light rounded-top" style="height: 180px; overflow: hidden;">
+        <img [src]="'http://127.0.0.1:8080' + product.image || 'placeholder.jpg'" class="card-img-top" alt="{{ product.name }}" />
+      </div>
+      </a>
 
     <!-- Card Body -->
-    <div class="card-body">
-      <h5 class="card-title">
-        <a [routerLink]="['/product', product.id]" class="text-dark text-decoration-none">
+    <div class="card-body text-center p-2">
+      <h6 class="card-title mb-1 text-truncate">
           {{ product.name }}
-        </a>
-      </h5>
-      <p class="card-text text-muted">Preço: €{{ product.price }}</p>
-      <p class="card-text">
-        <strong>Vendedor:</strong> {{ product.seller.first_name }} {{ product.seller.last_name }}
+      </h6>
+      <p class="small text-muted mb-1">
+        Vendedor: <a [routerLink]="['/profile', product.seller.username]" class="text-decoration-none">{{ product.seller.username }}</a>
       </p>
+      <p class="text-danger fw-bold h6 mb-2">Preço: €{{ product.price }}</p>
       <!-- Favorite Button -->
-      <button class="btn btn-outline-danger btn-sm w-100" (click)="addToFavorites($event, product)">
+      <button *ngIf="!myproduct" class="btn btn-outline-danger btn-sm w-100" (click)="addToFavorites($event, product)">
         ❤️ Adicionar aos favoritos
       </button>
     </div>

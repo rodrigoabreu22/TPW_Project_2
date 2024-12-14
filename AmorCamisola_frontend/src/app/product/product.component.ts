@@ -16,6 +16,7 @@ export class ProductComponent implements OnInit {
   @Input() productId: number = 0;
 
   product: Product | null = null;
+  myproduct: boolean = false;
 
   productService: ProductService = inject(ProductService);
 
@@ -27,6 +28,11 @@ export class ProductComponent implements OnInit {
         .getProduct(this.productId)
         .then((fetchedProduct: Product) => {
           this.product = fetchedProduct;
+          console.log("produto", fetchedProduct)
+          if (this.product.seller.username == localStorage.getItem("username")){
+            console.log("Meu produto")
+            this.myproduct = true
+          }
         })
         .catch((error) => {
           console.error('Error fetching product:', error);

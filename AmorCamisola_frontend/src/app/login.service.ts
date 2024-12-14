@@ -33,9 +33,11 @@ export class LoginService {
     if (response.token) {
       localStorage.setItem('token', response.token);
       localStorage.setItem('id', response.user.id);
+      localStorage.setItem('username',response.user.username);
       return true;
     } else {
       localStorage.setItem('id', response.user.id);
+      localStorage.setItem('username',response.user.username);
       return true;
     }
   }
