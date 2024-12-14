@@ -1086,6 +1086,20 @@ def get_users(request):
     serializer = UserProfileSerializer(users, many=True)
     return Response(serializer.data)
 
+@api_view(['GET'])
+def get_userProfile_by_id(request, id):
+    if request.method == 'GET':
+        try:
+            user = UserProfile.objects.get(user__id=id)
+            # You can serialize the user data here and return it
+        except UserProfile.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = UserProfileSerializer(user, many=False)
+        return Response(serializer.data)
+
+    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
 """
 @api_view(['GET'])
 def get_user(request, id):
