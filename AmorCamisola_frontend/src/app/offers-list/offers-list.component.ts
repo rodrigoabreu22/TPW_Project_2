@@ -8,6 +8,7 @@ import { OffersReceivedComponent } from '../offers-received/offers-received.comp
 import { OffersSentComponent } from '../offers-sent/offers-sent.component';
 import { OffersAcceptedComponent } from '../offers-accepted/offers-accepted.component';
 import { OffersProcessedComponent } from '../offers-processed/offers-processed.component';
+import { LoginService } from '../login.service';
 
 @Component({
   selector: 'app-offers-list',
@@ -21,6 +22,7 @@ export class OffersListComponent {
   acceptedOffers: Offer[] = [];
   processedOffers: Offer[] = [];
   offerService: OffersService = inject(OffersService);
+  loginService: LoginService = inject(LoginService);
   user_id = 0;
   token = "";
 
@@ -29,6 +31,7 @@ export class OffersListComponent {
     this.token = localStorage.getItem("token") || "";
     this.offerService.getOffersByUser(this.user_id, this.token)
       .then((listOffers: Offer[][]) => {
+        console.log("USER ATUAL", this.loginService.getLoggedUser());
         console.log(listOffers);
         this.receivedOffers = listOffers[0];
         this.sentOffers = listOffers[1];

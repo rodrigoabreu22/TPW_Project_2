@@ -2,7 +2,6 @@ import { Injectable, inject } from '@angular/core';
 import { UserProfile } from './user-profile';
 import { User } from './user';
 import { Product } from './product';
-import { LoginService } from './login.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +10,6 @@ export class UserService {
   private baseUrl :string = 'http://localhost:8080/ws/';
 
 
-  loginService: LoginService = inject(LoginService);
   constructor() {
 
    }
@@ -52,9 +50,9 @@ export class UserService {
   
 
    async getUsersProfile(id: number): Promise<UserProfile> {
-    let url = `${this.baseUrl}users/profile/`;
+    let url = `${this.baseUrl}users`;
     if (id != null) {
-        url += `?user_id=${id}`;
+        url += `/${id}`;
     }
     const data :Response = await fetch(url);
     return await data.json() ?? undefined;
