@@ -15,8 +15,6 @@ import { LoginService } from './login.service';
 export class AppComponent implements OnInit {
   title = 'AmorCamisola_frontend';
   showNavbar: boolean = false;
-  loginService: LoginService = inject(LoginService);
-  currentUser: UserProfile | null = null;
 
   constructor(private router: Router, private activatedRoute: ActivatedRoute) {}
 
