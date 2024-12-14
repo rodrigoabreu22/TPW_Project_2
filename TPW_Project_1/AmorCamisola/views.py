@@ -1212,14 +1212,9 @@ def get_products_by_user(request, user_id):
         return Response(serializer.data)
     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-<<<<<<< HEAD
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def get_favorites_by_user(request, user_id):
-=======
 @api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes([IsAuthenticated])
 def user_favorites(request, user_id, product_id=None):
->>>>>>> main
     if request.method == 'GET':
         try:
             # Fetch the favorite object associated with the user
