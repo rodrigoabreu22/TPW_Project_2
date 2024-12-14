@@ -8,23 +8,29 @@ export class FavoritesService {
 
   constructor() {}
 
-  async getFavorites(userId: number): Promise<any[]> {
+  async getFavorites(userId: number, token: string): Promise<any[]> {
+    console.log("token: ",token)  
     const url = `${this.baseUrl}users/${userId}/favorites/`;
     console.log("user url: ",url)
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      headers: {
+        'Authorization': `Token ${token}`,
+      }
+    });
     if (!response.ok) {
       throw new Error(`Failed to fetch favorites: ${response.statusText}`);
     }
     return await response.json();
   }
 
-  async addFavorite(userId: number, productId: number): Promise<void> {
+  async addFavorite(userId: number, productId: number, token: string): Promise<void> {
     const url = `${this.baseUrl}users/${userId}/favorites/${productId}/`;  // productId is now required here
     console.log("user url: ",url)
     const response = await fetch(url, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Token ${token}`,
       }
     });
     if (!response.ok) {
@@ -32,13 +38,14 @@ export class FavoritesService {
     }
   }
 
-  async removeFavorite(userId: number, productId: number): Promise<void> {
+  async removeFavorite(userId: number, productId: number, token:string): Promise<void> {
     const url = `${this.baseUrl}users/${userId}/favorites/${productId}/`;  // productId is now required here
     console.log("user url: ",url)
     const response = await fetch(url, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Token ${token}`,
       }
     });
     if (!response.ok) {

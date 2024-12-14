@@ -1,0 +1,132 @@
+<div class="account-container">
+    <div class="card account-card">
+      <div class="card-body">
+        <h2 class="card-title text-center">Criar Conta</h2>
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+  
+          <!-- Name and Last Name -->
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="first_name">Nome</label>
+              <input
+                formControlName="first_name"
+                type="text"
+                class="form-control"
+                id="first_name"
+                placeholder="Nome"
+              />
+              <div *ngIf="formErrors['first_name']" class="text-danger">
+                {{ formErrors['first_name'] }}
+              </div>
+            </div>
+            <div class="form-group col-md-6">
+              <label for="last_name">Apelido</label>
+              <input
+                formControlName="last_name"
+                type="text"
+                class="form-control"
+                id="last_name"
+                placeholder="Apelido"
+              />
+              <div *ngIf="formErrors['last_name']" class="text-danger">
+                {{ formErrors['last_name'] }}
+              </div>
+            </div>
+          </div>
+  
+          <!-- Phone and Address -->
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="phone">Telefone</label>
+              <input
+                formControlName="phone"
+                type="text"
+                class="form-control"
+                id="phone"
+                placeholder="Telefone"
+              />
+              <div *ngIf="formErrors['phone']" class="text-danger">
+                {{ formErrors['phone'] }}
+              </div>
+            </div>
+            <div class="form-group col-md-6">
+              <label for="address">Morada</label>
+              <input
+                formControlName="address"
+                type="text"
+                class="form-control"
+                id="address"
+                placeholder="Morada"
+              />
+              <div *ngIf="formErrors['address']" class="text-danger">
+                {{ formErrors['address'] }}
+              </div>
+            </div>
+          </div>
+  
+          <!-- Username and Email -->
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="username">Nome de Utilizador</label>
+              <input
+                formControlName="username"
+                type="text"
+                class="form-control"
+                id="username"
+                placeholder="Nome de Utilizador"
+              />
+              <div *ngIf="formErrors['username']" class="text-danger">
+                {{ formErrors['username'] }}
+              </div>
+            </div>
+            <div class="form-group col-md-6">
+              <label for="email">Email</label>
+              <input
+                formControlName="email"
+                type="email"
+                class="form-control"
+                id="email"
+                placeholder="Email"
+              />
+              <div *ngIf="formErrors['email']" class="text-danger">
+                {{ formErrors['email'] }}
+              </div>
+            </div>
+          </div>
+  
+          <!-- Password and Confirm Password -->
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="password1">Password</label>
+              <input
+                formControlName="password1"
+                type="password"
+                class="form-control"
+                id="password1"
+                placeholder="Password"
+              />
+              <div *ngIf="formErrors['password1']" class="text-danger">
+                {{ formErrors['password1'] }}
+              </div>
+            </div>
+            <div class="form-group col-md-6">
+              <label for="password2">Confirmar Password</label>
+              <input
+                formControlName="password2"
+                type="password"
+                class="form-control"
+                id="password2"
+                placeholder="Confirmar Password"
+              />
+              <div *ngIf="formErrors['password2']" class="text-danger">
+                {{ formErrors['password2'] }}
+              </div>
+            </div>
+          </div>
+  
+          <button type="submit" class="btn btn-primary btn-block">Criar Conta</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  

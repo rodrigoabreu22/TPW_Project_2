@@ -1,8 +1,9 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, Renderer2, OnDestroy  } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import {CommonModule} from "@angular/common";
 import { LoginService } from '../login.service';
 import { Location } from '@angular/common';
+import { UserProfile } from '../user-profile';
 
 @Component({
   selector: 'app-login',
@@ -11,12 +12,12 @@ import { Location } from '@angular/common';
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit{
   loginForm!: FormGroup;
   loginUserService: LoginService = inject(LoginService);
   invalidCredentials: boolean = false;
 
-  constructor(private formBuilder: FormBuilder, private location: Location) { 
+  constructor(private formBuilder: FormBuilder, private location: Location, private renderer: Renderer2) { 
     this.ngOnInit();
   }
 
@@ -33,10 +34,9 @@ export class LoginComponent implements OnInit {
       const password = this.loginForm.value.password;
 
       this.loginUserService.login(username, password)
-        .then((success: boolean) => {
+        .then((success: UserProfile | null) => {
           if (success) {
-            console.log("Success!!!")
-            this.location.back();
+            console.log("Success!!!", success);
           } else {
             this.invalidCredentials = true;
           }
@@ -47,7 +47,6 @@ export class LoginComponent implements OnInit {
         });
 
     } else {
-
       this.loginForm.markAllAsTouched();
       console.log('Invalid form submitted');
     }

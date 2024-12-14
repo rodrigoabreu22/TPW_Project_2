@@ -10,6 +10,7 @@ import { LoginService } from './login.service';
 export class UserService {
   private baseUrl :string = 'http://localhost:8080/ws/';
 
+
   loginService: LoginService = inject(LoginService);
   constructor() {
 

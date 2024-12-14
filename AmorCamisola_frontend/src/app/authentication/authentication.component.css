@@ -1,0 +1,25 @@
+.auth-container {
+    height: 100vh; /* Full viewport height */
+    width: 100vw; /* Full viewport width */
+    background-color: #204040; /* Background color */
+    margin: 0; /* Remove extra margin */
+    display: flex; /* Use flexbox for layout */
+    align-items: center; /* Center items vertically */
+    justify-content: space-between; /* Push login to the left and register to the right */
+    padding: 0 5%; /* Add some padding for spacing on the left and right */
+}
+
+.auth-section {
+    max-width: 2000px; /* Limit the width of each section */
+    display: flex;
+    justify-content: center; /* Center content within each section */
+    align-items: center;
+    padding: 5%;
+}
+
+.vertical-bar {
+    width: 2px; /* Thickness of the vertical bar */
+    background-color: #ffffff; /* Bar color */
+    height: 90%; /* Stretch the bar height */
+    position: relative;
+}
