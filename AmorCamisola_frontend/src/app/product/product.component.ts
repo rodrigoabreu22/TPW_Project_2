@@ -34,15 +34,15 @@ export class ProductComponent implements OnInit {
     } else {
       console.warn('localStorage is not available in the current environment.');
     }
-
-    if (this.userId && this.productId > 0) {
+    if (this.userId != null && this.productId > 0) {
+      console.log('Fetching product with ID:', this.productId);
       this.productService
         .getProduct(this.productId)
         .then((fetchedProduct: Product) => {
           this.product = fetchedProduct;
           this.checkIfFavorite();
           console.log("produto", fetchedProduct)
-          if (this.product.seller.username == localStorage.getItem("username")){
+          if (this.product.seller.id == Number(localStorage.getItem("id"))){
             console.log("Meu produto")
             this.myproduct = true
           }

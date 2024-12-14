@@ -1374,7 +1374,7 @@ def login(request):
                 user_profile = UserProfile.objects.get(user=user)
                 user_serializer = UserProfileSerializer(user_profile, many=False)
                 token, _ = Token.objects.get_or_create(user=user)
-                return Response({"userProfile": user_serializer.data, "token": token}, status=status.HTTP_200_OK)
+                return Response({"userProfile": user_serializer.data, "token": token.key}, status=status.HTTP_200_OK)
             else:
                 return Response(status=status.HTTP_401_UNAUTHORIZED)
         except Exception as e:
@@ -1395,7 +1395,7 @@ def register(request):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         new_profile_serializer = UserProfileSerializer(user_profile, many=False)
         token, _ = Token.objects.get_or_create(user=user_profile.user)
-        return Response({"userProfile": new_profile_serializer.data, "token": token}, status=status.HTTP_201_CREATED)
+        return Response({"userProfile": new_profile_serializer.data, "token": token.key}, status=status.HTTP_201_CREATED)
     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 @api_view(['GET'])
