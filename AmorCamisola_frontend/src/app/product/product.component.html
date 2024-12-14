@@ -19,9 +19,16 @@
       </p>
       <p class="text-danger fw-bold h6 mb-2">Preço: €{{ product.price }}</p>
       <!-- Favorite Button -->
-      <button *ngIf="!myproduct" class="btn btn-outline-danger btn-sm w-100" (click)="addToFavorites($event, product)">
-        ❤️ Adicionar aos favoritos
+      <button
+        *ngIf="!myproduct"
+        class="btn"
+        [ngClass]="isFavorite ? 'btn-danger' : 'btn-outline-danger'"
+        (click)="toggleFavorite($event, product)">
+        ❤️ 
+        {{ isFavorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos' }}
       </button>
+      </button>
+
     </div>
   </div>
 </div>
