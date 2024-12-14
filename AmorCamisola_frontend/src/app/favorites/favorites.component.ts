@@ -1,44 +1,45 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FavoritesService } from '../favorites.service';
 import { Product } from '../product';
 import { CommonModule } from '@angular/common';
 import { ProductComponent } from '../product/product.component';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-favorites',
-  standalone: true,
   imports: [CommonModule, ProductComponent],
   templateUrl: './favorites.component.html',
   styleUrls: ['./favorites.component.css'],
 })
-export class FavoritesComponent implements OnInit {
+export class FavoritesComponent{
   favorites: Product[] = [];
-  isLoading: boolean = true;
-  error: string | null = null;
   userId: number | null = null;
 
-  constructor(private favoritesService: FavoritesService) {}
+  favoriteService: FavoritesService = inject(FavoritesService);
 
-  async ngOnInit(): Promise<void> {
+  constructor(private route: ActivatedRoute) {}
+
+  ngOnInit(): void {
     if (this.isBrowser()) {
       const storedId = localStorage.getItem("id");
-      if (this.userId === storedId) {
-        console.log("Banana");
+      console.log("ola",storedId)
+      if(storedId !== null){
+        this.userId = parseInt(storedId, 10);
       }
     } else {
       console.warn("localStorage não está disponível no ambiente atual.");
     }
-    try {
-      if (this.userId !== null) {
-        this.favorites = await this.favoritesService.getFavorites(this.userId);
-      } else {
-        throw new Error('User ID is null');
-      }
-    } catch (error) {
-      console.error('Failed to fetch favorites:', error);
-      this.error = 'Failed to load favorite products. Please try again later.';
-    } finally {
-      this.isLoading = false;
+    console.log(this.userId)
+    if(this.userId){  
+    this.favoriteService
+      .getFavorites(this.userId)
+      .then((fetchedFvorites: Product[])=>{
+        this.favorites = fetchedFvorites;
+        console.log(this.favorites)
+    })
+    .catch((error) => {
+      console.error('Error fetching products from user:', error);
+    });
     }
   }
 

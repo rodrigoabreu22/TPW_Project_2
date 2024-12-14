@@ -1,18 +1,7 @@
 <div class="container mt-4">
     <h1>Your Favorite Products</h1>
-  
-    <!-- Loading Spinner -->
-    <div *ngIf="isLoading" class="text-center">
-      <p>Loading favorites...</p>
-    </div>
-  
-    <!-- Error Message -->
-    <div *ngIf="error" class="alert alert-danger" role="alert">
-      {{ error }}
-    </div>
-  
     <!-- Favorites List -->
-    <div *ngIf="!isLoading && favorites.length === 0" class="text-center">
+    <div *ngIf="favorites.length === 0" class="text-center">
       <p>You have no favorite products yet!</p>
     </div>
   
