@@ -16,6 +16,7 @@ export class ProductComponent implements OnInit {
   @Input() productId: number = 0;
 
   product: Product | null = null;
+  token: string | null = null;
   userId: number | null = null;
   isFavorite: boolean = false;
   myproduct: boolean = false;
@@ -27,6 +28,7 @@ export class ProductComponent implements OnInit {
   ngOnInit(): void {
     if (this.isBrowser()) {
       const storedId = localStorage.getItem("id");
+      this.token = localStorage.getItem("token");
       console.log("User ID from localStorage: ", storedId);
       if (storedId !== null) {
         this.userId = parseInt(storedId, 10);
@@ -63,7 +65,7 @@ export class ProductComponent implements OnInit {
   checkIfFavorite(): void {
     if (this.userId && this.productId) {
       this.favoriteService
-        .getFavorites(this.userId)
+        .getFavorites(this.userId, this.token!)
         .then((favorites: Product[]) => {
           this.isFavorite = favorites.some(product => product.id === this.productId);
         })
@@ -79,7 +81,7 @@ export class ProductComponent implements OnInit {
 
     if (this.isFavorite) {
       // If the product is already a favorite, remove it
-      this.favoriteService.removeFavorite(this.userId!, product.id)
+      this.favoriteService.removeFavorite(this.userId!, product.id, this.token!)
         .then(() => {
           this.isFavorite = false;
           console.log(`Product ${product.name} removed from favorites.`);
@@ -89,7 +91,7 @@ export class ProductComponent implements OnInit {
         });
     } else {
       // If the product is not a favorite, add it
-      this.favoriteService.addFavorite(this.userId!, product.id)
+      this.favoriteService.addFavorite(this.userId!, product.id, this.token!)
         .then(() => {
           this.isFavorite = true;
           console.log(`Product ${product.name} added to favorites.`);
