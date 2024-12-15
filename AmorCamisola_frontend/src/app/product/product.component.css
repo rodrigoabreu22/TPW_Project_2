@@ -1,10 +1,12 @@
 /* Card Styling */
 .product-card {
-    margin: 15px 15px; /* Increased margin between cards */
-    width: 240px; /* Increased card width */
-    height: 350px; /* Increased card height */
+    margin: 0; /* Remove unnecessary margins */
+    width: 240px;
+    height: 350px;
     text-align: center;
-    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effect */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column; /* Ensure card content fits vertically */
 }
 
 .product-card:hover {
@@ -109,13 +111,6 @@
     color: white;
 }
 
-/* Grid Layout for Product List */
-.product-list-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Automatically fill with cards */
-    gap: 20px; /* Space between cards */
-    margin-top: 30px; /* Space above the grid */
-    justify-items: center; /* Center items horizontally */
-}
+
 
   

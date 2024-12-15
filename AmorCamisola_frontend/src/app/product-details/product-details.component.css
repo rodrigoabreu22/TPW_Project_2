@@ -1,14 +1,46 @@
-.container {
-    max-width: 900px;
-  }
-  
-  .img-fluid {
-    border: 1px solid #ddd;
-    padding: 5px;
-    background-color: #f9f9f9;
-  }
-  
-  .text-muted {
-    font-size: 0.9rem;
-  }
-  
+.product-details {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 0;
+}
+
+.product-image {
+  border: 1px solid #ddd;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+}
+
+.product-info {
+  padding-left: 30px;
+}
+
+.product-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.product-details h5 {
+  font-size: 1.2rem;
+  margin-top: 20px;
+}
+
+.product-details p {
+  margin-bottom: 10px;
+}
+
+.product-price {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #e74c3c; /* Use a more vibrant red for price */
+}
+
+.action-buttons {
+  margin-top: 20px;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+}
