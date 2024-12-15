@@ -48,22 +48,22 @@ export class ProductService {
         response = await data.json();
         console.log('Login response:', response);
       }
-    return await data.json();
+    return response;
     }
 
-    async filterProducts(filters: any): Promise<Product[]> {
-      const params = new URLSearchParams();
-      for (const key in filters) {
-        if (filters[key]) {
-          params.append(
-            key,
-            Array.isArray(filters[key]) ? filters[key].join(',') : filters[key]
-          );
-        }
-      }
-      const url = `${this.baseUrl}products/?${params.toString()}`;
-      const response: Response = await fetch(url);
-      return await response.json();
-    }
+    //async filterProducts(filters: any): Promise<Product[]> {
+    //  const params = new URLSearchParams();
+    //  for (const key in filters) {
+    //    if (filters[key]) {
+    //      params.append(
+    //        key,
+    //        Array.isArray(filters[key]) ? filters[key].join(',') : filters[key]
+    //      );
+    //    }
+    //  }
+    //  const url = `${this.baseUrl}products/?${params.toString()}`;
+    //  const response: Response = await fetch(url);
+    //  return await response.json();
+    //}
   }
 

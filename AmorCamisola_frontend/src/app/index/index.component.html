@@ -1,0 +1,64 @@
+<div class="index-container">
+    <!-- Filter Sidebar -->
+    <div class="filter-sidebar">
+      <h3>Filtrar Produtos</h3>
+      <form [formGroup]="filterForm">
+        <!-- Search term -->
+        <div class="form-group">
+          <label for="searchTerm">Buscar por Nome/Equipe/Categoria</label>
+          <input id="searchTerm" type="text" formControlName="searchTerm">
+        </div>
+  
+        <!-- Seller username -->
+        <div class="form-group">
+          <label for="sellerUsername">Vendedor (Username)</label>
+          <input id="sellerUsername" type="text" formControlName="sellerUsername">
+        </div>
+  
+        <!-- Category -->
+        <div class="form-group">
+          <label>Categoria</label>
+          <div *ngFor="let cat of categories">
+            <input type="radio" [value]="cat" formControlName="category"> {{ cat }}
+          </div>
+        </div>
+  
+        <!-- Size -->
+        <div class="form-group">
+          <label>Tamanho</label>
+          <select formControlName="size">
+            <option value="">Todos</option>
+            <option *ngFor="let size of sizes" [value]="size">{{ size }}</option>
+            <option *ngFor="let size of chuteiraSizes" [value]="size">{{ size }}</option>
+          </select>
+        </div>
+  
+        <!-- Price range -->
+        <div class="form-group">
+          <label>Preço</label>
+          <div class="price-range">
+            <input type="number" placeholder="Mínimo" formControlName="priceMin">
+            <input type="number" placeholder="Máximo" formControlName="priceMax">
+          </div>
+        </div>
+  
+        <!-- Sort by -->
+        <div class="form-group">
+          <label>Ordenar por</label>
+          <select formControlName="sortBy">
+            <option value="name">Nome (A-Z)</option>
+            <option value="price">Preço</option>
+          </select>
+        </div>
+      </form>
+    </div>
+  
+    <!-- Product List -->
+    <div class="product-list-container">
+      <div *ngIf="isLoading">Carregando produtos...</div>
+      <div *ngIf="!isLoading">
+        <app-product-list [products]="filteredProducts"></app-product-list>
+      </div>
+    </div>
+  </div>
+  
