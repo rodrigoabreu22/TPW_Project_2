@@ -144,13 +144,13 @@ class ProductSerializer(serializers.ModelSerializer):
         product = Product.objects.create(**validated_data)
     
         if category == 'Camisola':
-            return Jersey.objects.create(product=product, size=size)
+            return JerseySerializer(Jersey.objects.create(product=product, size=size))
         elif category == 'Calção':
-            return Shorts.objects.create(product=product, size=size)
+            return ShortsSerializer(Shorts.objects.create(product=product, size=size))
         elif category == 'Meia':
-            return Socks.objects.create(product=product, size=size)
+            return SocksSerializer(Socks.objects.create(product=product, size=size))
         elif category == 'Chuteira':
-            return Boots.objects.create(product=product, size=size)
+            return BootsSerializer(Boots.objects.create(product=product, size=size))
     
 
 def save_base64_image(base64_string):

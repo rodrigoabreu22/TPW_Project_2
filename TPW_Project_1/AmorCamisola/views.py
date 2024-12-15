@@ -1187,8 +1187,8 @@ def products(request):
         product=request.data
         serializer = ProductSerializer(data=product)
         serializer.is_valid()
-        serializer.create(validated_data=product)
-        return Response(serializer.data)
+        product = serializer.create(validated_data=product)
+        return Response(product.data)
 
     elif request.method == 'GET':
         username=None
