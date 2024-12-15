@@ -7,10 +7,11 @@ import { AuthenticationComponent } from './authentication/authentication.compone
 import { FavoritesComponent } from './favorites/favorites.component';
 import { OffersListComponent } from './offers-list/offers-list.component';
 import { PublishProductComponent } from './publish-product/publish-product.component';
+import { IndexComponent } from './index/index.component';
 
 export const routes: Routes = [
     {path: '', redirectTo: '/products', pathMatch: 'full'},
-    {path: 'products', component: ProductListComponent},
+    {path: 'products', component: IndexComponent},
     {path: 'product/:id', component: ProductDetailsComponent},
     {path: 'users', component: UserListComponent},
     {path: 'profile/:username', component: UserProfileComponent},

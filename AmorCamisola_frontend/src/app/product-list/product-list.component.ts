@@ -13,15 +13,26 @@ import { RouterModule } from '@angular/router';
   styleUrls: ['./product-list.component.css']
 })
 export class ProductListComponent implements OnInit {
-  @Input() username: string = "";
-  products: Product[] = [];
-  isLoading: boolean = true;
+  @Input() username: string = ""; // Username input for filtering products
+  @Input() products: Product[] = []; // Allow passing external products dynamically
+  isLoading: boolean = true; // Loading state
+
   productService: ProductService = inject(ProductService);
 
   constructor() {}
 
   ngOnInit(): void {
-    console.log('Received username:', this.username);
+    if (this.username) {
+      // Fetch products if username is provided
+      console.log('Fetching products for username:', this.username);
+      this.fetchProductsByUsername();
+    } else {
+      // Stop the loading spinner if products are passed externally
+      this.isLoading = false;
+    }
+  }
+
+  private fetchProductsByUsername(): void {
     this.productService.getProductsByUsername(this.username)
       .then((products: Product[]) => {
         this.products = products;
@@ -33,4 +44,3 @@ export class ProductListComponent implements OnInit {
       });
   }
 }
-
