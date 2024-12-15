@@ -1184,11 +1184,12 @@ def get_product_by_id(request, id):
 @api_view(['GET', 'POST'])
 def products(request):
     if request.method == 'POST':
-        serializer = ProductSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.create(validated_data=request.data)
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        product=request.data
+        serializer = ProductSerializer(data=product)
+        serializer.is_valid()
+        serializer.create(validated_data=product)
+        return Response(serializer.data)
+
     elif request.method == 'GET':
         username=None
         print(request.data)
