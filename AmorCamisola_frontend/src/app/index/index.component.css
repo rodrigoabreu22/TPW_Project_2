@@ -23,13 +23,12 @@
     margin-bottom: 10px;;
   }
   
-  /* Sidebar - Filter section */
   .filter-sidebar {
     position: fixed;
     left: -300px; /* Initially hidden */
-    top: 0;
+    top: 51 px; /* Adjust this value based on your navbar height */ 
     width: 300px;
-    height: 100%;
+    height: calc(100vh - 60px); /* Adjust this value based on your navbar height */
     background: #f9f9f9;
     border-right: 1px solid #ddd;
     padding: 20px;
@@ -90,19 +89,4 @@
   .filter-sidebar .form-group input[type="checkbox"] {
     margin-right: 5px; /* Add some space between checkbox and label */
     vertical-align: bottom;
-  }
-
-  /* For responsive layout adjustments */
-  @media (max-width: 991px) {
-    .product-list-container {
-      width: 100%;
-    }
-  
-    .filter-sidebar {
-      width: 100%; /* Full width for smaller screens */
-    }
-  
-    .filter-sidebar .price-range input {
-      width: 100%;
-    }
   }
