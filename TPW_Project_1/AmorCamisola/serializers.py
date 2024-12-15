@@ -103,13 +103,13 @@ class ProductSerializer(serializers.ModelSerializer):
 
     def get_category(self, obj):
         if hasattr(obj, 'jersey'):
-            return 'Jersey'
+            return 'Camisola'
         elif hasattr(obj, 'shorts'):
-            return 'Shorts'
+            return 'Calção'
         elif hasattr(obj, 'socks'):
-            return 'Socks'
+            return 'Meia'
         elif hasattr(obj, 'boots'):
-            return 'Boots'
+            return 'Chuteira'
         return None
 
     def get_size(self, obj):
