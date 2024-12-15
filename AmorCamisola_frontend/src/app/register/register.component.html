@@ -124,7 +124,7 @@
             </div>
           </div>
   
-          <button type="submit" class="btn btn-primary btn-block">Criar Conta</button>
+          <button [disabled]="!validateForm()" type="submit" class="btn btn-primary btn-block">Criar Conta</button>
         </form>
       </div>
     </div>

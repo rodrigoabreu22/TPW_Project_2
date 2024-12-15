@@ -9,8 +9,17 @@
     </div>
     <ng-template #noReceivedOffers>
       <div class="alert alert-info mt-3" role="alert">
-        Não tem nenhuma proposta enviada
+        Não tem nenhuma proposta recebida
       </div>
     </ng-template>
   </div>
   
+  <app-offer-modal
+  *ngIf="showModal"
+  [show]="showModal"
+  [product]="selectedProductName"
+  [deliveryMethod]="selectedOffer?.delivery_method || ''"
+  [paymentMethod]="selectedOffer?.payment_method || ''"
+  [offerValue]="selectedOffer?.value || 0"
+  (close)="closeModal()"
+></app-offer-modal>

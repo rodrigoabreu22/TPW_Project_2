@@ -1112,10 +1112,7 @@ def get_user(request, id):
     return Response(serializer.data)
 """
 
-@api_view(['GET'])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
-@permission_classes([IsAuthenticated])
-def get_user_offers(request):
+def get_offers_aux(request):
     userProfile = UserProfile.objects.get(user__id=request.user.id)
     user = User.objects.get(id=request.user.id)
     madeOffers = Offer.objects.filter(sent_by__user_id=request.user.id).filter(offer_status__exact='in_progress')
@@ -1137,6 +1134,15 @@ def get_user_offers(request):
         'offers_accepted': acceptedOffers_serializer.data,
         'offers_processed': processedOffers_serializer.data
     })
+
+@api_view(['GET', 'POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_user_offers(request):
+    if request.method == 'GET':
+        return get_offers_aux(request)
+    if request.method == 'POST':
+        return handle_offers(request)
 
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
@@ -1185,8 +1191,11 @@ def get_product_by_id(request, id):
 def products(request):
     if request.method == 'POST':
         serializer = ProductSerializer(data=request.data)
-        if serializer.is_valid():
+        print("CHEGOU 1 :", serializer)
+        if serializer.is_valid(): #is failing this verification
+            print("CHEGOU 2 ")
             serializer.create(validated_data=request.data)
+            print("CHEGOU 3")
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     elif request.method == 'GET':
@@ -1428,6 +1437,44 @@ def moderator(request):
         return Response(user.groups.filter(name='Moderators').exists(),status=status.HTTP_200_OK)
     else:
         return Response(False,status=status.HTTP_200_OK)
+
+
+def handle_offers(request):
+    if request.method == 'POST':
+        action = request.data.get('action')
+        offer = request.data.get('offer')
+        offer_serializer = OfferSerializer(data=offer)
+        offer_serializer.is_valid()
+        offer_id = offer.get('id')
+        if action == 'accepted':
+            notifySuccess(offer_id)
+        elif action == 'rejected':
+            notifyFailed(offer_id)
+        elif action == 'countered':
+            if 'payment_method' in offer and 'delivery_method' in offer and 'address' in offer and 'value' in offer:
+                payment_method = offer.get('payment_method')
+                delivery_method = offer.get('delivery_method')
+                address = offer.get('address')
+                value = offer.get('value')
+                print(offer_id)
+                new_offer = Offer.objects.get(id=offer_id)
+                new_offer.payment_method = payment_method
+                new_offer.delivery_method = delivery_method
+                new_offer.address = address
+                new_offer.value = value
+                new_offer.sent_by = UserProfile.objects.get(user__id=request.user.id)
+                new_offer.save()
+        elif action == 'delivered':
+            confirmDelivery(request, offer_id)
+        elif action == 'paid':
+            confirmPayment(request, offer_id)
+        elif action == 'deleted':
+            retractOffer(request, offer_id)
+        else:
+            print(action)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        return get_offers_aux(request)
+    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
         
     
 

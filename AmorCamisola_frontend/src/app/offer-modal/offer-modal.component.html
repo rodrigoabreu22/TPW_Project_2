@@ -1,0 +1,56 @@
+<div
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  [ngClass]="{ 'show': show }"
+  [ngStyle]="{ 'display': show ? 'block' : 'none' }"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Enviar Proposta</h5>
+        <button
+          type="button"
+          class="btn-close"
+          aria-label="Close"
+          (click)="closeModal()"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <p>Produto: {{ product?.name }}</p>
+        <form>
+          <div class="mb-3">
+            <label for="deliveryMethod" class="form-label">Método de entrega</label>
+            <select
+              class="form-select"
+              id="deliveryMethod"
+              [(ngModel)]="deliveryMethod"
+              [ngModelOptions]="{ standalone: true }"
+            >
+              <option *ngFor="let method of deliveryMethodOptions" [value]="method[0]">
+                {{ method[1] }}
+              </option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="paymentMethod" class="form-label">Método de Pagamento</label>
+            <select
+              class="form-select"
+              id="paymentMethod"
+              [(ngModel)]="paymentMethod"
+              [ngModelOptions]="{ standalone: true }"
+            >
+              <option *ngFor="let method of paymentMethodOptions" [value]="method[0]">
+                {{ method[1] }}
+              </option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="handleSubmit()">Enviar Proposta</button>
+      </div>
+    </div>
+  </div>
+</div>
