@@ -4,31 +4,49 @@
     margin-bottom: 15px;
   }
   
-  /* The main container for both filter and product list */
-  .index-container {
+  /* Product List */
+  .product-list-container {
     display: flex;
-    gap: 20px;
+    justify-content: center; /* Center the content horizontally */
+    align-items: center; /* Center the content vertically */
+    flex-direction: column; /* Keep the vertical stacking of products */
+  }
+  
+  .product-list-container h2 {
+    font-size: 30px;
+    margin-bottom: 15px;
+  }
+  
+  /* Button Filtrar */
+  .product-list-container button {
+    margin-top: 20px;
+    margin-bottom: 10px;;
   }
   
   /* Sidebar - Filter section */
   .filter-sidebar {
+    position: fixed;
+    left: -300px; /* Initially hidden */
+    top: 0;
     width: 300px;
-    padding: 15px;
+    height: 100%;
     background: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 8px;
+    border-right: 1px solid #ddd;
+    padding: 20px;
+    transition: all 0.3s ease; /* Slide effect */
+    z-index: 1000;
+  }
+  
+  .filter-sidebar.show {
+    left: 0; /* When visible, slide in */
   }
   
   .filter-sidebar h3 {
-    margin-bottom: 15px;
-    font-size: 18px;
-    color: #333;
+    font-size: 20px;
+    margin-bottom: 20px;
   }
   
-  .filter-sidebar .form-group {
-    margin-bottom: 12px;
-  }
-  
+
   .filter-sidebar label {
     font-weight: bold;
     display: block;
@@ -50,39 +68,41 @@
     margin-right: 8px;
   }
   
-  .filter-sidebar button {
-    margin-top: 15px;
+  .filter-sidebar .close-btn {
+    position: absolute;
+    top: 10px; /* Adjust top position as needed */
+    right: 10px; /* Adjust right position as needed */
+    width: 30px; /* Set button width */
+    height: 30px; /* Set button height */
+    line-height: 30px; /* Center text vertically */
+    text-align: center;
+    border-radius: 50%; /* Make it a circle */
+    background-color: #ffffff; /* Set background color */
+    color: #333; /* Set text color */
+    border: none; /* Remove button border */
   }
   
-  /* Product List - Displayed to the right of the filter bar */
-  .product-list-container {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin-left: 20px; /* Added margin to the left of the product list */
-    justify-content: center;
-    align-items: center; /* Centering the product list content */
+  .filter-sidebar .form-group label {
+    display: flex; /* Use flexbox for better alignment */
+    align-items: top; /* Vertically center the label and checkbox */
   }
   
+  .filter-sidebar .form-group input[type="checkbox"] {
+    margin-right: 5px; /* Add some space between checkbox and label */
+    vertical-align: bottom;
+  }
+
   /* For responsive layout adjustments */
   @media (max-width: 991px) {
-    .index-container {
-      flex-direction: column; /* Stack vertically on smaller screens */
-      gap: 15px; /* Reduced gap between elements */
+    .product-list-container {
+      width: 100%;
     }
   
     .filter-sidebar {
-      width: 100%; /* Filter bar takes full width on smaller screens */
-      margin-bottom: 20px;
+      width: 100%; /* Full width for smaller screens */
     }
   
-    .product-list-container {
-      width: 100%; /* Product list takes full width on smaller screens */
-    }
-  
-    .price-range input {
-      width: 100%; /* Make price range inputs full-width on small screens */
+    .filter-sidebar .price-range input {
+      width: 100%;
     }
   }
-  

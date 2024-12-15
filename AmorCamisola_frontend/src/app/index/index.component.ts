@@ -18,6 +18,7 @@ export class IndexComponent implements OnInit {
   allProducts: Product[] = [];
   productService: ProductService = inject(ProductService);
   isLoading: boolean = true;
+  isFilterVisible: boolean = false; // Control the visibility of the filter sidebar
 
   categories: string[] = ['Camisola', 'Calção', 'Meia', 'Chuteira'];
   sizes: string[] = ['XS', 'S', 'M', 'L', 'XL'];
@@ -137,5 +138,14 @@ export class IndexComponent implements OnInit {
       sortBy: 'name' // Reset to default sorting
     });
     this.applyFilters();
+  }
+
+  // Toggle the visibility of the filter sidebar
+  toggleFilterSidebar(): void {
+    this.isFilterVisible = !this.isFilterVisible;
+
+    if (!this.isFilterVisible) {
+      this.applyFilters();  // Hide the products when filters are shown
+    }
   }
 }
