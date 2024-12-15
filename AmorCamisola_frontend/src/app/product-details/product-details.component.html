@@ -24,10 +24,10 @@
 
       <h5 class="mt-4">Vendedor:</h5>
       <p class="mb-1">
-        <strong>Nome:</strong> 
+        <strong>Nome:</strong> <a [routerLink]="['/profile', sellerInfo?.user?.username]">
         {{ sellerInfo?.user?.first_name }}
         {{ sellerInfo?.user?.last_name }}
-      </p>
+      </a></p>
       <p class="mb-1">
         <strong>Telefone:</strong> {{ sellerInfo?.phone }}
       </p>
