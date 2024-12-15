@@ -6,6 +6,7 @@ import { ProductDetailsComponent } from './product-details/product-details.compo
 import { AuthenticationComponent } from './authentication/authentication.component';
 import { FavoritesComponent } from './favorites/favorites.component';
 import { OffersListComponent } from './offers-list/offers-list.component';
+import { PublishProductComponent } from './publish-product/publish-product.component';
 
 export const routes: Routes = [
     {path: '', redirectTo: '/products', pathMatch: 'full'},
@@ -16,4 +17,5 @@ export const routes: Routes = [
     {path: 'favorites', component: FavoritesComponent},
     {path: 'offers', component: OffersListComponent},
     {path: 'authentication', component: AuthenticationComponent, data: {showNavbar: false}},
+    {path: 'sell', component: PublishProductComponent}
 ];

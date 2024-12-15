@@ -1,5 +1,10 @@
+import base64
+import os
+import uuid
+from django.conf import settings
 from rest_framework import serializers
 from AmorCamisola.models import User, UserProfile, Following, Product, Report, Favorite, Jersey, Shorts, Socks, Boots, Offer
+from django.core.files.base import ContentFile
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -119,28 +124,57 @@ class ProductSerializer(serializers.ModelSerializer):
         return None
 
     def create(self, validated_data):
-        seller_data = validated_data.pop('seller')
-        if seller_data:
-            seller, _ = User.objects.get_or_create(**seller_data)
-            validated_data['seller'] = seller
+        # Process `seller` data
+        seller_data = validated_data.pop('seller', None)
+        category = validated_data.pop('category', None)
+        size = validated_data.pop('size', None)
+        image_base64 = validated_data.pop('image_base64', None)  # Remove `image_base64
         
-        product = Product.objects.create(**validated_data)
-
-        return product
+        validated_data['id'] = Product.objects.count() + 1
     
-    def update(self, instance, validated_data):
-        seller_data = validated_data.pop('seller')
         if seller_data:
-            seller = instance.seller
-            for attr, value in seller_data.items():
-                setattr(seller, attr, value)
-            seller.save()
-        
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
-        instance.save()
+            print("--------------_> ",seller_data)
+            seller, _ = User.objects.get_or_create(**seller_data)
+            print("-------------------------->", seller)
+            validated_data['seller'] = seller
 
-        return instance
+        if image_base64:
+            validated_data['image']=save_base64_image(image_base64) 
+            
+        product = Product.objects.create(**validated_data)
+    
+        if category == 'Camisola':
+            return Jersey.objects.create(product=product, size=size)
+        elif category == 'Calção':
+            return Shorts.objects.create(product=product, size=size)
+        elif category == 'Meia':
+            return Socks.objects.create(product=product, size=size)
+        elif category == 'Chuteira':
+            return Boots.objects.create(product=product, size=size)
+    
+
+def save_base64_image(base64_string):
+    """Decode and save the image to media directory."""
+    # Decode base64 string
+    try:
+        # Strip the prefix if provided
+        if "data:image" in base64_string:
+            header, base64_string = base64_string.split(',', 1)
+        image_data = base64.b64decode(base64_string)
+
+        # Create unique name for image
+        file_name = f"produtos/{uuid.uuid4()}.png"  # Ensure uniqueness
+        file_path = os.path.join(settings.MEDIA_ROOT, file_name)
+
+        # Save image
+        with open(file_path, 'wb') as f:
+            f.write(image_data)
+
+        return file_name  # Return the saved image file name
+    except Exception as e:
+        print("Error saving Base64 image:", e)
+    return None
+
 
     
 class ReportSerializer(serializers.ModelSerializer):
