@@ -27,7 +27,7 @@ export class IndexComponent implements OnInit {
     this.filterForm = this.fb.group({
       searchTerm: [''],
       sellerUsername: [''],
-      category: [''],
+      category: [[]], // Array to hold multiple selected categories
       size: [''],
       priceMin: [null],
       priceMax: [null],
@@ -74,9 +74,9 @@ export class IndexComponent implements OnInit {
       products = products.filter(product => product.seller.username.toLowerCase().includes(seller));
     }
 
-    // Filter by category
-    if (category) {
-      products = products.filter(product => product.category === category);
+    // Filter by categories (multiple selection allowed)
+    if (category.length > 0) {
+      products = products.filter(product => category.includes(product.category));
     }
 
     // Filter by size
@@ -108,11 +108,29 @@ export class IndexComponent implements OnInit {
     this.filteredProducts = products;
   }
 
+  // Update selected categories when a checkbox is checked/unchecked
+  onCategoryChange(event: any): void {
+    const category = event.target.value;
+    const categories = this.filterForm.value.category;
+
+    if (event.target.checked) {
+      categories.push(category);  // Add category to the selected list
+    } else {
+      const index = categories.indexOf(category);
+      if (index > -1) {
+        categories.splice(index, 1); // Remove category from the selected list
+      }
+    }
+
+    this.filterForm.patchValue({ category: categories });
+    this.applyFilters(); // Re-apply filters after category change
+  }
+
   clearFilters(): void {
     this.filterForm.reset({
       searchTerm: '',
       sellerUsername: '',
-      category: '',
+      category: [],
       size: '',
       priceMin: null,
       priceMax: null,
