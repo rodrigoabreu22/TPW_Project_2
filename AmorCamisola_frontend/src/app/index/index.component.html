@@ -47,8 +47,15 @@
           <label>Ordenar por</label>
           <select formControlName="sortBy">
             <option value="name">Nome (A-Z)</option>
-            <option value="price">Preço</option>
+            <option value="name-reverse">Nome (Z-A)</option>
+            <option value="price">Preço (Menor para Maior)</option>
+            <option value="price-reverse">Preço (Maior para Menor)</option>
           </select>
+        </div>
+  
+        <!-- Clear Filters Button -->
+        <div class="form-group">
+          <button type="button" (click)="clearFilters()">Limpar Filtros</button>
         </div>
       </form>
     </div>

@@ -97,10 +97,27 @@ export class IndexComponent implements OnInit {
     // Sort products
     if (sortBy === 'name') {
       products.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (sortBy === 'name-reverse') {
+      products.sort((a, b) => b.name.localeCompare(a.name));
     } else if (sortBy === 'price') {
       products.sort((a, b) => a.price - b.price);
+    } else if (sortBy === 'price-reverse') {
+      products.sort((a, b) => b.price - a.price);
     }
 
     this.filteredProducts = products;
+  }
+
+  clearFilters(): void {
+    this.filterForm.reset({
+      searchTerm: '',
+      sellerUsername: '',
+      category: '',
+      size: '',
+      priceMin: null,
+      priceMax: null,
+      sortBy: 'name' // Reset to default sorting
+    });
+    this.applyFilters();
   }
 }
