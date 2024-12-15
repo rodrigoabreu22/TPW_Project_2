@@ -39,6 +39,15 @@ export class ProductService {
     const url = `${this.baseUrl}products/`;
     const data = await fetch(url, {
       method: "POST", headers: new Headers({"Content-Type": "application/json"}), body: JSON.stringify(prod)});
+      let response: any;
+      if (!data.ok) {
+        response = await data.text();
+        console.log('Error logging in:', response);
+        return null;
+      } else {
+        response = await data.json();
+        console.log('Login response:', response);
+      }
     return await data.json();
     }
 

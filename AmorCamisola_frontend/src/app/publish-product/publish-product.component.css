@@ -1,0 +1,118 @@
+/* General form container styling */
+.form-container {
+    max-width: 1200px; /* Increase the max-width to make the form wider */
+    margin: 50px auto;
+    padding: 30px; /* Increase padding for a more spacious layout */
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+  }
+  
+  .form-container h1 {
+    font-size: 28px; /* Increase font size for header */
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+    margin-bottom: 30px; /* Increase bottom margin */
+  }
+  
+  /* Form group styling */
+  .form-group {
+    margin-bottom: 20px; /* Increase bottom margin between form groups */
+  }
+  
+  .form-group label {
+    display: block;
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 8px; /* Increase space between label and input */
+  }
+  
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    width: 100%;
+    padding: 12px; /* Increase padding for more spacious fields */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px; /* Increase font size */
+    color: #333;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+  }
+  
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus {
+    border-color: #007bff;
+    outline: none;
+  }
+  
+  /* Button styling */
+  .btn-submit {
+    display: inline-block;
+    width: 100%;
+    padding: 15px; /* Increase padding for button */
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px; /* Increase font size for button */
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+  }
+  
+  .btn-submit:hover {
+    background-color: #0056b3;
+  }
+  
+  .btn-submit:active {
+    transform: scale(0.98);
+  }
+  
+  /* Add spacing between form elements */
+  .form-group textarea {
+    resize: none;
+    height: 100px; /* Increase height for textarea */
+  }
+  
+  /* Styling for file input */
+  .form-group input[type="file"] {
+    padding: 8px;
+    font-size: 16px; /* Increase font size for file input */
+  }
+  
+  /* Responsive layout */
+  @media (max-width: 1024px) {
+    .form-container {
+      padding: 20px;
+    }
+  
+    .form-container h1 {
+      font-size: 24px;
+    }
+  
+    .btn-submit {
+      font-size: 16px;
+      padding: 12px;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .form-container {
+      padding: 15px;
+      max-width: 90%; /* Allow form to scale down on smaller devices */
+    }
+  
+    .form-container h1 {
+      font-size: 20px;
+    }
+  
+    .btn-submit {
+      font-size: 14px;
+      padding: 10px;
+    }
+  }
+  
