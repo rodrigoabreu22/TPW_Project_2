@@ -13,6 +13,7 @@ export class LoginService {
 
     async getLoggedUser(): Promise<UserProfile> {
       const userId = localStorage.getItem('id');
+      console.log("IDDDDDDDDDD",userId)
       if (!userId) {
         throw new Error('User is not logged in.');
       }
