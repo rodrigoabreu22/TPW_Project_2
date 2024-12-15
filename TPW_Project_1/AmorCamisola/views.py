@@ -1090,7 +1090,7 @@ def get_users(request):
 def get_userProfile_by_id(request, id):
     if request.method == 'GET':
         try:
-            user = UserProfile.objects.get(user__id=id)
+            user = UserProfile.objects.get(user__id=id+1)
             # You can serialize the user data here and return it
         except UserProfile.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
