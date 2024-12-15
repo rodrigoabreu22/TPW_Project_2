@@ -1,86 +1,121 @@
-
-
-.dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: white;
-    min-width: 150px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
-}
-
-.dropdown:hover .dropdown-content {
-    display: block;
-}
-
-
-.sidebar-filters {
-    width: 250px;
-    float: left;
-    padding: 20px;
-    background: #f5f5f5;
-}
-
-.price-range input {
-    width: 45%;
-    display: inline-block;
-    margin-right: 5px;
-}
-
-/* Products Display */
-.products-display {
-    margin-left: 270px;
-    padding: 20px;
-}
-
-.product-list {
-    display: flex;
-    flex-wrap: wrap;
-}
-
+/* Card Styling */
 .product-card {
-    border: 1px solid #ddd;
-    padding: 10px;
-    margin: 10px;
-    width: 200px;
+    margin: 15px 15px; /* Increased margin between cards */
+    width: 240px; /* Increased card width */
+    height: 350px; /* Increased card height */
     text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effect */
 }
 
-.product-image {
+.product-card:hover {
+    transform: translateY(-5px); /* Lift effect on hover */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Larger shadow on hover */
+}
+
+/* Card Image Container */
+.image-container {
+    height: 200px; /* Adjust image height for a balanced look */
+    border-radius: 10px 10px 0 0;
+    overflow: hidden; /* Ensure the image stays within the container */
+}
+
+.product-card img {
     width: 100%;
-    height: auto;
+    height: 100%;
+    object-fit: cover; /* Ensure image scales properly */
+    transition: transform 0.3s ease; /* Zoom effect */
 }
 
-.favorite-link {
+.product-card:hover img {
+    transform: scale(1.05); /* Slight zoom effect on hover */
+}
+
+/* Card Body */
+.card-body {
+    padding: 15px 10px; /* More padding for better spacing */
+}
+
+/* Card Title */
+.card-title {
+    font-size: 1.1rem; /* Increased font size */
+    font-weight: 600;
+    color: #333;
+}
+
+.card-title.mb-1 {
+    margin-bottom: 10px; /* Adjust margin between title and other info */
+}
+
+.card-body .small {
+    font-size: 0.9rem;
+}
+
+.card-body .text-muted {
+    color: #6c757d;
+}
+
+.card-body .text-danger {
+    color: #dc3545;
+}
+
+.card-body .fw-bold {
+    font-weight: 700;
+}
+
+.card-body .h6 {
+    font-size: 1.2rem;
+}
+
+.card-body .btn {
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth button transition */
+}
+
+.favorite-btn {
+    width: 100%;
+    margin-top: 10px;
+}
+
+/* Favorite Button styles */
+.favorite-btn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    border: 1px solid #ff0000;
+}
+
+.favorite-btn:hover {
+    background-color: #ff0000;
+    color: white;
+}
+
+.favorite-btn.btn-danger {
+    background-color: #ff0000;
+    color: white;
+}
+
+.favorite-btn.btn-outline-danger {
+    background-color: transparent;
     color: #ff0000;
 }
 
-/* Layout Adjustment to Prevent Overlap with Footer */
-.filter-section {
-    padding-bottom: 2rem; /* Adds some bottom space to avoid overlap */
+/* On Hover Effects for Favorite Button */
+.favorite-btn:hover {
+    border-color: #ff0000;
+    background-color: #ff0000;
+    color: white;
 }
 
-.footer {
-  background-color: #343a40;
-  color: white;
-  padding: 20px 0;
-  text-align: center;
-  position: relative;
-  bottom: 0;
-  width: 100%;
+/* Grid Layout for Product List */
+.product-list-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Automatically fill with cards */
+    gap: 20px; /* Space between cards */
+    margin-top: 30px; /* Space above the grid */
+    justify-items: center; /* Center items horizontally */
 }
 
-.footer p {
-  margin: 0;
-}
-
-body {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-main {
-  flex: 1;
-}
-
+  

@@ -1,27 +1,27 @@
-<div class="product-card card shadow-sm h-100 border-0" *ngIf="product">
+<div class="product-card card shadow-lg h-100 border-0" *ngIf="product">
   <!-- Product Card -->
-  <div class="card shadow-sm border-light">
+  <div class="card shadow-lg border-0">
     <!-- Make the card clickable with RouterLink -->
     <a [routerLink]="['/product', product.id]" class="text-decoration-none">
       <!-- Product Image -->
       <div class="image-container bg-light rounded-top" style="height: 180px; overflow: hidden;">
         <img [src]="'http://127.0.0.1:8080' + product.image || 'placeholder.jpg'" class="card-img-top" alt="{{ product.name }}" />
       </div>
-      </a>
+    </a>
 
     <!-- Card Body -->
-    <div class="card-body text-center p-2">
+    <div class="card-body text-center p-3">
       <h6 class="card-title mb-1 text-truncate">
-          {{ product.name }}
+        {{ product.name }}
       </h6>
       <p class="small text-muted mb-1">
         Vendedor: <a [routerLink]="['/profile', product.seller.username]" class="text-decoration-none">{{ product.seller.username }}</a>
       </p>
-      <p class="text-danger fw-bold h6 mb-2">Preço: €{{ product.price }}</p>
+      <p class=" h6 mb-2">Preço: {{ product.price }}€</p>
+      
       <!-- Favorite Button -->
       <button
-        *ngIf="!myproduct"
-        class="btn"
+        class="btn favorite-btn"
         [ngClass]="isFavorite ? 'btn-danger' : 'btn-outline-danger'"
         (click)="toggleFavorite($event, product)">
         ❤️ 

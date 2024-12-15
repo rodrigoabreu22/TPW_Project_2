@@ -1,18 +1,10 @@
-.product-item a {
-    display: block;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    overflow: hidden;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  
-  .product-item a:hover {
-    transform: scale(1.02);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    text-decoration: none;
-  }
-
-  .product-list {
-    display: flex;
-    flex-wrap: wrap;
+/* Container for the Product List */
+.product-list {
+  display: flex;
+  flex-wrap: wrap;  /* Allow wrapping of items */
+  gap: 5px;  /* Add spacing between the items */
+  justify-content: center;  /* Center items horizontally */
+  margin-top: 20px;  /* Space above the product list */
 }
+
+
