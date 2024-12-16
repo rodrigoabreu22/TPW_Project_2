@@ -33,7 +33,7 @@ export class OffersService {
   async updateOffer(offer: Offer, action: string, token:string): Promise<Offer[][] | null> {
     const url = 'http://localhost:8080/ws/offers/';
     const data = await fetch(url, {
-      method: 'POST',
+      method: 'PUT',
       headers: new Headers({'Content-Type': 'application/json', 'Authorization': `Token ${token}`}),
       body: JSON.stringify({'offer': offer, 'action': action}),
     });

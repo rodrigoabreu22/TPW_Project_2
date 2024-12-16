@@ -39,6 +39,12 @@
         [deliveryMethod]="selectedOffer?.delivery_method || ''"
         [paymentMethod]="selectedOffer?.payment_method || ''"
         [offerValue]="selectedOffer?.value || 0"
+        [offer_id]="selectedOffer?.id || 0"
+        [offer_status]="selectedOffer?.offer_status || ''"
+        [address]="selectedOffer?.address || ''"
+        [buyer]="selectedOffer?.buyer || undefined"
+
         (close)="closeModal()"
+        (submitOffer)="submitCounterOffer($event)"
       ></app-offer-modal>
     </div>

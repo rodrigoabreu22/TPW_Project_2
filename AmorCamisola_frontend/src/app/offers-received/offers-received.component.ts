@@ -39,7 +39,7 @@ export class OffersReceivedComponent {
       }
     }
 
-    async counterOffer(offer: Offer | undefined) {
+    counterOffer(offer: Offer | undefined) {
       this.selectedOffer = offer;
       this.selectedProductName = offer?.product;
       this.showModal = true;
@@ -51,6 +51,15 @@ export class OffersReceivedComponent {
         this.offerReceived.emit(updatedOffers);
       }
         */
+    }
+
+    async submitCounterOffer(offer: Offer) {
+      console.log('submitCounterOffer', offer);
+      const updatedOffers = await this.offersService.updateOffer(offer!, 'countered', localStorage.getItem('token')!);
+      if (updatedOffers) {
+        console.log(updatedOffers);
+        this.offerReceived.emit(updatedOffers);
+      }
     }
   
     getActions(offer: Offer) {

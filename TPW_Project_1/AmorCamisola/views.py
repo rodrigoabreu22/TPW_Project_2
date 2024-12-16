@@ -1136,14 +1136,23 @@ def get_offers_aux(request):
         'offers_processed': processedOffers_serializer.data
     })
 
-@api_view(['GET', 'POST'])
+def create_offer(request):
+    offer_serializer = OfferSerializer(data=request.data)
+    offer_serializer.is_valid()
+    offer = offer_serializer.create(validated_data=request.data)
+    return Response(offer)
+
+
+@api_view(['GET', 'POST', 'PUT'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def get_user_offers(request):
     if request.method == 'GET':
         return get_offers_aux(request)
-    if request.method == 'POST':
+    if request.method == 'PUT':
         return handle_offers(request)
+    if request.method == 'POST':
+        return create_offer(request)
 
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
@@ -1439,7 +1448,7 @@ def moderator(request):
 
 
 def handle_offers(request):
-    if request.method == 'POST':
+    if request.method == 'PUT':
         action = request.data.get('action')
         offer = request.data.get('offer')
         offer_serializer = OfferSerializer(data=offer)

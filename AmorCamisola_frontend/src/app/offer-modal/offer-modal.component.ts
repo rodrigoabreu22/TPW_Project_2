@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LoginService } from '../login.service';
 import { UserProfile } from '../user-profile';
+import { Offer } from '../offer';
 
 @Component({
   selector: 'app-offer-modal',
@@ -32,10 +33,15 @@ export class OfferModalComponent {
   @Input() deliveryMethod: string = this.deliveryMethodOptions[0][0];
   @Input() paymentMethod: string = this.paymentMethodOptions[0][0];
   @Input() offerValue: number = 0;
+  @Input() offer_id: number = 0;
+  @Input() offer_status: string = '';
+  @Input() address: string = '';
+  @Input() buyer: UserProfile | undefined;
   @Output() close = new EventEmitter<void>();
+  @Output() submitOffer = new EventEmitter<Offer>();
   user: UserProfile | undefined;
   useProfileAddress: boolean = true;
-  customAddress: string = '';
+  customAddress: string = this.address;
   walletBalance: number = 0;
   newWalletBalance: number = 0;
 
@@ -71,29 +77,26 @@ export class OfferModalComponent {
     return this.newWalletBalance;
   }
 
-  @Output() submitOffer = new EventEmitter<{
-    deliveryMethod: string;
-    paymentMethod: string;
-    deliveryLocation: string;
-    offerValue: number;
-  }>();
 
   handleSubmit() {
     const selectedAddress = this.useProfileAddress ? this.user?.address : this.customAddress;
+    let offer: Offer = {
+      delivery_method: this.deliveryMethod,
+      payment_method: this.paymentMethod,
+      address: selectedAddress!,
+      value: this.offerValue!,
+      id: this.offer_id,
+      product: this.product!,
+      buyer: this.buyer!,
+      offer_status: this.offer_status,
+      delivered: false,
+      sent_by: this.user?.user!,
+      paid: false
+    };
   
-    this.submitOffer.emit({
-      deliveryMethod: this.deliveryMethod,
-      paymentMethod: this.paymentMethod,
-      deliveryLocation: selectedAddress || '',
-      offerValue: this.offerValue,
-    });
+    this.submitOffer.emit(offer);
   
-    console.log('Submitted Offer: ', {
-      deliveryMethod: this.deliveryMethod,
-      paymentMethod: this.paymentMethod,
-      deliveryLocation: selectedAddress,
-      offerValue: this.offerValue,
-    });
+    console.log('Submitted Offer: ', offer);
   
     this.closeModal();
   }
