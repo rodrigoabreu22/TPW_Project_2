@@ -8,7 +8,7 @@
           alt="{{ product?.name }}"
         />
         <div *ngIf="moderator">
-          <app-report-list></app-report-list>
+          <app-report-list [reports]="reports"></app-report-list>
         </div>
       </div>
   

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-report-list',
@@ -7,5 +7,6 @@ import { Component } from '@angular/core';
   styleUrl: './report-list.component.css'
 })
 export class ReportListComponent {
+  @Input() reports: Report[] = [];
 
 }

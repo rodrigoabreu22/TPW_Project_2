@@ -9,11 +9,12 @@ import { LoginService } from '../login.service';
 import { ReportView } from '../report-view';
 import { ModeratorService } from '../moderator.service';
 import { report } from 'process';
+import { ReportListComponent } from '../report-list/report-list.component';
 
 @Component({
   selector: 'app-product-details',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule,ReportListComponent],
   templateUrl: './product-details.component.html',
   styleUrls: ['./product-details.component.css']
 })
