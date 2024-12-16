@@ -61,7 +61,6 @@ export class UserService {
     const id = userProfile.user.id;
     const url = `${this.baseUrl}users/${id}`;
     
-    // Add imageBase64 to payload if available
     const payload: any = { ...userProfile, password };
     if (imageBase64) {
       payload.image_base64 = imageBase64;
@@ -79,8 +78,6 @@ export class UserService {
   
     return response.json();
   }  
-  
-
 
    async getUserFavorites(): Promise<Product[]>{
       const userId = localStorage.getItem('id');
@@ -91,5 +88,4 @@ export class UserService {
       const data :Response = await fetch(url);
       return await data.json() ?? undefined;
    }
-
   }

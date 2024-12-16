@@ -1,9 +1,11 @@
 <div *ngIf="isLoading">A carregar usuários...</div>
 
 <div class="user-list" *ngIf="!isLoading">
-  <h5 *ngIf="!perfil">Utilizadores populares:</h5>
-  <ul *ngFor="let user of users" class="list-group">
-    <app-user [username]="user.user.username" [perfil] ="perfil"></app-user> 
-  </ul>
-</div>
+  <div *ngFor="let user of users">
+    <app-user [username]="user.user.username" [perfil]="perfil"></app-user>
+  </div>
 
+  <div *ngIf="users.length === 0" class="text-center mt-3">
+    <p class="text-muted">Nenhum utilizador encontrado.</p>
+  </div>
+</div>
