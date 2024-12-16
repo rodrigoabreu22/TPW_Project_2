@@ -9,7 +9,7 @@ from django.core.files.base import ContentFile
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'first_name', 'last_name']
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'is_active']
 
 class UserProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer(many=False)

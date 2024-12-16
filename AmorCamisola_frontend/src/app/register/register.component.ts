@@ -71,6 +71,7 @@ export class RegisterComponent {
         email: this.registerForm.value.email,
         first_name: this.registerForm.value.first_name,
         last_name: this.registerForm.value.last_name,
+        is_active: true
       }
       const userProfile : UserProfile = {
         id: 0,

@@ -1,0 +1,58 @@
+<div class="container my-5">
+    <h1>Vista de moderador</h1>
+  
+    <!-- Toggle Buttons -->
+    <div class="btn-group mb-4">
+      <button 
+        class="btn btn-primary" 
+        (click)="toggleSection('user')" 
+        [class.active]="showUserReports">
+        Denúncias de usuários
+      </button>
+      <button 
+        class="btn btn-primary" 
+        (click)="toggleSection('product')" 
+        [class.active]="!showUserReports">
+        Denúncias de publicações
+      </button>
+    </div>
+  
+    <!-- User Reports Section -->
+    <div *ngIf="showUserReports && user_reports && user_reports.length > 0" class="report-section" id="user-reports-section">
+      <h2>Denúncias de usuários</h2>
+      <div *ngFor="let report of user_reports" class="product-card card shadow-sm h-100 border-0">
+        <a [routerLink]="['/profile', report.report.reporting?.user?.username]">
+          <div class="image-container bg-light rounded-top" style="height: 180px; overflow: hidden;">
+            <img [src]="'http://127.0.0.1:8080' + report.report.reporting?.image || 'placeholder.jpg'" class="img-fluid img-thumbnail w-100" style="object-fit: contain;">
+          </div>
+        </a>
+        <div class="card-body text-center p-2">
+          <h6 class="card-title mb-1 text-truncate">{{ report.report.reporting?.user?.username }}</h6>
+          <p class="small text-muted mb-1">
+            <strong>Número de denúncias:</strong>
+            <a class="text-decoration-none">{{ report.count }}</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Product Reports Section -->
+    <div *ngIf="!showUserReports && product_reports && product_reports.length > 0" class="report-section" id="product-reports-section">
+      <h2>Denúncia de publicações</h2>
+      <div *ngFor="let report of product_reports" class="product-card card shadow-sm h-100 border-0">
+        <a [routerLink]="['/product', report.report.product?.id]">
+          <div class="image-container bg-light rounded-top" style="height: 180px; overflow: hidden;">
+            <img [src]="'http://127.0.0.1:8080' + report.report.product?.image || 'placeholder.jpg'" class="img-fluid img-thumbnail w-100" style="object-fit: contain;">
+          </div>
+        </a>
+        <div class="card-body text-center p-2">
+          <h6 class="card-title mb-1 text-truncate">{{ report.report.product?.name }}</h6>
+          <p class="small text-muted mb-1">
+            <strong>Número de denúncias:</strong>
+            <a class="text-decoration-none">{{ report.count }}</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
