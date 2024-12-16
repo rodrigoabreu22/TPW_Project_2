@@ -420,14 +420,21 @@ class OfferSerializer(serializers.ModelSerializer):
         buyer_data = validated_data.pop('buyer')
         product_data = validated_data.pop('product')
         sent_by_data = validated_data.pop('sent_by')
+        validated_data['id'] = Offer.objects.all().last().id + 1
         if buyer_data:
-            buyer, _ = UserProfile.objects.get_or_create(**buyer_data)
+            buyer = UserProfile.objects.get(id=buyer_data['id'])
+            if not buyer:
+                buyer, _ = UserProfileSerializer().create(buyer_data)
             validated_data['buyer'] = buyer
         if product_data:
-            product, _ = Product.objects.get_or_create(**product_data)
+            product= Product.objects.get(id=product_data['id'])
+            if not product:
+                product, _ = ProductSerializer().create(product_data)
             validated_data['product'] = product
         if sent_by_data:
-            sent_by, _ = UserProfile.objects.get_or_create(**sent_by_data)
+            sent_by = UserProfile.objects.get(id=sent_by_data['id'])
+            if not sent_by:
+                sent_by, _ = UserProfileSerializer().create(sent_by_data)
             validated_data['sent_by'] = sent_by
         
         offer = Offer.objects.create(**validated_data)

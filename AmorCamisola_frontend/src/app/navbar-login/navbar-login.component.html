@@ -5,6 +5,7 @@
         <div class="dropdown-menu" aria-labelledby="accountDropdown">
                         <a class="dropdown-item" [routerLink]="['/profile', username]">Perfil</a>
                         <a class="dropdown-item" routerLink="/account">Definições</a>
+                        <a class="dropdown-item" (click)="logout()">Logout</a>
         </div>
     </div>
 </div>

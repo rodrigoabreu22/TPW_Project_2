@@ -90,10 +90,10 @@ export class LoginService {
    * Clear the user's session / logout
    */
   logout() {
-    if (localStorage.getItem('token') === null) {
+    if (localStorage.getItem('token') !== null) {
       localStorage.removeItem('token');
     }
-    if (localStorage.getItem('id') === null) {
+    if (localStorage.getItem('id') !== null) {
       localStorage.removeItem('id');
     }
     this.setCurrentUser(null);

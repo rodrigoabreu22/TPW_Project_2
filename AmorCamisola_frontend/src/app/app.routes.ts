@@ -10,6 +10,7 @@ import { PublishProductComponent } from './publish-product/publish-product.compo
 import { IndexComponent } from './index/index.component';
 import { ModeratorComponent } from './moderator/moderator.component';
 import { AccountComponent } from './account/account.component';
+import { WalletComponent } from './wallet/wallet.component';
 
 export const routes: Routes = [
     {path: '', redirectTo: '/products', pathMatch: 'full'},
@@ -22,5 +23,6 @@ export const routes: Routes = [
     {path: 'authentication', component: AuthenticationComponent, data: {showNavbar: false}},
     {path: 'sell', component: PublishProductComponent},
     {path: 'moderator', component: ModeratorComponent},
-    {path: 'account', component: AccountComponent}
+    {path: 'account', component: AccountComponent},
+    {path: 'wallet', component: WalletComponent}
 ];

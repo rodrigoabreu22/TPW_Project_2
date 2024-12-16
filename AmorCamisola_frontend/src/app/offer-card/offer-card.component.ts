@@ -26,11 +26,42 @@ export class OfferCardComponent {
         return 'Cancelado';
       case 'rejected':
         return 'Rejeitado';
-      case 'sold':
+      case 'accepted':
+        if (this.offer?.buyer.user.id === Number(localStorage.getItem('id'))) {
+          return 'Comprado';
+        }
         return 'Vendido';
       default:
         return 'Sem Status';
     }
+  }
+
+  getPaymentMethodLabel(paymentMethod: string | undefined): string {
+    switch (paymentMethod) {
+      case 'store_credit':
+        return 'Saldo da loja';
+      case 'transfer':
+        return 'Transferência bancária';
+      case 'in_person':
+        return 'Em pessoa';
+      default:
+        return 'Sem Método de Pagamento';
+    }
+  }
+
+  getDeliveryMethodLabel(deliveryMethod: string | undefined): string {
+    switch (deliveryMethod) {
+      case 'shipment':
+        return 'Envio Remoto';
+      case 'in_person':
+        return 'Em pessoa';
+      default:
+        return 'Sem Método de Entrega';
+    }
+  }
+
+  getOfferValue(offerValue: number | undefined): string {
+    return offerValue ? offerValue.toFixed(2) : '0.00';
   }
   
 }

@@ -65,7 +65,8 @@ urlpatterns = [
     path('ws/users/<int:user_id>/favorites/<int:product_id>/', views.user_favorites, name='user_favorites_product'), 
     path('ws/product-reports/', views.get_products_reports , name='get_products_reports'),
     path('ws/user-reports/', views.get_user_reports , name='get_user_reports'),   
-    path('ws/users/<int:id>', views.userProfile_by_id , name='userProfile_by_id') 
+    path('ws/users/<int:id>', views.userProfile_by_id , name='userProfile_by_id'),
+    path('ws/users/wallet/', views.wallet_function, name='wallet'),
     #path('ws/reports/', views.api_reports, name='api_reports'),
     #path('ws/reports/<int:id>/', views.api_report, name='api_report'),
     
