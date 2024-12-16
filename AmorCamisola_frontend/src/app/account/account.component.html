@@ -1,101 +1,128 @@
 <div class="container mt-5" *ngIf="!isLoading; else loading">
-    <h2>Configurações de Conta</h2>
-  
-    <!-- Success and Error Messages -->
-    <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
-    <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
-  
-    <!-- Profile Picture -->
-    <form (ngSubmit)="updateProfile()">
-      <h4 class="text-center">Foto de Perfil</h4>
-      <div class="d-flex justify-content-center mb-3">
-        <img [src]="userProfile?.profileImage || 'assets/defaultUser.png'"
-             class="rounded-circle"
-             alt="Profile Image"
-             style="width: 10vw; height: 9vw; object-fit: cover;">
+  <h2>Configurações de Conta</h2>
+
+  <!-- Success and Error Messages -->
+  <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+  <!-- Profile Picture -->
+
+  <h4 class="text-center">Foto de Perfil</h4>
+    <div class="d-flex justify-content-center mb-3">
+      <img [src]="'http://127.0.0.1:8080' + userProfile?.image || 'assets/defaultUser.png'"
+           class="rounded-circle"
+           alt="Profile Image"
+           style="width: 10vw; height: 9vw; object-fit: cover;">
+    </div>
+  <form (ngSubmit)="updateProfile()">
+
+    <!-- User Information Form -->
+    <div class="form-group">
+      <label for="profileImage">Atualizar Foto de Perfil</label>
+      <input
+        type="file"
+        id="profileImage"
+        class="form-control"
+        (change)="onFileChange($event)"
+      >
+    </div>
+    
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="firstName">Primeiro Nome</label>
+        <input
+          type="text"
+          id="firstName"
+          class="form-control"
+          [ngModel]="userProfile?.user?.first_name || ''"
+          (ngModelChange)="userProfile!.user!.first_name = $event"
+          name="firstName"
+          required>
       </div>
-  
-      <!-- User Information Form -->
-      <div class="form-row">
-        <div class="form-group col-md-6">
-          <label for="firstName">Primeiro Nome</label>
-          <input type="text" id="firstName" class="form-control"
-                 [(ngModel)]="userProfile?.user?.first_name" name="firstName" required>
-        </div>
-        <div class="form-group col-md-6">
-          <label for="lastName">Último Nome</label>
-          <input type="text" id="lastName" class="form-control"
-                 [(ngModel)]="userProfile?.user?.last_name" name="lastName" required>
-        </div>
+      <div class="form-group col-md-6">
+        <label for="lastName">Último Nome</label>
+        <input
+          type="text"
+          id="lastName"
+          class="form-control"
+          [ngModel]="userProfile?.user?.last_name || ''"
+          (ngModelChange)="userProfile!.user!.last_name = $event"
+          name="lastName"
+          required>
       </div>
-  
-      <div class="form-group">
-        <label for="username">Nome de Utilizador</label>
-        <input type="text" id="username" class="form-control"
-               [(ngModel)]="userProfile?.user?.username" name="username" required>
-      </div>
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input type="email" id="email" class="form-control"
-               [(ngModel)]="userProfile?.user?.email" name="email" required>
-      </div>
-      <div class="form-group">
-        <label for="address">Endereço</label>
-        <input type="text" id="address" class="form-control"
-               [(ngModel)]="userProfile?.address" name="address">
-      </div>
-      <div class="form-group">
-        <label for="phone">Telefone</label>
-        <input type="text" id="phone" class="form-control"
-               [(ngModel)]="userProfile?.phone" name="phone">
-      </div>
-  
-      <button type="submit" class="btn btn-primary">Guardar</button>
-    </form>
-  
-    <!-- Modal Trigger Button -->
-    <button type="button" class="btn btn-secondary mt-3" data-toggle="modal" data-target="#passwordModal">
-      Alterar Password
-    </button>
-  
-    <!-- Password Modal -->
-    <div class="modal fade" id="passwordModal" tabindex="-1" role="dialog" aria-labelledby="passwordModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="passwordModalLabel">Alterar Password</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <form (ngSubmit)="updatePassword()">
-            <div class="modal-body">
-              <div class="form-group">
-                <label for="newPassword">Nova Password</label>
-                <input type="password" id="newPassword" class="form-control" [(ngModel)]="newPassword" name="newPassword" required>
-              </div>
-              <div class="form-group">
-                <label for="confirmPassword">Confirmar Password</label>
-                <input type="password" id="confirmPassword" class="form-control" [(ngModel)]="confirmPassword" name="confirmPassword" required>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-              <button type="submit" class="btn btn-primary">Alterar Password</button>
-            </div>
-          </form>
-        </div>
-      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="username">Nome de Utilizador</label>
+      <input
+        type="text"
+        id="username"
+        class="form-control"
+        [ngModel]="userProfile?.user?.username || ''"
+        (ngModelChange)="userProfile!.user!.username = $event"
+        name="username"
+        required>
+    </div>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input
+        type="email"
+        id="email"
+        class="form-control"
+        [ngModel]="userProfile?.user?.email || ''"
+        (ngModelChange)="userProfile!.user!.email = $event"
+        name="email"
+        required>
+    </div>
+    <div class="form-group">
+      <label for="address">Endereço</label>
+      <input
+        type="text"
+        id="address"
+        class="form-control"
+        [ngModel]="userProfile?.address || ''"
+        (ngModelChange)="userProfile!.address = $event"
+        name="address">
+    </div>
+    <div class="form-group">
+      <label for="phone">Telefone</label>
+      <input
+        type="text"
+        id="phone"
+        class="form-control"
+        [ngModel]="userProfile?.phone || ''"
+        (ngModelChange)="userProfile!.phone = $event"
+        name="phone">
+    </div>
+
+    <h4 class="mt-4">Alterar Password</h4>
+    <div class="form-group">
+      <label for="newPassword">Nova Password</label>
+      <input
+        type="password"
+        id="newPassword"
+        class="form-control"
+        [(ngModel)]="newPassword"
+        name="newPassword">
+    </div>
+    <div class="form-group">
+      <label for="confirmPassword">Confirmar Password</label>
+      <input
+        type="password"
+        id="confirmPassword"
+        class="form-control"
+        [(ngModel)]="confirmPassword"
+        name="confirmPassword">
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+  </form>
+</div>
+
+<!-- Loading Spinner -->
+<ng-template #loading>
+  <div class="text-center mt-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="sr-only">Loading...</span>
     </div>
   </div>
-  
-  <!-- Loading Spinner -->
-  <ng-template #loading>
-    <div class="text-center mt-5">
-      <div class="spinner-border text-primary" role="status">
-        <span class="sr-only">Loading...</span>
-      </div>
-    </div>
-  </ng-template>
-  
-  
+</ng-template>

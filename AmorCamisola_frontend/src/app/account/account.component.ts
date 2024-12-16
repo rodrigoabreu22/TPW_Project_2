@@ -7,18 +7,32 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-account',
-  standalone: true, // <-- This makes it a standalone component
-  imports: [CommonModule, FormsModule], // Import CommonModule and FormsModule
+  standalone: true,
+  imports: [CommonModule, FormsModule], 
   templateUrl: './account.component.html',
   styleUrls: ['./account.component.css']
 })
 export class AccountComponent implements OnInit {
-  userProfile: UserProfile | null = null;
+  userProfile: UserProfile | null = {
+    id: 0,
+    user: {
+      id: 0,
+      first_name: '',
+      last_name: '',
+      username: '',
+      email: '',
+    },
+    address: '',
+    phone: '',
+    wallet: 0,
+    image: '',
+  };
   errorMessage: string = '';
   successMessage: string = '';
   isLoading: boolean = true;
   newPassword: string = '';
   confirmPassword: string = '';
+  imageBase64: string | null = null; // To store the Base64 image string
 
   constructor(
     private userService: UserService,
@@ -51,12 +65,24 @@ export class AccountComponent implements OnInit {
       this.errorMessage = 'Cannot update an empty profile.';
       return;
     }
+
+    // Ensure passwords match, if provided
+    if (this.newPassword || this.confirmPassword) {
+      if (this.newPassword !== this.confirmPassword) {
+        this.errorMessage = 'Passwords do not match.';
+        return;
+      }
+    }
+
     try {
       this.isLoading = true;
-      const response = await this.userService.updateUserProfile(this.userProfile);
+      const response = await this.userService.updateUserProfile(this.userProfile, this.newPassword, this.imageBase64 || undefined);
       if (response) {
         this.successMessage = 'Profile updated successfully!';
         await this.loadUserProfile();
+        this.newPassword = ''; // Clear password fields
+        this.confirmPassword = '';
+        this.imageBase64 = null; // Clear the imageBase64 after successful update
       } else {
         this.errorMessage = 'Failed to update profile. Please try again.';
       }
@@ -68,22 +94,15 @@ export class AccountComponent implements OnInit {
     }
   }
 
-  async updatePassword(): Promise<void> {
-    this.resetMessages();
-    if (this.newPassword !== this.confirmPassword) {
-      this.errorMessage = 'Passwords do not match.';
-      return;
-    }
-    try {
-      const response = await this.userService.updateUserPassword(this.newPassword);
-      if (response) {
-        this.successMessage = 'Password updated successfully!';
-      } else {
-        this.errorMessage = 'Failed to update password.';
-      }
-    } catch (error) {
-      this.errorMessage = 'An error occurred while updating the password.';
-      console.error('Password Update Error:', error);
+  onFileChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files ? input.files[0] : null;
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imageBase64 = reader.result as string; // Convert file to Base64 string
+      };
+      reader.readAsDataURL(file);
     }
   }
 

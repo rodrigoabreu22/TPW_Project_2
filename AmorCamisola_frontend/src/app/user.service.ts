@@ -9,7 +9,6 @@ import { Product } from './product';
 export class UserService {
   private baseUrl :string = 'http://localhost:8080/ws/';
 
-
   constructor() {
 
    }
@@ -58,34 +57,37 @@ export class UserService {
     return await data.json() ?? undefined;
    }
 
-   async updateUserProfile(userProfile: UserProfile): Promise<any> {
-    const id = userProfile.user.id
-    let url = `${this.baseUrl}users`;
-    if (id != null) {
-        url += `/${id}`;
+   async updateUserProfile(userProfile: UserProfile, password?: string, imageBase64?: string): Promise<any> {
+    const id = userProfile.user.id;
+    const url = `${this.baseUrl}users/${id}`;
+    
+    // Add imageBase64 to payload if available
+    const payload: any = { ...userProfile, password };
+    if (imageBase64) {
+      payload.image_base64 = imageBase64;
     }
-    const data = await fetch(url, {
-      method: "PUT", headers: new Headers({"Content-Type": "application/json"}), body: JSON.stringify(userProfile)});
-      let response: any;
-      if (!data.ok) {
-        response = await data.text();
-        console.log('Error logging in:', response);
-        return null;
-      } else {
-        response = await data.json();
-        console.log('Login response:', response);
-      }
-    return response;
-   }
+  
+    const response = await fetch(url, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+  
+    if (!response.ok) {
+      throw new Error(`Failed to update profile. Status: ${response.status}`);
+    }
+  
+    return response.json();
+  }  
+  
+
 
    async getUserFavorites(): Promise<Product[]>{
-      //const userId = this.loginService.getLoggedUserId();
-      //if (!userId) {
-      //  throw new Error('User is not logged in.');
-      //}
-      //ws/users/<int:user_id>/favorites/
-      //let url = `${this.baseUrl}users/${userId}/favorites`;
-      let url = `${this.baseUrl}users/1/favorites`;
+      const userId = localStorage.getItem('id');
+      if (!userId) {
+        throw new Error('User is not logged in.');
+      }
+      let url = `${this.baseUrl}users/${userId}/favorites`;
       const data :Response = await fetch(url);
       return await data.json() ?? undefined;
    }
