@@ -11,7 +11,7 @@ import { RouterModule } from '@angular/router';
 })
 export class OfferCardComponent {
   @Input() offer?: Offer;
-  @Input() actions?: { label: string; handler: (id: number | undefined) => void, color: string }[];
+  @Input() actions?: { label: string; handler: (offer: Offer) => void, color: string }[];
 
   constructor() {}
 

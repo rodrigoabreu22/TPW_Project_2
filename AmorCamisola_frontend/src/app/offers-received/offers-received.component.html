@@ -9,8 +9,42 @@
     </div>
     <ng-template #noReceivedOffers>
       <div class="alert alert-info mt-3" role="alert">
-        Não tem nenhuma proposta enviada
+        Não tem nenhuma proposta recebida
       </div>
     </ng-template>
   </div>
   
+<!-- Backdrop -->
+<div
+  class="modal-backdrop fade"
+  *ngIf="showModal"
+  [class.show]="showModal"
+  (click)="closeModal()"
+  style="z-index: 1040; opacity: 0.5;"
+></div>
+
+<!-- Modal -->
+<div
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  *ngIf="showModal"
+  [class.show]="showModal"
+  (click)="onModalClick($event)"
+  style="display: block; z-index: 1050;"
+>
+      <!-- Offer Modal Content -->
+      <app-offer-modal
+        [product]="selectedProductName"
+        [deliveryMethod]="selectedOffer?.delivery_method || ''"
+        [paymentMethod]="selectedOffer?.payment_method || ''"
+        [offerValue]="selectedOffer?.value || 0"
+        [offer_id]="selectedOffer?.id || 0"
+        [offer_status]="selectedOffer?.offer_status || ''"
+        [address]="selectedOffer?.address || ''"
+        [buyer]="selectedOffer?.buyer || undefined"
+
+        (close)="closeModal()"
+        (submitOffer)="submitCounterOffer($event)"
+      ></app-offer-modal>
+    </div>

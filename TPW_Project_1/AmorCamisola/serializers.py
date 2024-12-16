@@ -414,7 +414,7 @@ class OfferSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Offer
-        fields = ['id', 'buyer', 'product', 'value', 'payment_method', 'delivery_method', 'address', 'sent_by', 'offer_status', 'delivered']
+        fields = ['id', 'buyer', 'product', 'value', 'payment_method', 'delivery_method', 'address', 'sent_by', 'offer_status', 'delivered', 'paid']
 
     def create(self, validated_data):
         buyer_data = validated_data.pop('buyer')

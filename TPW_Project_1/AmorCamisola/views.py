@@ -1101,7 +1101,8 @@ def userProfile_by_id(request, id):
 
         serializer = UserProfileSerializer(user, many=False)
         return Response(serializer.data)
-    
+
+ 
     elif request.method == 'PUT':
         try:
             password = request.data.get('password')
@@ -1114,26 +1115,10 @@ def userProfile_by_id(request, id):
         serializer.is_valid()
         serializer.update(instance=userProfile, validated_data=request.data, password=password, image_base64=image_base64)
         return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-
-#try:
-#            product = Product.objects.get(id=id)
-#        except Product.DoesNotExist:
-#            return Response(status=status.HTTP_404_NOT_FOUND)
-#        serializer = ProductSerializer(product, data=request.data)
-#        if serializer.is_valid():
-#            serializer.update(instance=product, validated_data=request.data)
-#            return Response(serializer.data)
-#        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['GET'])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
-@permission_classes([IsAuthenticated])
-def get_user_offers(request):
+def get_offers_aux(request):
     userProfile = UserProfile.objects.get(user__id=request.user.id)
     user = User.objects.get(id=request.user.id)
     madeOffers = Offer.objects.filter(sent_by__user_id=request.user.id).filter(offer_status__exact='in_progress')
@@ -1155,6 +1140,24 @@ def get_user_offers(request):
         'offers_accepted': acceptedOffers_serializer.data,
         'offers_processed': processedOffers_serializer.data
     })
+
+def create_offer(request):
+    offer_serializer = OfferSerializer(data=request.data)
+    offer_serializer.is_valid()
+    offer = offer_serializer.create(validated_data=request.data)
+    return Response(offer)
+
+
+@api_view(['GET', 'POST', 'PUT'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_user_offers(request):
+    if request.method == 'GET':
+        return get_offers_aux(request)
+    if request.method == 'PUT':
+        return handle_offers(request)
+    if request.method == 'POST':
+        return create_offer(request)
 
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
@@ -1447,6 +1450,44 @@ def moderator(request):
         return Response(user.groups.filter(name='Moderators').exists(),status=status.HTTP_200_OK)
     else:
         return Response(False,status=status.HTTP_200_OK)
+
+
+def handle_offers(request):
+    if request.method == 'PUT':
+        action = request.data.get('action')
+        offer = request.data.get('offer')
+        offer_serializer = OfferSerializer(data=offer)
+        offer_serializer.is_valid()
+        offer_id = offer.get('id')
+        if action == 'accepted':
+            notifySuccess(offer_id)
+        elif action == 'rejected':
+            notifyFailed(offer_id)
+        elif action == 'countered':
+            if 'payment_method' in offer and 'delivery_method' in offer and 'address' in offer and 'value' in offer:
+                payment_method = offer.get('payment_method')
+                delivery_method = offer.get('delivery_method')
+                address = offer.get('address')
+                value = offer.get('value')
+                print(offer_id)
+                new_offer = Offer.objects.get(id=offer_id)
+                new_offer.payment_method = payment_method
+                new_offer.delivery_method = delivery_method
+                new_offer.address = address
+                new_offer.value = value
+                new_offer.sent_by = UserProfile.objects.get(user__id=request.user.id)
+                new_offer.save()
+        elif action == 'delivered':
+            confirmDelivery(request, offer_id)
+        elif action == 'paid':
+            confirmPayment(request, offer_id)
+        elif action == 'deleted':
+            retractOffer(request, offer_id)
+        else:
+            print(action)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        return get_offers_aux(request)
+    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
     
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
@@ -1502,6 +1543,7 @@ def get_user_reports(request):
         user_reports = list(seen_users.values())
         #print(user_reports)
         return Response(user_reports,status=status.HTTP_200_OK)
+
         
     
 

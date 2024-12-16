@@ -1,8 +1,7 @@
-import { Component, OnInit, inject, Renderer2, OnDestroy  } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import {CommonModule} from "@angular/common";
+import {CommonModule, Location} from "@angular/common";
 import { LoginService } from '../login.service';
-import { Location } from '@angular/common';
 import { UserProfile } from '../user-profile';
 
 @Component({
@@ -17,7 +16,7 @@ export class LoginComponent implements OnInit{
   loginUserService: LoginService = inject(LoginService);
   invalidCredentials: boolean = false;
 
-  constructor(private formBuilder: FormBuilder, private location: Location, private renderer: Renderer2) { 
+  constructor(private formBuilder: FormBuilder, private location: Location) { 
     this.ngOnInit();
   }
 
@@ -37,6 +36,7 @@ export class LoginComponent implements OnInit{
         .then((success: UserProfile | null) => {
           if (success) {
             console.log("Success!!!", success);
+            this.goBack();
           } else {
             this.invalidCredentials = true;
           }
@@ -50,5 +50,9 @@ export class LoginComponent implements OnInit{
       this.loginForm.markAllAsTouched();
       console.log('Invalid form submitted');
     }
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 }
