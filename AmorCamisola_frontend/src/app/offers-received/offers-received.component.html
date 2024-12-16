@@ -14,12 +14,31 @@
     </ng-template>
   </div>
   
-  <app-offer-modal
+<!-- Backdrop -->
+<div
+  class="modal-backdrop fade"
   *ngIf="showModal"
-  [show]="showModal"
-  [product]="selectedProductName"
-  [deliveryMethod]="selectedOffer?.delivery_method || ''"
-  [paymentMethod]="selectedOffer?.payment_method || ''"
-  [offerValue]="selectedOffer?.value || 0"
-  (close)="closeModal()"
-></app-offer-modal>
+  [class.show]="showModal"
+  (click)="closeModal()"
+  style="z-index: 1040; opacity: 0.5;"
+></div>
+
+<!-- Modal -->
+<div
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  *ngIf="showModal"
+  [class.show]="showModal"
+  (click)="onModalClick($event)"
+  style="display: block; z-index: 1050;"
+>
+      <!-- Offer Modal Content -->
+      <app-offer-modal
+        [product]="selectedProductName"
+        [deliveryMethod]="selectedOffer?.delivery_method || ''"
+        [paymentMethod]="selectedOffer?.payment_method || ''"
+        [offerValue]="selectedOffer?.value || 0"
+        (close)="closeModal()"
+      ></app-offer-modal>
+    </div>

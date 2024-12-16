@@ -76,4 +76,10 @@ export class OffersReceivedComponent {
     closeModal() {
       this.showModal = false; // Reset modal state
     }
+
+    onModalClick(event: MouseEvent): void {
+      // Prevent the click event on the modal from propagating to the backdrop
+      event.stopPropagation();
+    }
+    
 }

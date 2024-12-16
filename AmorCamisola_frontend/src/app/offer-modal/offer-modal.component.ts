@@ -34,6 +34,11 @@ export class OfferModalComponent {
   @Input() offerValue: number = 0;
   @Output() close = new EventEmitter<void>();
   user: UserProfile | undefined;
+  useProfileAddress: boolean = true;
+  customAddress: string = '';
+  walletBalance: number = 0;
+  newWalletBalance: number = 0;
+
 
   ngOnChanges(changes: SimpleChanges) {
     console.log('Modal show value:', changes['show']);
@@ -44,8 +49,26 @@ export class OfferModalComponent {
     console.log(this.show);
   }
 
+
   async initializeUser() {
     this.user = await this.loginService.getLoggedUser();
+    this.walletBalance = this.user?.wallet ?? 0;
+
+    if (this.user?.user?.id && this.product?.seller?.id !== this.user?.user?.id) {
+      this.newWalletBalance = this.walletBalance + this.offerValue;
+    } else {
+      this.newWalletBalance = this.walletBalance - this.offerValue;
+    }
+  }
+
+  checkBalance() {
+    if (this.user?.user?.id && this.product?.seller?.id !== this.user?.user?.id) {
+      this.newWalletBalance = this.walletBalance + this.offerValue;
+    } else {
+      this.newWalletBalance = this.walletBalance - this.offerValue;
+    }
+
+    return this.newWalletBalance;
   }
 
   @Output() submitOffer = new EventEmitter<{
@@ -56,25 +79,37 @@ export class OfferModalComponent {
   }>();
 
   handleSubmit() {
+    const selectedAddress = this.useProfileAddress ? this.user?.address : this.customAddress;
+  
     this.submitOffer.emit({
       deliveryMethod: this.deliveryMethod,
       paymentMethod: this.paymentMethod,
-      deliveryLocation: '',
+      deliveryLocation: selectedAddress || '',
       offerValue: this.offerValue,
     });
-
+  
     console.log('Submitted Offer: ', {
       deliveryMethod: this.deliveryMethod,
       paymentMethod: this.paymentMethod,
-      deliveryLocation: '',
+      deliveryLocation: selectedAddress,
       offerValue: this.offerValue,
     });
-
+  
     this.closeModal();
   }
+  
 
   closeModal() {
     this.show = false;
     this.close.emit();
   }
+
+  onPaymentMethodChange() {
+    if (this.paymentMethod === 'in_person') {
+      this.deliveryMethod = 'in_person';
+    }
+  }
+
+  
+  
 }

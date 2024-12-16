@@ -1,56 +1,144 @@
-<div
-  class="modal fade"
-  tabindex="-1"
-  role="dialog"
-  [ngClass]="{ 'show': show }"
-  [ngStyle]="{ 'display': show ? 'block' : 'none' }"
->
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Enviar Proposta</h5>
-        <button
-          type="button"
-          class="btn-close"
-          aria-label="Close"
-          (click)="closeModal()"
-        ></button>
-      </div>
-      <div class="modal-body">
-        <p>Produto: {{ product?.name }}</p>
-        <form>
-          <div class="mb-3">
-            <label for="deliveryMethod" class="form-label">Método de entrega</label>
-            <select
-              class="form-select"
-              id="deliveryMethod"
-              [(ngModel)]="deliveryMethod"
-              [ngModelOptions]="{ standalone: true }"
-            >
-              <option *ngFor="let method of deliveryMethodOptions" [value]="method[0]">
-                {{ method[1] }}
-              </option>
-            </select>
+<div class="modal-dialog modal-lg">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title">Detalhes da Proposta</h5>
+      <button
+        type="button"
+        class="btn-close"
+        aria-label="Fechar"
+        (click)="closeModal()"
+      ></button>
+    </div>
+
+    <div class="modal-body">
+      <div class="content-container">
+        <!-- Left Section: Product and Seller Information -->
+        <div class="details-container">
+          <div class="product-section">
+            <img 
+              *ngIf="product?.image_base64"
+              [src]="product?.image_base64"
+              alt="Produto"
+              class="product-image"
+            />
+            <div class="product-info">
+              <p><strong>Produto:</strong> {{ product?.name }}</p>
+              <p><strong>Descrição:</strong> {{ product?.description }}</p>
+              <p><strong>Preço sugerido:</strong> {{ product?.price }}€</p>
+            </div>
           </div>
-          <div class="mb-3">
-            <label for="paymentMethod" class="form-label">Método de Pagamento</label>
-            <select
-              class="form-select"
-              id="paymentMethod"
-              [(ngModel)]="paymentMethod"
-              [ngModelOptions]="{ standalone: true }"
-            >
-              <option *ngFor="let method of paymentMethodOptions" [value]="method[0]">
-                {{ method[1] }}
-              </option>
-            </select>
+
+          <div class="seller-section">
+            <p><strong>Vendedor:</strong> {{ product?.seller?.username }}</p>
+            <p>
+              <small *ngIf="product?.seller == user?.user">A efetuar venda</small>
+              <small *ngIf="product?.seller != user?.user">A efetuar compra</small>
+            </p>
           </div>
-        </form>
+        </div>
+
+        <!-- Right Section: Offer Form -->
+        <div class="form-container">
+          <form>
+            <!-- Delivery Method -->
+            <div class="form-group">
+              <label for="deliveryMethod" class="form-label">Método de Entrega</label>
+              <select
+                class="form-select"
+                id="deliveryMethod"
+                [(ngModel)]="deliveryMethod"
+                [ngModelOptions]="{ standalone: true }"
+                [disabled]="paymentMethod === 'in_person'"
+              >
+                <option *ngFor="let method of deliveryMethodOptions" [value]="method[0]">
+                  {{ method[1] }}
+                </option>
+              </select>
+              <small *ngIf="paymentMethod === 'in_person'" class="text-muted">
+                O método de entrega foi definido automaticamente como "Em pessoa" devido ao pagamento em pessoa.
+              </small>
+            </div>
+
+            <!-- Payment Method -->
+            <div class="form-group">
+              <label for="paymentMethod" class="form-label">Método de Pagamento</label>
+              <select
+                class="form-select"
+                id="paymentMethod"
+                [(ngModel)]="paymentMethod"
+                [ngModelOptions]="{ standalone: true }"
+                (change)="onPaymentMethodChange()"
+              >
+                <option *ngFor="let method of paymentMethodOptions" [value]="method[0]">
+                  {{ method[1] }}
+                </option>
+              </select>
+            </div>
+
+            <!-- Offer Value -->
+            <div class="form-group">
+              <label for="offerValue" class="form-label">Valor da Proposta (€)</label>
+              <input
+                type="number"
+                id="offerValue"
+                class="form-control"
+                [(ngModel)]="offerValue"
+                [ngModelOptions]="{ standalone: true }"
+              />
+            </div>
+
+            <!-- Delivery Address Section -->
+            <div class="form-group address-section">
+              <label class="form-label">Endereço de Entrega</label>
+              <div class="address-options">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  id="profileAddress"
+                  name="addressOption"
+                  [(ngModel)]="useProfileAddress"
+                  [ngModelOptions]="{ standalone: true }"
+                  [value]="true"
+                />
+                <label class="form-check-label" for="profileAddress">
+                  Usar endereço do perfil: {{ user?.address }}
+                </label>
+              </div>
+              <div class="address-options">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  id="customAddress"
+                  name="addressOption"
+                  [(ngModel)]="useProfileAddress"
+                  [ngModelOptions]="{ standalone: true }"
+                  [value]="false"
+                />
+                <label class="form-check-label" for="customAddress">
+                  Usar endereço personalizado
+                </label>
+              </div>
+              <textarea
+                id="customDeliveryLocation"
+                class="form-control"
+                rows="3"
+                [(ngModel)]="customAddress"
+                [ngModelOptions]="{ standalone: true }"
+                [disabled]="useProfileAddress"
+              ></textarea>
+            </div>
+          </form>
+        </div>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
-        <button type="button" class="btn btn-primary" (click)="handleSubmit()">Enviar Proposta</button>
+    </div>
+
+    <div class="modal-footer">
+      <div class="wallet-info">
+        Seu saldo atual: {{ user?.wallet || 0 }}€<br />
+        Seu novo saldo: {{ checkBalance() }}€
       </div>
+      <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
+      <button type="button" class="btn btn-primary" (click)="handleSubmit()">Enviar Proposta</button>
     </div>
   </div>
 </div>
