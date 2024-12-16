@@ -97,15 +97,15 @@ class ReportOptions(models.TextChoices):
     OTHER = 'OT', 'Outro'
 
 class Report(models.Model):
-    sent_by = models.ForeignKey(User, related_name='reports_sent', on_delete=models.CASCADE)
-    reporting = models.ForeignKey(User, related_name='reports_received', on_delete=models.CASCADE, null=True, blank=True)
+    sent_by = models.ForeignKey(UserProfile, related_name='reports_sent', on_delete=models.CASCADE)
+    reporting = models.ForeignKey(UserProfile, related_name='reports_received', on_delete=models.CASCADE, null=True, blank=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
     reasons = models.CharField(max_length=2, choices=ReportOptions.choices)
     description = models.TextField(max_length=500)
 
     def __str__(self):
-        target = f"Product {self.product.name}" if self.product else f"User {self.reporting.username}"
-        return f"{target} reported by {self.sent_by.username}"
+        target = f"Product {self.product.name}" if self.product else f"User {self.reporting.user.username}"
+        return f"{target} reported by {self.sent_by.user.username}"
 
     def clean(self):
         if not self.reporting and not self.product:

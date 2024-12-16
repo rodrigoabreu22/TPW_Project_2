@@ -7,6 +7,9 @@
           class="img-fluid rounded"
           alt="{{ product?.name }}"
         />
+        <div *ngIf="moderator">
+          <app-report-list></app-report-list>
+        </div>
       </div>
   
       <!-- Product Details -->
