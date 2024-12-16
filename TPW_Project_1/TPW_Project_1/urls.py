@@ -60,6 +60,7 @@ urlpatterns = [
     path('ws/usersprofiles/', views.get_user_profiles, name='get_user_profiles'),
     path('ws/offers/', views.get_user_offers, name='get_user_offers'),
     path('ws/follows/', views.follows, name='follows'),
+    path('ws/followers/<int:id>/', views.followers, name='followers'),
     path('ws/offers/<int:id>/', views.get_offer_by_id, name='get_offer_by_id'),
     path('ws/users/<int:user_id>/favorites/', views.user_favorites, name='user_favorites'),  
     path('ws/users/<int:user_id>/favorites/<int:product_id>/', views.user_favorites, name='user_favorites_product'), 

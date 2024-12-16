@@ -69,46 +69,26 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     
 class FollowingSerializer(serializers.ModelSerializer):
-    following = UserSerializer(many=False)
-    followed = UserSerializer(many=False)
+    # Using PrimaryKeyRelatedField to link users by their ids
+    following = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    followed = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
 
     class Meta:
         model = Following
         fields = ['following', 'followed']
 
     def create(self, validated_data):
-        following_data = validated_data.pop('following')
-        followed_data = validated_data.pop('followed')
-        if following_data:
-            following, _ = User.objects.get_or_create(**following_data)
-            validated_data['following'] = following
-        if followed_data:
-            followed, _ = User.objects.get_or_create(**followed_data)
-            validated_data['followed'] = followed
+        # You can use the validated_data directly as it will contain the ids for following and followed
+        following_user = validated_data['following']
+        followed_user = validated_data['followed']
 
-        following_instance = Following.objects.create(**validated_data)
+        # Create and return the Following instance
+        return Following.objects.create(following=following_user, followed=followed_user)
 
-        return following_instance
 
-    def update(self, instance, validated_data):
-        following_data = validated_data.pop('following')
-        followed_data = validated_data.pop('followed')
-        if following_data:
-            following = instance.following
-            for attr, value in following_data.items():
-                setattr(following, attr, value)
-            following.save()
-        if followed_data:
-            followed = instance.followed
-            for attr, value in followed_data.items():
-                setattr(followed, attr, value)
-            followed.save()
 
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
-        instance.save()
 
-        return instance
+            
     
 class ProductSerializer(serializers.ModelSerializer):
     seller = UserSerializer(many=False)

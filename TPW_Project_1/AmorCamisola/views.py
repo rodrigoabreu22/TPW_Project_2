@@ -1334,40 +1334,141 @@ def user_favorites(request, user_id, product_id=None):
         )
 
 
+@api_view(['GET', 'POST', 'DELETE'])
+def follows(request):
+    if request.method == 'GET':
+        if 'userId' in request.GET:
+            userId = request.GET["userId"]
+
+        try:
+            following = Following.objects.filter(following__id=userId)
+        except Following.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        following_serializer = FollowingSerializer(following, many=True)
+        followed_users = []
+        for entry in following_serializer.data:
+            try:
+                followed_user = User.objects.get(id=entry['followed'])
+                followed_user_serializer = UserSerializer(followed_user)
+                followed_users.append(followed_user_serializer.data)
+            except User.DoesNotExist:
+                continue
+
+        print("FOLLOWING:",followed_users)
+        return Response(followed_users)
+
+    elif request.method == 'POST':
+        print("Dados recebidos:", request.data)
+        serialize = FollowingSerializer(data=request.data)
+        if serialize.is_valid():
+            serialize.save()
+            return Response(serialize.data, status=status.HTTP_201_CREATED)
+        print("Erros:", serialize.errors)
+        return Response(serialize.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        serialize = FollowingSerializer(data=request.data)
+        print(serialize)
+        if serialize.is_valid():
+            following_data = serialize.validated_data
+            following_user = following_data.get('following')
+            followed_user = following_data.get('followed')
+
+            following_relations = Following.objects.filter(following=following_user, followed=followed_user)
+
+            if following_relations.exists():
+                print(0)
+                deleted_count, _ = following_relations.delete()
+                if deleted_count > 0:
+                    print(1)
+                    return Response(request.data)
+                else:
+                    print(2)
+                    return Response({'error': 'No matching following relationship found'}, status=status.HTTP_404_NOT_FOUND)
+            else:
+                print(3)
+                return Response({'error': 'Following relationship not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        return Response(serialize.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
 
 @api_view(['GET'])
-def follows(request):
-    username=None
-    if 'username' in request.GET:
-        print("username")
-        username = request.GET['username']
-    if username:
-        #if verifyIfAdmin(request):
-            #return redirect("/admin")
-        if request.method == 'GET':
+def followers(request, id):
+    if request.method == 'GET':
+        try:
+            # Get the followers (users following the given user)
+            followers = Following.objects.filter(followed__id=id)
+        except Following.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        followers_serializer = FollowingSerializer(followers, many=True)
+        following_users = []
+        for entry in followers_serializer.data:
             try:
-                following = Following.objects.filter(following__username = username)
-                followers = Following.objects.filter(followed__username=username)
-                
-            except Following.DoesNotExist:
-                return Response(status=status.HTTP_404_NOT_FOUND)
-            following_serializer = FollowingSerializer(following, many=True)
-            followers_serializer = FollowingSerializer(followers, many=True)
+                following_user = User.objects.get(id=entry['following'])
+                following_user_serializer = UserSerializer(following_user)
+                following_users.append(following_user_serializer.data)
+            except User.DoesNotExist:
+                continue
+        print("FOLLOWERS:",following_users)
+        return Response(following_users)
 
-            # Extract and restructure serialized data
-            following_data = [
-                entry['followed'] for entry in following_serializer.data
-            ]
-            followers_data = [
-                entry['following'] for entry in followers_serializer.data
-            ]
-            # Prepare the response data
-            response_data = {
-                'following': following_data,
-                'followed': followers_data
-            }
-            return Response(response_data)
     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
+
+#@api_view(['GET'])
+#def follows(request):
+#    username=None
+#    if 'username' in request.GET:
+#        print("username")
+#        username = request.GET['username']
+#    if username:
+#        #if verifyIfAdmin(request):
+#            #return redirect("/admin")
+#        if request.method == 'GET':
+#            try:
+#                following = Following.objects.filter(following__username = username)
+#                followers = Following.objects.filter(followed__username=username)
+#                
+#            except Following.DoesNotExist:
+#                return Response(status=status.HTTP_404_NOT_FOUND)
+#            following_serializer = FollowingSerializer(following, many=True)
+#            followers_serializer = FollowingSerializer(followers, many=True)
+#
+#            # Extract and restructure serialized data
+#            following_data = [
+#                entry['followed'] for entry in following_serializer.data
+#            ]
+#            followers_data = [
+#                entry['following'] for entry in followers_serializer.data
+#            ]
+#            # Prepare the response data
+#            response_data = {
+#                'following': following_data,
+#                'followed': followers_data
+#            }
+#            return Response(response_data)
+#        
+#        elif request.method == 'POST':
+#            follow = request.data
+#            serialize = FollowingSerializer(follow)
+#            if serialize.is_valid:
+#                serialize.create(follow)
+#                return Response(follow.data)
+#        
+#        elif request.method == 'DELETE':
+#            follow = request.data
+#            serialize = FollowingSerializer(follow)
+#            if serialize.is_valid:
+#                serialize.remove(follow)
+#                return Response(follow.data)
+#
+#    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 @api_view(['GET'])
 def get_user_profiles(request):

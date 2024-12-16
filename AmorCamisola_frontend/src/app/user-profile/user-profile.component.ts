@@ -6,8 +6,6 @@ import { FollowerInfoService } from '../follower-info.service';
 import {UserProfile} from "../user-profile";
 import {Product} from "../product";
 import {CommonModule} from "@angular/common";
-import {RouterLink} from "@angular/router";
-import {ProductComponent} from "../product/product.component";
 import { RouterModule, ActivatedRoute } from '@angular/router';
 import { Following } from '../following';
 import { ProductListComponent } from '../product-list/product-list.component';
@@ -36,18 +34,16 @@ export class UserProfileComponent {
     image: '',
   };
   
-  followers: number = 0;
-  following: number = 0;
+  followers_number: number = 0;
+  following_number: number = 0;
   myprofile: boolean = false;
   pnumber: number = 0;
   products: Product[] = [];
-  seguidores: User[] = [];
-  seguindo: User[] = [];
-  follow: Following = {
-    followed: [],
-    following: []
-  };
+  followers: User[] = [];
+  following: User[] = [];
   load: boolean = true;
+  isFollowing: boolean = false;
+
 
   productService: ProductService = inject(ProductService)
   userService: UserService = inject(UserService);
@@ -69,52 +65,53 @@ export class UserProfileComponent {
 
   async process(): Promise<void> {
     await this.loadLoggedUser();
-    console.log("useruser",this.log_user)
-      if (this.logged_in && this.log_user !=null){
-        this.log_username = this.log_user.user.username;
-        if (this.username === this.log_username) {
-          console.log("Banana");
-          this.myprofile = true
-        }
+    console.log("user", this.log_user);
+  
+    if (this.logged_in && this.log_user != null) {
+      this.log_username = this.log_user.user.username;
+      if (this.username === this.log_username) {
+        this.myprofile = true; // Está no próprio perfil
       }
+    }
+  
     if (this.username != "") {
-      console.log("Username  ", this.username)
-      this.userService
-        .getUser(this.username)
-        .then((fetchedUser: UserProfile) => {
-          this.userprofile = fetchedUser;
-          console.log(this.userprofile)
-        })
-        .catch((error) => {
-          console.error('Error fetching user:', error);
-        });
-
-      this.productService
-        .getProductsByUsername(this.username)
-        .then((fetchedProducts: Product[]) => {
-          this.products = fetchedProducts;
-          this.pnumber = fetchedProducts.length
-          console.log(this.products)
-        })
-        .catch((error) => {
-          console.error('Error fetching products from user:', error);
-        });
-
-        this.followService
-        .getFollowers(this.username)
-        .then((fetchedFollow: Following) => {
-          this.follow = fetchedFollow;
-          console.log("follow",this.follow)
-          this.followers = fetchedFollow.followed.length;
-          this.seguidores = fetchedFollow.followed
-          this.seguindo = fetchedFollow.following
-          this.following = fetchedFollow.following.length;
-        })
-        .catch((error) => {
-          console.error('Error fetching products from user:', error);
-        });
-    } else {
-      console.warn('Invalid or missing user ID.');
+      try {
+        // Carregar perfil do usuário
+        this.userprofile = await this.userService.getUser(this.username);
+  
+        // Carregar produtos do usuário
+        const fetchedProducts = await this.productService.getProductsByUsername(this.username);
+        this.products = fetchedProducts;
+        this.pnumber = fetchedProducts.length;
+  
+        if (this.userprofile.user.id !== undefined) {
+          this.followService
+            .getFollowers(this.userprofile.user.id)
+            .then((fetchedFollowers: User[]) => {
+              this.followers_number = fetchedFollowers.length;
+              this.followers = fetchedFollowers;
+              
+            })
+            .catch((error) => {
+              console.error("Error fetching followers", error);
+            });
+  
+            this.followService
+              .getFollows(this.userprofile.user.id)
+              .then((fetchedFollowing: User[]) => {
+                this.following = fetchedFollowing;
+                this.following_number = fetchedFollowing.length;
+                console.log("following: ", this.following)
+              })
+              .catch((error) => {
+                console.error("Error fetching followings", error);
+              });
+            } else {
+              console.warn("Logged user ID is undefined.");}
+        this.isFollowing = this.followers.some(f => f.username === this.log_username);
+      } catch (error) {
+        console.error("Erro ao carregar os dados:", error);
+      }
     }
   }
 
@@ -133,6 +130,36 @@ export class UserProfileComponent {
 
   private isBrowser(): boolean {
     return typeof window !== 'undefined' && typeof localStorage !== 'undefined';
+  }
+
+  async followUser(): Promise<void> {
+    const followData: Following = {
+      following: this.log_user!.user,
+      followed: this.userprofile.user,
+    };
+  
+    try {
+      await this.followService.addFollow(followData);
+      this.isFollowing = true;
+      this.followers_number += 1;
+    } catch (error) {
+      console.error("Erro ao seguir o usuário:", error);
+    }
+  }
+  
+  async unfollowUser(): Promise<void> {
+    const followData: Following = {
+      following: this.log_user!.user,
+      followed: this.userprofile.user,
+    };
+  
+    try {
+      await this.followService.removeFollow(followData);
+      this.isFollowing = false;
+      this.followers_number -= 1;
+    } catch (error) {
+      console.error("Erro ao deixar de seguir o usuário:", error);
+    }
   }
   
 }
