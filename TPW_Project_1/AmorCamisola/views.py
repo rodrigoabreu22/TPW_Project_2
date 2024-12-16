@@ -1466,20 +1466,28 @@ def get_products_reports(request):
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def get_user_reports(request):
-    #print("ola")
-    all_reports = Report.objects.all()
-    seen_users = {}
-    for report in all_reports.filter(reporting__isnull=False):
-        reporting_id = report.reporting.id
-        if reporting_id not in seen_users:
-            new_report = ReportSerializer(report, many=False)
-            seen_users[reporting_id] = {'report': new_report.data, 'count': 1}
-        else:
-            seen_users[reporting_id]['count'] += 1
+    username=None
+    if 'username' in request.GET:
+        username = request.GET['username']
+        if username:
+            user = UserProfile.objects.get(user__username=username)
+            reports = Report.objects.filter(reporting=user)
+            serialized_report = ReportSerializer(reports,many=True)
+            return Response(serialized_report.data,status=status.HTTP_200_OK)
+    else:
+        all_reports = Report.objects.all()
+        seen_users = {}
+        for report in all_reports.filter(reporting__isnull=False):
+            reporting_id = report.reporting.id
+            if reporting_id not in seen_users:
+                new_report = ReportSerializer(report, many=False)
+                seen_users[reporting_id] = {'report': new_report.data, 'count': 1}
+            else:
+                seen_users[reporting_id]['count'] += 1
 
-    user_reports = list(seen_users.values())
-    #print(user_reports)
-    return Response(user_reports,status=status.HTTP_200_OK)
+        user_reports = list(seen_users.values())
+        #print(user_reports)
+        return Response(user_reports,status=status.HTTP_200_OK)
         
     
 

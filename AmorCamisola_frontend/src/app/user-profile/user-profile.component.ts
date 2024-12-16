@@ -84,6 +84,7 @@ export class UserProfileComponent {
       if (this.isBrowser()) {
         this.token = localStorage.getItem("token");
         if(this.token){
+          console.log("USERNAME RAG",this.username)
           const fetchedReports = await this.moderatorService.getUReports(this.username,this.token);
           this.reports = fetchedReports;
         }
@@ -92,6 +93,7 @@ export class UserProfileComponent {
         console.warn("localStorage não está disponível no ambiente atual.");
       }
     }
+    console.log("USER REPORTS",this.reports)
     console.log("useruser",this.log_user)
       if (this.logged_in && this.log_user !=null){
         this.log_username = this.log_user.user.username;

@@ -15,7 +15,7 @@ export class ReportComponent {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['report']) {
-      console.log("AAAAAAAAAAAA:", this.report);
+      console.log("USER rE:", this.report);
     }
   }
 }

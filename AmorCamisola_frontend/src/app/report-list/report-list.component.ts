@@ -16,7 +16,7 @@ export class ReportListComponent {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['reports']) {
-      console.log("Updated reports:", this.reports);
+      console.log("USER reports-LIST:", this.reports);
     }
   }
 }
