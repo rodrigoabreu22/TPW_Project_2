@@ -93,6 +93,8 @@ def populate_database():
     manel, martim, tony = create_users()
     products = create_products([manel, martim, tony])
     create_favorites(manel, products)
+    Favorite.objects.get_or_create(user=martim)
+    Favorite.objects.get_or_create(user=tony)
     create_following(manel, martim, tony)
 
 

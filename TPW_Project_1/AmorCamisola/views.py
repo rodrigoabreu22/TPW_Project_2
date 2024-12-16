@@ -1086,31 +1086,44 @@ def get_users(request):
     serializer = UserProfileSerializer(users, many=True)
     return Response(serializer.data)
 
-@api_view(['GET'])
-def get_userProfile_by_id(request, id):
+@api_view(['GET', 'PUT'])
+def userProfile_by_id(request, id):
     if request.method == 'GET':
         try:
-            user = UserProfile.objects.get(user__id=id+1)
-            # You can serialize the user data here and return it
+            user = UserProfile.objects.get(user__id=id)
         except UserProfile.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         serializer = UserProfileSerializer(user, many=False)
         return Response(serializer.data)
+    
+    elif request.method == 'PUT':
+        try:
+            password = request.data.get('password')
+            image_base64 = request.data.get('image_base64')  # Get Base64 image from request
+            userProfile = UserProfile.objects.get(user_id=id)
+        except UserProfile.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = UserProfileSerializer(userProfile, data=request.data)
+        serializer.is_valid()
+        serializer.update(instance=userProfile, validated_data=request.data, password=password, image_base64=image_base64)
+        return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-"""
-@api_view(['GET'])
-def get_user(request, id):
-    id = request.GET['id']
-    try:
-        user = UserProfile.objects.get(user_id=id)
-    except User.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-    serializer = UserProfileSerializer(user, many=False)
-    return Response(serializer.data)
-"""
+
+#try:
+#            product = Product.objects.get(id=id)
+#        except Product.DoesNotExist:
+#            return Response(status=status.HTTP_404_NOT_FOUND)
+#        serializer = ProductSerializer(product, data=request.data)
+#        if serializer.is_valid():
+#            serializer.update(instance=product, validated_data=request.data)
+#            return Response(serializer.data)
+#        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
