@@ -9,7 +9,7 @@ from django.core.files.base import ContentFile
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'first_name', 'last_name']
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'is_active']
 
 class UserProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer(many=False)
@@ -185,7 +185,7 @@ class ReportSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Report
-        fields = ['sent_by', 'reporting', 'product', 'reasons', 'description']
+        fields = ['id','sent_by', 'reporting', 'product', 'reasons', 'description']
 
     def create(self, validated_data):
         sent_by_data = validated_data.pop('sent_by')
@@ -394,7 +394,7 @@ class OfferSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Offer
-        fields = ['id', 'buyer', 'product', 'value', 'payment_method', 'delivery_method', 'address', 'sent_by', 'offer_status', 'delivered']
+        fields = ['id', 'buyer', 'product', 'value', 'payment_method', 'delivery_method', 'address', 'sent_by', 'offer_status', 'delivered', 'paid']
 
     def create(self, validated_data):
         buyer_data = validated_data.pop('buyer')

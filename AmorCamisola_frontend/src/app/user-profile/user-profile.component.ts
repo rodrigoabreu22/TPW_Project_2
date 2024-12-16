@@ -11,11 +11,14 @@ import { Following } from '../following';
 import { ProductListComponent } from '../product-list/product-list.component';
 import { UserListComponent } from '../user-list/user-list.component';
 import { LoginService } from '../login.service';
+import { Report } from '../report';
+import { ModeratorService } from '../moderator.service';
+import { ReportListComponent } from '../report-list/report-list.component';
 
 @Component({
   selector: 'app-user-profile',
   standalone: true,
-  imports: [CommonModule, RouterModule,ProductListComponent, UserListComponent],
+  imports: [CommonModule, RouterModule,ProductListComponent, UserListComponent, ReportListComponent],
   templateUrl: './user-profile.component.html',
   styleUrl: './user-profile.component.css'
 })
@@ -42,6 +45,9 @@ export class UserProfileComponent {
   followers: User[] = [];
   following: User[] = [];
   load: boolean = true;
+  moderator: boolean = true;
+  reports: Report[] = [];
+  token: string | null = null;
   isFollowing: boolean = false;
 
 
@@ -49,6 +55,7 @@ export class UserProfileComponent {
   userService: UserService = inject(UserService);
   followService: FollowerInfoService = inject(FollowerInfoService);
   loginService: LoginService = inject(LoginService);
+  moderatorService: ModeratorService = inject(ModeratorService);
 
   constructor(private route: ActivatedRoute) { }
 
@@ -65,6 +72,24 @@ export class UserProfileComponent {
 
   async process(): Promise<void> {
     await this.loadLoggedUser();
+    const user = await this.loginService.getLoggedUser();
+    this.moderator = await this.userService.checkModerator(user.user.username);
+    console.log("moderator1",this.moderator)
+    if (this.moderator){
+      console.log("entrei")
+      if (this.isBrowser()) {
+        this.token = localStorage.getItem("token");
+        if(this.token){
+          console.log("USERNAME RAG",this.username)
+          const fetchedReports = await this.moderatorService.getUReports(this.username,this.token);
+          this.reports = fetchedReports;
+        }
+      }
+      else{
+        console.warn("localStorage não está disponível no ambiente atual.");
+      }
+    }
+    console.log("USER REPORTS",this.reports)
     console.log("user", this.log_user);
   
     if (this.logged_in && this.log_user != null) {

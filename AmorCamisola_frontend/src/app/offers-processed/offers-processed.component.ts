@@ -1,8 +1,9 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { Offer } from '../offer';
 import { CommonModule} from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { OfferCardComponent } from '../offer-card/offer-card.component';
+import { OffersService } from '../offers.service';
 
 @Component({
   selector: 'app-offers-processed',
@@ -12,13 +13,17 @@ import { OfferCardComponent } from '../offer-card/offer-card.component';
 })
 export class OffersProcessedComponent {
   @Input() processedOffers: Offer[] = [];
+  @Output() offerProcessed: EventEmitter<Offer[][]> = new EventEmitter<Offer[][]>();
+  offersService: OffersService = inject(OffersService);
     userId: number | undefined = localStorage.getItem('id') ? parseInt(localStorage.getItem('id')!) : undefined;
     constructor() {}
-    ngOnInit(): void {
-    }
   
-    deleteOffer(id: number | undefined) {
-      console.log('deleteOffer', id);
+    async deleteOffer(offer: Offer | undefined) {
+      const updatedOffers = await this.offersService.updateOffer(offer!, 'deleted', localStorage.getItem('token')!);
+      if (updatedOffers) {
+        console.log(updatedOffers);
+        this.offerProcessed.emit(updatedOffers);
+      }
     }
   
     getActions(offer: Offer) {

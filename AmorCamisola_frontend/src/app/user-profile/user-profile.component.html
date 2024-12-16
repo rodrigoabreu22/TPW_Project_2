@@ -60,6 +60,9 @@
                 <p>Nome: {{ userprofile.user.first_name }} {{ userprofile.user.last_name }}</p>
         </div>
     </div>
+    <div *ngIf="moderator && userprofile.user.is_active">
+        <app-report-list [reports]="reports"></app-report-list>
+    </div>
     <hr/>
 
     <!-- Report Modal 
@@ -89,7 +92,14 @@
     -->
 
     <!--{% if not is_banned %}-->
-    <app-product-list *ngIf="userprofile.user.username" [username]="userprofile.user.username" ></app-product-list>
+    <div *ngIf="userprofile.user.is_active; else banned">
+        <app-product-list *ngIf="userprofile.user.username" [username]="userprofile.user.username" ></app-product-list>
+    </div>
+    <ng-template #banned>
+        <div class="alert alert-danger" style="border: 2px solid darkred; background-color: #f8d7da; color: darkred; font-size: 2rem; text-align: center; padding: 20px;">
+            <strong>Este usuário foi banido!!!</strong>
+        </div>
+      </ng-template>
 </div>
 
 <div class="modal fade" id="followersModal" tabindex="-1" aria-labelledby="followersModalLabel" aria-hidden="true">

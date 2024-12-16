@@ -79,6 +79,8 @@ def moderator_dashboard(request):
         'profile': logged
     }
 
+    print(user_reports)
+
     return render(request, 'moderator_dashboard.html', context)
 
 @moderator_required
@@ -150,7 +152,8 @@ def close_report(request, report_id):
 @moderator_required
 def ban_user(request, user_id):
     print("Banning")
-    user = get_object_or_404(User, id=user_id)
+    user1 = get_object_or_404(UserProfile, id=user_id)
+    user = get_object_or_404(User,user1)
     user_products = Product.objects.filter(seller=user)
 
     user.is_active = False
@@ -203,7 +206,8 @@ def ban_user(request, user_id):
 
 @moderator_required
 def unban_user(request, user_id):
-    user = get_object_or_404(User, id=user_id)
+    user1 = get_object_or_404(UserProfile, id=user_id)
+    user = get_object_or_404(User,user1)
     user_products = Product.objects.filter(seller=user)
 
     user.is_active = True
@@ -534,8 +538,8 @@ def viewProfile(request, username):
             print("Report user")
             report_form = ReportForm(request.POST)
 
-            report_form.instance.sent_by = request.user
-            report_form.instance.reporting = profile_user
+            report_form.instance.sent_by = get_object_or_404(UserProfile,user=request.user)
+            report_form.instance.reporting = get_object_or_404(UserProfile,user=profile_user)
             if report_form.is_valid():
                 print("Valid Report form")
                 report = report_form.save(commit=False)
@@ -729,7 +733,7 @@ def detailedProduct(request, id):
         if request.method == 'POST' and 'report_product' in request.POST:
             report_form = ReportForm(request.POST)
 
-            report_form.instance.sent_by = request.user
+            report_form.instance.sent_by = get_object_or_404(UserProfile,user=request.user)
             report_form.instance.product = product
             if report_form.is_valid():
                 report = report_form.save(commit=False)
@@ -1090,13 +1094,15 @@ def get_users(request):
 def userProfile_by_id(request, id):
     if request.method == 'GET':
         try:
-            user = UserProfile.objects.get(user__id=id)
+            user = UserProfile.objects.get(id=id)
+            # You can serialize the user data here and return it
         except UserProfile.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         serializer = UserProfileSerializer(user, many=False)
         return Response(serializer.data)
-    
+
+ 
     elif request.method == 'PUT':
         try:
             password = request.data.get('password')
@@ -1109,26 +1115,10 @@ def userProfile_by_id(request, id):
         serializer.is_valid()
         serializer.update(instance=userProfile, validated_data=request.data, password=password, image_base64=image_base64)
         return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-
-#try:
-#            product = Product.objects.get(id=id)
-#        except Product.DoesNotExist:
-#            return Response(status=status.HTTP_404_NOT_FOUND)
-#        serializer = ProductSerializer(product, data=request.data)
-#        if serializer.is_valid():
-#            serializer.update(instance=product, validated_data=request.data)
-#            return Response(serializer.data)
-#        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['GET'])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
-@permission_classes([IsAuthenticated])
-def get_user_offers(request):
+def get_offers_aux(request):
     userProfile = UserProfile.objects.get(user__id=request.user.id)
     user = User.objects.get(id=request.user.id)
     madeOffers = Offer.objects.filter(sent_by__user_id=request.user.id).filter(offer_status__exact='in_progress')
@@ -1150,6 +1140,24 @@ def get_user_offers(request):
         'offers_accepted': acceptedOffers_serializer.data,
         'offers_processed': processedOffers_serializer.data
     })
+
+def create_offer(request):
+    offer_serializer = OfferSerializer(data=request.data)
+    offer_serializer.is_valid()
+    offer = offer_serializer.create(validated_data=request.data)
+    return Response(offer)
+
+
+@api_view(['GET', 'POST', 'PUT'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_user_offers(request):
+    if request.method == 'GET':
+        return get_offers_aux(request)
+    if request.method == 'PUT':
+        return handle_offers(request)
+    if request.method == 'POST':
+        return create_offer(request)
 
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
@@ -1543,6 +1551,149 @@ def moderator(request):
         return Response(user.groups.filter(name='Moderators').exists(),status=status.HTTP_200_OK)
     else:
         return Response(False,status=status.HTTP_200_OK)
+
+
+def handle_offers(request):
+    if request.method == 'PUT':
+        action = request.data.get('action')
+        offer = request.data.get('offer')
+        offer_serializer = OfferSerializer(data=offer)
+        offer_serializer.is_valid()
+        offer_id = offer.get('id')
+        if action == 'accepted':
+            notifySuccess(offer_id)
+        elif action == 'rejected':
+            notifyFailed(offer_id)
+        elif action == 'countered':
+            if 'payment_method' in offer and 'delivery_method' in offer and 'address' in offer and 'value' in offer:
+                payment_method = offer.get('payment_method')
+                delivery_method = offer.get('delivery_method')
+                address = offer.get('address')
+                value = offer.get('value')
+                print(offer_id)
+                new_offer = Offer.objects.get(id=offer_id)
+                new_offer.payment_method = payment_method
+                new_offer.delivery_method = delivery_method
+                new_offer.address = address
+                new_offer.value = value
+                new_offer.sent_by = UserProfile.objects.get(user__id=request.user.id)
+                new_offer.save()
+        elif action == 'delivered':
+            confirmDelivery(request, offer_id)
+        elif action == 'paid':
+            confirmPayment(request, offer_id)
+        elif action == 'deleted':
+            retractOffer(request, offer_id)
+        else:
+            print(action)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        return get_offers_aux(request)
+    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_products_reports(request):
+    pid=None
+    if 'pid' in request.GET:
+        pid = request.GET['pid']
+        if pid:
+            product = Product.objects.get(id=pid)
+            reports = Report.objects.filter(product=product)
+            serialized_report = ReportSerializer(reports,many=True)
+            return Response(serialized_report.data,status=status.HTTP_200_OK)
+    else:
+        all_reports = Report.objects.all()
+
+        # Track counts of reports for each product
+        seen_products = {}
+        for report in all_reports.filter(product__isnull=False):
+            product_id = report.product.id
+            if product_id not in seen_products:
+                new_report = ReportSerializer(report,many=False)
+                seen_products[product_id] = {'report': new_report.data, 'count': 1}
+            else:
+                seen_products[product_id]['count'] += 1
+        product_reports = list(seen_products.values())
+        #print(product_reports)
+        return Response(product_reports,status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_user_reports(request):
+    username=None
+    if 'username' in request.GET:
+        username = request.GET['username']
+        if username:
+            user = UserProfile.objects.get(user__username=username)
+            reports = Report.objects.filter(reporting=user)
+            serialized_report = ReportSerializer(reports,many=True)
+            return Response(serialized_report.data,status=status.HTTP_200_OK)
+    else:
+        all_reports = Report.objects.all()
+        seen_users = {}
+        for report in all_reports.filter(reporting__isnull=False):
+            reporting_id = report.reporting.id
+            if reporting_id not in seen_users:
+                new_report = ReportSerializer(report, many=False)
+                seen_users[reporting_id] = {'report': new_report.data, 'count': 1}
+            else:
+                seen_users[reporting_id]['count'] += 1
+
+        user_reports = list(seen_users.values())
+        #print(user_reports)
+        return Response(user_reports,status=status.HTTP_200_OK)
+    
+@api_view(['DELETE'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def delete_product_a(request, product_id):
+    if request.method == 'DELETE':
+        try:
+            # Get the product by ID or return 404
+            product = get_object_or_404(Product, id=product_id)
+
+            # Perform deletion
+            product.delete()
+
+            # Return success response
+            return Response({'message': f'Product with ID {product_id} deleted successfully.'}, status=200)
+        except Exception as e:
+            return Response({'error': str(e)}, status=500)
+
+    return Response({'error': 'Invalid request method.'}, status=400)
+
+
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def toggle_ban_user(request, user_id):
+    """Ban or unban a user based on their current active status."""
+    user = get_object_or_404(User, id=user_id)
+    if user.is_active:
+        user.is_active = False
+        action = "banned"
+    else:
+        user.is_active = True
+        action = "unbanned"
+    user.save()
+    return Response({"message": f"User {action} successfully.", "is_active": user.is_active})
+
+@api_view(['DELETE'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def close_report_a(request, report_id):
+    """Close (delete) a report."""
+    report = get_object_or_404(Report, id=report_id)
+    if report.product:
+        Report.objects.filter(product=report.product).delete()
+    if report.reporting:
+        Report.objects.filter(reporting=report.reporting).delete()
+
+    return Response({"message": "Report closed successfully."})
+
+
         
     
 

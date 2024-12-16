@@ -13,4 +13,5 @@ export interface Offer {
     sent_by: User,
     offer_status: string,
     delivered: boolean
+    paid: boolean
   }

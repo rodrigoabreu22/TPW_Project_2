@@ -1,5 +1,5 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject } from '@angular/core';
+import { CommonModule, Location } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { UserProfile } from '../user-profile';
 import { User } from '../user';
@@ -11,7 +11,7 @@ import { LoginService } from '../login.service';
   styleUrls: ['./register.component.css'],
   imports: [ReactiveFormsModule, CommonModule]
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent {
   loginService: LoginService = inject(LoginService);
   registerForm!: FormGroup;
   formErrors: Record<string, string> = {
@@ -25,9 +25,7 @@ export class RegisterComponent implements OnInit {
     password2: ''
   };
 
-  constructor(private fb: FormBuilder) {}
-
-  ngOnInit(): void {
+  constructor(private fb: FormBuilder, private location: Location) {
     this.registerForm = this.fb.group({
       first_name: ['', Validators.required],
       last_name: ['', Validators.required],
@@ -41,6 +39,7 @@ export class RegisterComponent implements OnInit {
   }
 
   validateForm(): boolean {
+    let valid: boolean = true;
     for (const field in this.formErrors) {
       if (this.formErrors.hasOwnProperty(field)) {
         this.formErrors[field] = '';
@@ -48,20 +47,20 @@ export class RegisterComponent implements OnInit {
         if (control && control.invalid) {
           if (control.errors?.['required']) {
             this.formErrors[field] = 'Este campo é obrigatório.';
-            return false;
+            valid = false;
           }
           if (control.errors?.['email']) {
             this.formErrors[field] = 'Formato de email inválido.';
-            return false;
+            valid = false;
           }
           if (control.errors?.['minlength']) {
             this.formErrors[field] = 'Senha deve ter pelo menos 6 caracteres.';
-            return false;
+            valid = false;
           }
         }
       }
     }
-    return true;
+    return valid;
   }
 
   onSubmit(): void {
@@ -72,6 +71,7 @@ export class RegisterComponent implements OnInit {
         email: this.registerForm.value.email,
         first_name: this.registerForm.value.first_name,
         last_name: this.registerForm.value.last_name,
+        is_active: true
       }
       const userProfile : UserProfile = {
         id: 0,
@@ -87,6 +87,7 @@ export class RegisterComponent implements OnInit {
       const response = this.loginService.register(userProfile, this.registerForm.value.password1)
       if (response) {
         console.log('User registered:', response);
+        this.location.back();
       }
       else {
         console.error('Error registering user:', response);

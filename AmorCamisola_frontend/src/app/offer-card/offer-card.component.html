@@ -80,7 +80,7 @@
           *ngFor="let action of actions"
           class="btn btn-sm me-1"
           [ngClass]="action.color"
-          (click)="action.handler(offer?.id)"
+          (click)="offer && action.handler(offer)"
         >
           {{ action.label }}
         </button>
