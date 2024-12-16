@@ -1,0 +1,77 @@
+<div class="container mt-3 mb-3">
+    <!-- Lista de produtos com título -->
+    <div class="product-list-container">
+      <h1>Produtos</h1>
+
+    <button class="btn btn-secondary" (click)="toggleFilterSidebar()">Filtrar</button>
+      <div *ngIf="isLoading">Carregando produtos...</div>
+      <div *ngIf="!isLoading">
+        <app-product-list [products]="filteredProducts"></app-product-list>
+      </div>
+      
+    </div>
+  
+    <!-- Barra lateral de filtro deslizando -->
+    <div class="filter-sidebar" [ngClass]="{'show': isFilterVisible}">
+      <button class="close-btn" (click)="toggleFilterSidebar()">X</button>
+  
+      <h3>Filtrar Produtos</h3>
+      <form [formGroup]="filterForm">
+        <!-- Search term -->
+        <div class="form-group">
+          <label for="searchTerm">Procurar</label>
+          <input id="searchTerm" type="text" formControlName="searchTerm">
+        </div>
+  
+        <!-- Seller username -->
+        <div class="form-group">
+          <label for="sellerUsername">Vendedor</label>
+          <input id="sellerUsername" type="text" formControlName="sellerUsername">
+        </div>
+  
+        <!-- Category -->
+        <div class="form-group">
+            <label>Categoria</label>
+            <div *ngFor="let cat of categories">
+              <input type="checkbox" class="custom-checkbox" [value]="cat" (change)="onCategoryChange($event)" [checked]="filterForm.value.category.includes(cat)"> {{ cat }}
+            </div>
+          </div>
+  
+        <!-- Size -->
+        <div class="form-group">
+          <label>Tamanho</label>
+          <select formControlName="size">
+            <option value="">Todos</option>
+            <option *ngFor="let size of sizes" [value]="size">{{ size }}</option>
+            <option *ngFor="let size of chuteiraSizes" [value]="size">{{ size }}</option>
+          </select>
+        </div>
+  
+        <!-- Price range -->
+        <div class="form-group">
+          <label>Preço</label>
+          <div class="price-range">
+            <input type="number" placeholder="Mínimo" formControlName="priceMin">
+            <input type="number" placeholder="Máximo" formControlName="priceMax">
+          </div>
+        </div>
+  
+        <!-- Sort by -->
+        <div class="form-group">
+          <label>Ordenar por</label>
+          <select formControlName="sortBy">
+            <option value="name">Nome (A-Z)</option>
+            <option value="name-reverse">Nome (Z-A)</option>
+            <option value="price">Preço (Menor para Maior)</option>
+            <option value="price-reverse">Preço (Maior para Menor)</option>
+          </select>
+        </div>
+  
+        <!-- Clear Filters Button -->
+        <div class="form-group">
+          <button type="button" (click)="clearFilters()">Limpar Filtros</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  

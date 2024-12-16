@@ -1086,31 +1086,32 @@ def get_users(request):
     serializer = UserProfileSerializer(users, many=True)
     return Response(serializer.data)
 
-@api_view(['GET'])
-def get_userProfile_by_id(request, id):
+@api_view(['GET', 'PUT'])
+def userProfile_by_id(request, id):
     if request.method == 'GET':
         try:
             user = UserProfile.objects.get(user__id=id)
-            # You can serialize the user data here and return it
         except UserProfile.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         serializer = UserProfileSerializer(user, many=False)
         return Response(serializer.data)
 
-    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+ 
+    elif request.method == 'PUT':
+        try:
+            password = request.data.get('password')
+            image_base64 = request.data.get('image_base64')  # Get Base64 image from request
+            userProfile = UserProfile.objects.get(user_id=id)
+        except UserProfile.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
-"""
-@api_view(['GET'])
-def get_user(request, id):
-    id = request.GET['id']
-    try:
-        user = UserProfile.objects.get(user_id=id)
-    except User.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-    serializer = UserProfileSerializer(user, many=False)
-    return Response(serializer.data)
-"""
+        serializer = UserProfileSerializer(userProfile, data=request.data)
+        serializer.is_valid()
+        serializer.update(instance=userProfile, validated_data=request.data, password=password, image_base64=image_base64)
+        return Response(serializer.data)
+
+    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 def get_offers_aux(request):
     userProfile = UserProfile.objects.get(user__id=request.user.id)
@@ -1190,14 +1191,12 @@ def get_product_by_id(request, id):
 @api_view(['GET', 'POST'])
 def products(request):
     if request.method == 'POST':
-        serializer = ProductSerializer(data=request.data)
-        print("CHEGOU 1 :", serializer)
-        if serializer.is_valid(): #is failing this verification
-            print("CHEGOU 2 ")
-            serializer.create(validated_data=request.data)
-            print("CHEGOU 3")
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        product=request.data
+        serializer = ProductSerializer(data=product)
+        serializer.is_valid()
+        product = serializer.create(validated_data=product)
+        return Response(product.data)
+
     elif request.method == 'GET':
         username=None
         print(request.data)

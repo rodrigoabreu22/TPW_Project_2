@@ -39,22 +39,31 @@ export class ProductService {
     const url = `${this.baseUrl}products/`;
     const data = await fetch(url, {
       method: "POST", headers: new Headers({"Content-Type": "application/json"}), body: JSON.stringify(prod)});
-    return await data.json();
+      let response: any;
+      if (!data.ok) {
+        response = await data.text();
+        console.log('Error logging in:', response);
+        return null;
+      } else {
+        response = await data.json();
+        console.log('Login response:', response);
+      }
+    return response;
     }
 
-    async filterProducts(filters: any): Promise<Product[]> {
-      const params = new URLSearchParams();
-      for (const key in filters) {
-        if (filters[key]) {
-          params.append(
-            key,
-            Array.isArray(filters[key]) ? filters[key].join(',') : filters[key]
-          );
-        }
-      }
-      const url = `${this.baseUrl}products/?${params.toString()}`;
-      const response: Response = await fetch(url);
-      return await response.json();
-    }
+    //async filterProducts(filters: any): Promise<Product[]> {
+    //  const params = new URLSearchParams();
+    //  for (const key in filters) {
+    //    if (filters[key]) {
+    //      params.append(
+    //        key,
+    //        Array.isArray(filters[key]) ? filters[key].join(',') : filters[key]
+    //      );
+    //    }
+    //  }
+    //  const url = `${this.baseUrl}products/?${params.toString()}`;
+    //  const response: Response = await fetch(url);
+    //  return await response.json();
+    //}
   }
 

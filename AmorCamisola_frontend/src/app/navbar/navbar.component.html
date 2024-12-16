@@ -19,17 +19,18 @@
             <i class="fa-regular fa-comments mx-3" style="color: #ffffff; cursor: pointer;" data-toggle="tooltip" title="Ofertas"></i>
             <!--<span class="notification-bubble">{{ offer_count }}</span>-->
         </a>
-        <div *ngIf="logged_in">
+        <div *ngIf="log_user">
             <a routerLink="/wallet" routerLinkActive="active">
                 <i class="fas fa-wallet"></i>
-                <!--{{ profile.wallet }}-->
+                {{ log_user.wallet }}
             </a>
             <a routerLink="/favorites" routerLinkActive="active">
                 <i class="fas fa-heart"></i>
                 <!--{{ profile.wallet }}-->
             </a>
-            <app-navbar-login></app-navbar-login>
         </div>
+        <div *ngIf="logged_in"><app-navbar-login [username]="username"></app-navbar-login></div>
+        
         <div *ngIf="!logged_in">
             <a routerLink="/authentication" routerLinkActive="active">Login</a>
         </div>

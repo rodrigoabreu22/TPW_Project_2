@@ -63,7 +63,7 @@ urlpatterns = [
     path('ws/offers/<int:id>/', views.get_offer_by_id, name='get_offer_by_id'),
     path('ws/users/<int:user_id>/favorites/', views.user_favorites, name='user_favorites'),  
     path('ws/users/<int:user_id>/favorites/<int:product_id>/', views.user_favorites, name='user_favorites_product'), 
-    path('ws/users/<int:id>', views.get_userProfile_by_id , name='get_userProfile_by_id') 
+    path('ws/users/<int:id>', views.userProfile_by_id , name='userProfile_by_id') 
     #path('ws/reports/', views.api_reports, name='api_reports'),
     #path('ws/reports/<int:id>/', views.api_report, name='api_report'),
     

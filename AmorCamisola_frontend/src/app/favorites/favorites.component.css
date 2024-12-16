@@ -1,0 +1,36 @@
+.container {
+    max-width: 960px; /* Limit container width for better readability */
+    margin: 0 auto; /* Center the container horizontally */
+}
+
+.text-muted {
+    font-size: 1.2rem;
+    color: #6c757d;
+    text-align: center; /* Center the text */
+}
+
+.btn-primary {
+    padding: 10px 20px;
+    font-size: 1rem;
+    text-transform: uppercase;
+    border-radius: 5px;
+    background-color: #007bff; /* Use a more vibrant blue */
+    border-color: #007bff;
+}
+
+.row-cols-md-3 > .col {
+    display: flex;
+    align-items: stretch;
+}
+
+/* Add some spacing around the empty state message */
+.empty-state {
+    padding: 2rem 0;
+}
+
+/* Add some spacing between the title and content */
+.page-title {
+    margin-bottom: 3rem;
+}
+
+  

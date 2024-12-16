@@ -12,6 +12,7 @@ import { RouterModule, ActivatedRoute } from '@angular/router';
 import { Following } from '../following';
 import { ProductListComponent } from '../product-list/product-list.component';
 import { UserListComponent } from '../user-list/user-list.component';
+import { LoginService } from '../login.service';
 
 @Component({
   selector: 'app-user-profile',
@@ -22,7 +23,10 @@ import { UserListComponent } from '../user-list/user-list.component';
 })
 
 export class UserProfileComponent {
+  log_user: UserProfile | null = null;
   username: string = "";
+  log_username: string = "";
+  logged_in: boolean = false;
   userprofile: UserProfile = {
     id : 0,
     user: {} as User,
@@ -48,20 +52,31 @@ export class UserProfileComponent {
   productService: ProductService = inject(ProductService)
   userService: UserService = inject(UserService);
   followService: FollowerInfoService = inject(FollowerInfoService);
+  loginService: LoginService = inject(LoginService);
 
   constructor(private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.username = this.route.snapshot.paramMap.get('username') || "";
-    if (this.isBrowser()) {
-      const storedUsername = localStorage.getItem("username");
-      if (this.username === storedUsername) {
-        console.log("Banana");
-        this.myprofile = true
-      }
+    console.log("profile user",this.username)
+    if (this.isBrowser()){
+      this.process();
     } else {
       console.warn("localStorage não está disponível no ambiente atual.");
     }
+    
+  }
+
+  async process(): Promise<void> {
+    await this.loadLoggedUser();
+    console.log("useruser",this.log_user)
+      if (this.logged_in && this.log_user !=null){
+        this.log_username = this.log_user.user.username;
+        if (this.username === this.log_username) {
+          console.log("Banana");
+          this.myprofile = true
+        }
+      }
     if (this.username != "") {
       console.log("Username  ", this.username)
       this.userService
@@ -100,6 +115,19 @@ export class UserProfileComponent {
         });
     } else {
       console.warn('Invalid or missing user ID.');
+    }
+  }
+
+  async loadLoggedUser(): Promise<void> {
+    try {
+      const user = await this.loginService.getLoggedUser();
+      console.log("User loggado",user)
+      this.log_user = user;
+      console.log("useruser",this.log_user)
+      this.logged_in = true;
+    } catch (error) {
+      console.error("Failed to load logged user:", error);
+      this.logged_in = false;
     }
   }
 

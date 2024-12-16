@@ -1,5 +1,10 @@
+import base64
+import os
+import uuid
+from django.conf import settings
 from rest_framework import serializers
 from AmorCamisola.models import User, UserProfile, Following, Product, Report, Favorite, Jersey, Shorts, Socks, Boots, Offer
+from django.core.files.base import ContentFile
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -29,21 +34,39 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
         return user_profile
     
-    def update(self, instance, validated_data, password):
-        user_data = validated_data.pop('user')
+    def update(self, instance, validated_data, password=None, image_base64=None):
+        # Extract user data and exclude the 'id' field
+        user_data = validated_data.pop('user', None)
         if user_data:
             user = instance.user
+            user_data.pop('id', None)  # Ensure the user ID is not updated
             for attr, value in user_data.items():
                 setattr(user, attr, value)
             if password:
                 user.set_password(password)
             user.save()
-        
+
+        # Handle Base64 image upload
+        if image_base64:
+            validated_data.pop('image', None)
+            print("entrou")
+            image_path = save_base64_image(image_base64, isUser=True)
+            if image_path:
+                print(image_path)
+                instance.image = image_path  # Update the profile image only if the new image is saved successfully
+        else: 
+            validated_data.pop('image', None)
+
+        # Update other fields of the UserProfile instance, excluding 'id' and 'image'
+        validated_data.pop('id', None)  # Ensure the profile ID is not updated
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
+            
         instance.save()
 
         return instance
+
+
     
 class FollowingSerializer(serializers.ModelSerializer):
     following = UserSerializer(many=False)
@@ -98,13 +121,13 @@ class ProductSerializer(serializers.ModelSerializer):
 
     def get_category(self, obj):
         if hasattr(obj, 'jersey'):
-            return 'Jersey'
+            return 'Camisola'
         elif hasattr(obj, 'shorts'):
-            return 'Shorts'
+            return 'Calção'
         elif hasattr(obj, 'socks'):
-            return 'Socks'
+            return 'Meia'
         elif hasattr(obj, 'boots'):
-            return 'Boots'
+            return 'Chuteira'
         return None
 
     def get_size(self, obj):
@@ -119,28 +142,60 @@ class ProductSerializer(serializers.ModelSerializer):
         return None
 
     def create(self, validated_data):
-        seller_data = validated_data.pop('seller')
-        if seller_data:
-            seller, _ = User.objects.get_or_create(**seller_data)
-            validated_data['seller'] = seller
+        # Process `seller` data
+        seller_data = validated_data.pop('seller', None)
+        category = validated_data.pop('category', None)
+        size = validated_data.pop('size', None)
+        image_base64 = validated_data.pop('image_base64', None)  # Remove `image_base64
         
-        product = Product.objects.create(**validated_data)
-
-        return product
+        validated_data['id'] = Product.objects.count() + 1
     
-    def update(self, instance, validated_data):
-        seller_data = validated_data.pop('seller')
         if seller_data:
-            seller = instance.seller
-            for attr, value in seller_data.items():
-                setattr(seller, attr, value)
-            seller.save()
-        
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
-        instance.save()
+            print("--------------_> ",seller_data)
+            seller, _ = User.objects.get_or_create(**seller_data)
+            print("-------------------------->", seller)
+            validated_data['seller'] = seller
 
-        return instance
+        if image_base64:
+            validated_data['image']=save_base64_image(image_base64, False) 
+            
+        product = Product.objects.create(**validated_data)
+    
+        if category == 'Camisola':
+            return JerseySerializer(Jersey.objects.create(product=product, size=size))
+        elif category == 'Calção':
+            return ShortsSerializer(Shorts.objects.create(product=product, size=size))
+        elif category == 'Meia':
+            return SocksSerializer(Socks.objects.create(product=product, size=size))
+        elif category == 'Chuteira':
+            return BootsSerializer(Boots.objects.create(product=product, size=size))
+    
+
+def save_base64_image(base64_string, isUser):
+    """Decode and save the image to media directory."""
+    # Decode base64 string
+    try:
+        # Strip the prefix if provided
+        if "data:image" in base64_string:
+            header, base64_string = base64_string.split(',', 1)
+        image_data = base64.b64decode(base64_string)
+
+        # Create unique name for image
+        if isUser:
+            file_name = f"users/{uuid.uuid4()}.png"
+        else:
+            file_name = f"produtos/{uuid.uuid4()}.png"  # Ensure uniqueness
+        file_path = os.path.join(settings.MEDIA_ROOT, file_name)
+
+        # Save image
+        with open(file_path, 'wb') as f:
+            f.write(image_data)
+
+        return file_name  # Return the saved image file name
+    except Exception as e:
+        print("Error saving Base64 image:", e)
+    return None
+
 
     
 class ReportSerializer(serializers.ModelSerializer):
