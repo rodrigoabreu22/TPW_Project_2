@@ -16,7 +16,6 @@ export class OfferCardComponent {
   constructor() {}
 
   getStatusLabel(status: string | undefined): string {
-    
     switch (status) {
       case 'completed':
         return 'Concluído';
@@ -28,13 +27,57 @@ export class OfferCardComponent {
         return 'Rejeitado';
       case 'accepted':
         if (this.offer?.buyer.user.id === Number(localStorage.getItem('id'))) {
+          if (this.offer?.paid && !this.offer?.delivered) {
+            return 'Pago';
+          }
+          if (!this.offer?.paid) {
+            return 'Pagamento pendente';
+          }
           return 'Comprado';
+        }
+        if (this.offer?.delivered && !this.offer?.paid) {
+          return 'Entregue';
+        }
+        if (!this.offer?.delivered) {
+          return 'Entrega pendente';
         }
         return 'Vendido';
       default:
         return 'Sem Status';
     }
   }
+
+  getColorLabel(status: string | undefined): string {
+      switch (status) {
+        case 'completed':
+          return 'bg-success';
+        case 'in_progress':
+          return 'bg-info';
+        case 'cancelled':
+          return 'bg-danger';
+        case 'rejected':
+          return 'bg-danger';
+        case 'accepted':
+          if (this.offer?.buyer.user.id === Number(localStorage.getItem('id'))) {
+            if (this.offer?.paid && !this.offer?.delivered) {
+              return 'bg-success';
+            }
+            if (!this.offer?.paid) {
+              return 'bg-warning';
+            }
+            return 'bg-success';
+          }
+          if (this.offer?.delivered && !this.offer?.paid) {
+            return 'bg-success';
+          }
+          if (!this.offer?.delivered) {
+            return 'bg-warning';
+          }
+          return 'bg-success';
+        default:
+          return 'bg-secondary';
+      }
+    }
 
   getPaymentMethodLabel(paymentMethod: string | undefined): string {
     switch (paymentMethod) {
