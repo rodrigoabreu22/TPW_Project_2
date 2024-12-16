@@ -58,6 +58,26 @@ export class UserService {
     return await data.json() ?? undefined;
    }
 
+   async updateUserProfile(userProfile: UserProfile): Promise<any> {
+    const id = userProfile.user.id
+    let url = `${this.baseUrl}users`;
+    if (id != null) {
+        url += `/${id}`;
+    }
+    const data = await fetch(url, {
+      method: "PUT", headers: new Headers({"Content-Type": "application/json"}), body: JSON.stringify(userProfile)});
+      let response: any;
+      if (!data.ok) {
+        response = await data.text();
+        console.log('Error logging in:', response);
+        return null;
+      } else {
+        response = await data.json();
+        console.log('Login response:', response);
+      }
+    return response;
+   }
+
    async getUserFavorites(): Promise<Product[]>{
       //const userId = this.loginService.getLoggedUserId();
       //if (!userId) {

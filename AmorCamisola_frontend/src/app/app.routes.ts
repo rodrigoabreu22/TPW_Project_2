@@ -8,6 +8,7 @@ import { FavoritesComponent } from './favorites/favorites.component';
 import { OffersListComponent } from './offers-list/offers-list.component';
 import { PublishProductComponent } from './publish-product/publish-product.component';
 import { IndexComponent } from './index/index.component';
+import { AccountComponent } from './account/account.component';
 
 export const routes: Routes = [
     {path: '', redirectTo: '/products', pathMatch: 'full'},
@@ -18,5 +19,6 @@ export const routes: Routes = [
     {path: 'favorites', component: FavoritesComponent},
     {path: 'offers', component: OffersListComponent},
     {path: 'authentication', component: AuthenticationComponent, data: {showNavbar: false}},
-    {path: 'sell', component: PublishProductComponent}
+    {path: 'sell', component: PublishProductComponent},
+    {path: 'account', component: AccountComponent}
 ];
