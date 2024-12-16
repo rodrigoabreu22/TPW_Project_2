@@ -17,24 +17,24 @@
         <h2>Denúncias de usuários</h2>
         {% for report in user_reports %}
             <div class="product-card card shadow-sm h-100 border-0">
-                    <a href="{% url 'user_mod_view' username=report.report.reporting.username %}">
+                    <a href="{% url 'user_mod_view' username=report.report.reporting.user.username %}">
                         <!-- Image Container with slightly larger height and center alignment -->
                         <div class="image-container bg-light rounded-top" style="height: 180px; overflow: hidden;">
                             <img src="{% if report.report.image %}/media/{{ report.report.image.name }}{% else %}{% static 'fonts/imgs/defaultUser.png' %}{% endif %}" alt="{{ report.report.reporting.username }}" class="img-fluid img-thumbnail w-100" style="object-fit: contain;">
                         </div>
                     </a>
                     <div class="card-body text-center p-2">
-                        <h6 class="card-title mb-1 text-truncate">{{ report.report.reporting.username }}</h6>
+                        <h6 class="card-title mb-1 text-truncate">{{ report.report.reporting.user.username }}</h6>
                         <p class="small text-muted mb-1"><strong>Número de denúncias:</strong><a class="text-decoration-none">{{ report.count }}</a></p>
                     </div>
                     <div class="card-footer text-center bg-white border-0 p-2">
-                        {% if report.report.reporting.is_active == True %}
-                        <form method="post" action="{% url 'ban_user' report.report.reporting.id %}">
+                        {% if report.report.reporting.user.is_active == True %}
+                        <form method="post" action="{% url 'ban_user' report.report.reporting.user.id %}">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-danger">Banir usuário</button>
                         </form>
                         {% else %}
-                        <form method="post" action="{% url 'unban_user' report.report.reporting.id %}">
+                        <form method="post" action="{% url 'unban_user' report.report.reporting.user.id %}">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-info">Desbanir usuário</button>
                         </form>

@@ -79,6 +79,8 @@ def moderator_dashboard(request):
         'profile': logged
     }
 
+    print(user_reports)
+
     return render(request, 'moderator_dashboard.html', context)
 
 @moderator_required
@@ -150,7 +152,8 @@ def close_report(request, report_id):
 @moderator_required
 def ban_user(request, user_id):
     print("Banning")
-    user = get_object_or_404(User, id=user_id)
+    user1 = get_object_or_404(UserProfile, id=user_id)
+    user = get_object_or_404(User,user1)
     user_products = Product.objects.filter(seller=user)
 
     user.is_active = False
@@ -203,7 +206,8 @@ def ban_user(request, user_id):
 
 @moderator_required
 def unban_user(request, user_id):
-    user = get_object_or_404(User, id=user_id)
+    user1 = get_object_or_404(UserProfile, id=user_id)
+    user = get_object_or_404(User,user1)
     user_products = Product.objects.filter(seller=user)
 
     user.is_active = True
@@ -534,8 +538,8 @@ def viewProfile(request, username):
             print("Report user")
             report_form = ReportForm(request.POST)
 
-            report_form.instance.sent_by = request.user
-            report_form.instance.reporting = profile_user
+            report_form.instance.sent_by = get_object_or_404(UserProfile,user=request.user)
+            report_form.instance.reporting = get_object_or_404(UserProfile,user=profile_user)
             if report_form.is_valid():
                 print("Valid Report form")
                 report = report_form.save(commit=False)
@@ -729,7 +733,7 @@ def detailedProduct(request, id):
         if request.method == 'POST' and 'report_product' in request.POST:
             report_form = ReportForm(request.POST)
 
-            report_form.instance.sent_by = request.user
+            report_form.instance.sent_by = get_object_or_404(UserProfile,user=request.user)
             report_form.instance.product = product
             if report_form.is_valid():
                 report = report_form.save(commit=False)
@@ -1090,7 +1094,8 @@ def get_users(request):
 def userProfile_by_id(request, id):
     if request.method == 'GET':
         try:
-            user = UserProfile.objects.get(user__id=id)
+            user = UserProfile.objects.get(id=id)
+            # You can serialize the user data here and return it
         except UserProfile.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -1442,6 +1447,61 @@ def moderator(request):
         return Response(user.groups.filter(name='Moderators').exists(),status=status.HTTP_200_OK)
     else:
         return Response(False,status=status.HTTP_200_OK)
+    
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_products_reports(request):
+    pid=None
+    if 'pid' in request.GET:
+        pid = request.GET['pid']
+        if pid:
+            product = Product.objects.get(id=pid)
+            reports = Report.objects.filter(product=product)
+            serialized_report = ReportSerializer(reports,many=True)
+            return Response(serialized_report.data,status=status.HTTP_200_OK)
+    else:
+        all_reports = Report.objects.all()
+
+        # Track counts of reports for each product
+        seen_products = {}
+        for report in all_reports.filter(product__isnull=False):
+            product_id = report.product.id
+            if product_id not in seen_products:
+                new_report = ReportSerializer(report,many=False)
+                seen_products[product_id] = {'report': new_report.data, 'count': 1}
+            else:
+                seen_products[product_id]['count'] += 1
+        product_reports = list(seen_products.values())
+        #print(product_reports)
+        return Response(product_reports,status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_user_reports(request):
+    username=None
+    if 'username' in request.GET:
+        username = request.GET['username']
+        if username:
+            user = UserProfile.objects.get(user__username=username)
+            reports = Report.objects.filter(reporting=user)
+            serialized_report = ReportSerializer(reports,many=True)
+            return Response(serialized_report.data,status=status.HTTP_200_OK)
+    else:
+        all_reports = Report.objects.all()
+        seen_users = {}
+        for report in all_reports.filter(reporting__isnull=False):
+            reporting_id = report.reporting.id
+            if reporting_id not in seen_users:
+                new_report = ReportSerializer(report, many=False)
+                seen_users[reporting_id] = {'report': new_report.data, 'count': 1}
+            else:
+                seen_users[reporting_id]['count'] += 1
+
+        user_reports = list(seen_users.values())
+        #print(user_reports)
+        return Response(user_reports,status=status.HTTP_200_OK)
         
     
 

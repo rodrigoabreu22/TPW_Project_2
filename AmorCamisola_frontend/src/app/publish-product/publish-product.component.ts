@@ -21,7 +21,7 @@ export class PublishProductComponent implements OnInit {
     description: '',
     price: 0,
     team: '',
-    seller: { id: 0, username: '', email: '', first_name: '', last_name: '' },
+    seller: { id: 0, username: '', email: '', first_name: '', last_name: '', is_active: true },
     sold: false,
     is_active: true,
     image: '',
