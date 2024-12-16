@@ -8,8 +8,8 @@ import { UserService } from '../user.service';
 import { LoginService } from '../login.service';
 import { ReportView } from '../report-view';
 import { ModeratorService } from '../moderator.service';
-import { report } from 'process';
 import { ReportListComponent } from '../report-list/report-list.component';
+import { Report } from '../report';
 
 @Component({
   selector: 'app-product-details',
@@ -53,7 +53,8 @@ export class ProductDetailsComponent implements OnInit {
         if (this.isBrowser()) {
           this.token = localStorage.getItem("token");
           if(this.token){
-            this.reports = await this.moderatorService.getPReports(this.productId,this.token);
+            const fetchedReports = await this.moderatorService.getPReports(this.productId,this.token);
+            this.reports = fetchedReports;
           }
         }
         else{

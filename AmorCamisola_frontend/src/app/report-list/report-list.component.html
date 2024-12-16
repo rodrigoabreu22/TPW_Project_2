@@ -1,1 +1,9 @@
-<p>report-list works!</p>
+<h1>Denúncias:</h1>
+<div *ngIf="reports.length > 0; else noReports">
+  <div *ngFor="let report of reports" class="card mb-4 shadow-sm">
+    <app-report [report]="report"></app-report>
+  </div>
+</div>
+<ng-template #noReports>
+  <p>Sem denúncias para este produto.</p>
+</ng-template>

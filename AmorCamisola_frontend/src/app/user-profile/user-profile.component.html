@@ -44,6 +44,9 @@
                 <p>Nome: {{ userprofile.user.first_name }} {{ userprofile.user.last_name }}</p>
         </div>
     </div>
+    <div *ngIf="moderator">
+        <app-report-list [reports]="reports"></app-report-list>
+    </div>
     <hr/>
 
     <!-- Report Modal 

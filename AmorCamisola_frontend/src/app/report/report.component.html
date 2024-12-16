@@ -1,1 +1,17 @@
-<p>report works!</p>
+<div class="card-header d-flex align-items-center">
+    <img
+        [src]="'http://127.0.0.1:8080' + report?.sent_by?.image"
+        [alt]="report?.sent_by?.user?.username"
+        class="rounded-circle"
+        style="width: 40px; height: 40px; margin-right: 10px;"
+    />
+    <strong>{{ report?.sent_by?.user?.username }}</strong>
+    </div>
+    <div class="card-body">
+    <p class="font-weight-bold">Razão:
+        <span class="badge badge-warning" *ngIf="report?.reasons === 'IN'">Conteúdo inapropriado</span>
+        <span class="badge badge-warning" *ngIf="report?.reasons === 'FR'">Fraude</span>
+        <span class="badge badge-warning" *ngIf="report?.reasons === 'OT'">Other</span>
+    </p>
+    <p><strong>Descrição:</strong> {{ report?.description }}</p>
+</div>
