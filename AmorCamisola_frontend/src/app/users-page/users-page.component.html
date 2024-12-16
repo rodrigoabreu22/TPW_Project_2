@@ -1,0 +1,33 @@
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-12 text-center">
+            <h1 class="mb-4">Utilizadores</h1>
+        </div>
+        <div class="col-md-10 col-lg-8"> <!-- Made it wider by adjusting column widths -->
+            <div class="input-group mb-4">
+                <span class="input-group-text" id="search-icon"><i class="bi bi-search"></i></span>
+                <input 
+                    type="text" 
+                    class="form-control" 
+                    placeholder="Pesquisar por nome de utilizador..." 
+                    [(ngModel)]="searchQuery" 
+                    (ngModelChange)="onSearchChange()"
+                    aria-label="Search"
+                    aria-describedby="search-icon" />
+            </div>
+
+            <div *ngIf="isLoading" class="d-flex justify-content-center">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+
+            <div *ngIf="!isLoading">
+                <app-user-list 
+                    [users]="filteredUsers" 
+                    [perfil]="false">
+                </app-user-list>
+            </div>
+        </div>
+    </div>
+</div>

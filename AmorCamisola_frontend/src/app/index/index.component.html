@@ -2,8 +2,11 @@
     <!-- Lista de produtos com título -->
     <div class="product-list-container">
       <h1>Produtos</h1>
+      <h5>Explora a vasta gama de produtos de futebol que os nossos utilizadores estão a vender!</h5>
 
-    <button class="btn btn-secondary" (click)="toggleFilterSidebar()">Filtrar</button>
+      <button class="btn btn-filtrar" (click)="toggleFilterSidebar()">
+        <i class="fas fa-filter"></i> Filtrar
+      </button>
       <div *ngIf="isLoading">Carregando produtos...</div>
       <div *ngIf="!isLoading">
         <app-product-list [products]="filteredProducts"></app-product-list>
