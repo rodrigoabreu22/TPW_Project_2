@@ -3,11 +3,11 @@ import { FavoritesService } from '../favorites.service';
 import { Product } from '../product';
 import { CommonModule } from '@angular/common';
 import { ProductComponent } from '../product/product.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-favorites',
-  imports: [CommonModule, ProductComponent],
+  imports: [CommonModule, ProductComponent, RouterModule],
   templateUrl: './favorites.component.html',
   styleUrls: ['./favorites.component.css'],
 })

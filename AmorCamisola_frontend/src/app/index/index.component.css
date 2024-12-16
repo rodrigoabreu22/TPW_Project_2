@@ -7,7 +7,6 @@
   /* Product List */
   .product-list-container {
     display: flex;
-    justify-content: center; /* Center the content horizontally */
     align-items: center; /* Center the content vertically */
     flex-direction: column; /* Keep the vertical stacking of products */
   }
@@ -23,12 +22,13 @@
     margin-bottom: 10px;;
   }
   
+  /* Sidebar - Filter section */
   .filter-sidebar {
     position: fixed;
     left: -300px; /* Initially hidden */
-    top: 51 px; /* Adjust this value based on your navbar height */ 
+    top: 51px;
     width: 300px;
-    height: calc(100vh - 60px); /* Adjust this value based on your navbar height */
+    height: 100%;
     background: #f9f9f9;
     border-right: 1px solid #ddd;
     padding: 20px;
@@ -90,3 +90,4 @@
     margin-right: 5px; /* Add some space between checkbox and label */
     vertical-align: bottom;
   }
+

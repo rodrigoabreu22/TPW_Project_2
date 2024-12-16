@@ -9,6 +9,7 @@ import { OffersListComponent } from './offers-list/offers-list.component';
 import { PublishProductComponent } from './publish-product/publish-product.component';
 import { IndexComponent } from './index/index.component';
 import { ModeratorComponent } from './moderator/moderator.component';
+import { AccountComponent } from './account/account.component';
 
 export const routes: Routes = [
     {path: '', redirectTo: '/products', pathMatch: 'full'},
@@ -20,5 +21,6 @@ export const routes: Routes = [
     {path: 'offers', component: OffersListComponent},
     {path: 'authentication', component: AuthenticationComponent, data: {showNavbar: false}},
     {path: 'sell', component: PublishProductComponent},
-    {path: 'moderator', component: ModeratorComponent}
+    {path: 'moderator', component: ModeratorComponent},
+    {path: 'account', component: AccountComponent}
 ];
