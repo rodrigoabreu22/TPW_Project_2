@@ -1543,6 +1543,55 @@ def get_user_reports(request):
         user_reports = list(seen_users.values())
         #print(user_reports)
         return Response(user_reports,status=status.HTTP_200_OK)
+    
+@api_view(['DELETE'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def delete_product_a(request, product_id):
+    if request.method == 'DELETE':
+        try:
+            # Get the product by ID or return 404
+            product = get_object_or_404(Product, id=product_id)
+
+            # Perform deletion
+            product.delete()
+
+            # Return success response
+            return Response({'message': f'Product with ID {product_id} deleted successfully.'}, status=200)
+        except Exception as e:
+            return Response({'error': str(e)}, status=500)
+
+    return Response({'error': 'Invalid request method.'}, status=400)
+
+
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def toggle_ban_user(request, user_id):
+    """Ban or unban a user based on their current active status."""
+    user = get_object_or_404(User, id=user_id)
+    if user.is_active:
+        user.is_active = False
+        action = "banned"
+    else:
+        user.is_active = True
+        action = "unbanned"
+    user.save()
+    return Response({"message": f"User {action} successfully.", "is_active": user.is_active})
+
+@api_view(['DELETE'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def close_report_a(request, report_id):
+    """Close (delete) a report."""
+    report = get_object_or_404(Report, id=report_id)
+    if report.product:
+        Report.objects.filter(product=report.product).delete()
+    if report.reporting:
+        Report.objects.filter(reporting=report.reporting).delete()
+
+    return Response({"message": "Report closed successfully."})
+
 
         
     

@@ -205,7 +205,7 @@ class ReportSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Report
-        fields = ['sent_by', 'reporting', 'product', 'reasons', 'description']
+        fields = ['id','sent_by', 'reporting', 'product', 'reasons', 'description']
 
     def create(self, validated_data):
         sent_by_data = validated_data.pop('sent_by')
