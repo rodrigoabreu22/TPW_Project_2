@@ -31,6 +31,11 @@ export class ProductDetailsComponent implements OnInit {
   token: string | null = localStorage.getItem("token") || null;
   showModal: boolean = false; // Controls modal visibility
   offerService: OffersService = inject(OffersService);
+  showReports = false;
+
+  toggleReports() {
+    this.showReports = !this.showReports;
+  }
 
   //offer modal things
   buyer: UserProfile | null = null;
@@ -90,6 +95,7 @@ export class ProductDetailsComponent implements OnInit {
 
   onReportSubmitted(): void {
     console.log('Report was successfully submitted!');
+    this.fetchReports();
     // Perform any additional actions, e.g., refresh user profile or show a success message
     alert('Thank you for your report!');
   }
@@ -127,6 +133,23 @@ export class ProductDetailsComponent implements OnInit {
       }
     } catch (error) {
       console.error('Error loading product or seller information:', error);
+    }
+  }
+
+  async fetchReports(): Promise<void> {
+    if (this.moderator){
+      console.log("entrei")
+      if (this.isBrowser()) {
+        this.token = localStorage.getItem("token");
+        if(this.token){
+          const fetchedReports = await this.moderatorService.getPReports(this.productId,this.token);
+          this.reports = fetchedReports;
+        }
+      }
+      else{
+        console.warn("localStorage não está disponível no ambiente atual.");
+      }
+      console.log("Reports",this.reports)
     }
   }
 

@@ -1,87 +1,89 @@
 <div class="container my-5">
-    <h1>Vista de moderador</h1>
-  
-    <!-- Toggle Buttons -->
-    <div class="btn-group mb-4">
-      <button 
-        class="btn btn-primary" 
-        (click)="toggleSection('user')" 
-        [class.active]="showUserReports">
-        Denúncias de usuários
-      </button>
-      <button 
-        class="btn btn-primary" 
-        (click)="toggleSection('product')" 
-        [class.active]="!showUserReports">
-        Denúncias de publicações
-      </button>
-    </div>
-  
-    <!-- User Reports Section -->
-    <div *ngIf="showUserReports && user_reports && user_reports.length > 0" class="report-section" id="user-reports-section">
-      <h2>Denúncias de usuários</h2>
-      <div *ngFor="let report of user_reports" class="product-card card shadow-sm h-100 border-0">
-        <a [routerLink]="['/profile', report.report.reporting?.user?.username]">
-          <div class="image-container bg-light rounded-top" style="height: 180px; overflow: hidden;">
-            <img [src]="'http://127.0.0.1:8080' + report.report.reporting?.image || 'placeholder.jpg'" 
-                class="img-fluid img-thumbnail w-100" 
-                style="object-fit: contain;">
-          </div>
-        </a>
-        <div class="card-body text-center p-2">
-          <h6 class="card-title mb-1 text-truncate">{{ report.report.reporting?.user?.username }}</h6>
-          <p class="small text-muted mb-1">
-            <strong>Número de denúncias:</strong>
-            <a class="text-decoration-none">{{ report.count }}</a>
-          </p>
+  <h1>Vista de moderador</h1>
 
-          <!-- Ban/Unban Button -->
-          <button 
-            class="btn btn-warning btn-sm my-1" 
-            (click)="toggleUserBan(report.report.reporting?.user?.id, report.report.reporting?.user?.is_active)">
-            {{ report.report.reporting?.user?.is_active ? 'Banir usuário' : 'Desbanir usuário' }}
-          </button>
+  <!-- Toggle Buttons -->
+  <div class="btn-group mb-4">
+    <button 
+      class="btn btn-primary" 
+      (click)="toggleSection('user')" 
+      [class.active]="showUserReports">
+      Denúncias de usuários
+    </button>
+    <button 
+      class="btn btn-primary" 
+      (click)="toggleSection('product')" 
+      [class.active]="!showUserReports">
+      Denúncias de publicações
+    </button>
+  </div>
 
-          <!-- Close Report Button -->
-          <button 
-            class="btn btn-danger btn-sm my-1" 
-            (click)="closeReport(report.report.id, true)">
-            Fechar denúncia
-          </button>
-        </div>
+  <!-- User Reports Section -->
+  <div *ngIf="showUserReports && user_reports.length > 0" id="user-reports-section">
+    <h2 class="mb-3">Denúncias de usuários</h2>
+    <div *ngFor="let report of user_reports" class="report-item d-flex align-items-center p-3 mb-3 shadow-sm rounded">
+      <!-- Image -->
+      <div class="report-image flex-shrink-0 me-3">
+        <img [src]="'http://127.0.0.1:8080' + report.report.reporting?.image || 'placeholder.jpg'" 
+             alt="User Image" 
+             class="rounded-circle">
       </div>
-    </div>
 
-  
-    <!-- Product Reports Section -->
-    <div *ngIf="!showUserReports && product_reports && product_reports.length > 0" class="report-section" id="product-reports-section">
-      <h2>Denúncia de publicações</h2>
-      <div *ngFor="let report of product_reports" class="product-card card shadow-sm h-100 border-0">
-        <a [routerLink]="['/product', report.report.product?.id]">
-          <div class="image-container bg-light rounded-top" style="height: 180px; overflow: hidden;">
-            <img [src]="'http://127.0.0.1:8080' + report.report.product?.image || 'placeholder.jpg'" class="img-fluid img-thumbnail w-100" style="object-fit: contain;">
-          </div>
-        </a>
-        <div class="card-body text-center p-2">
-          <h6 class="card-title mb-1 text-truncate">{{ report.report.product?.name }}</h6>
-          <p class="small text-muted mb-1">
-            <strong>Número de denúncias:</strong>
-            <a class="text-decoration-none">{{ report.count }}</a>
-          </p>
-          <div class="card-footer text-center bg-white border-0 p-2">
-            <button 
-              class="btn btn-danger" 
-              (click)="deleteProduct(report.report.product?.id)">
-              Apagar publicação
-            </button>
-            <button 
-              class="btn btn-danger btn-sm my-1" 
-              (click)="closeReport(report.report.id, false)">
-              Fechar denúncia
-            </button>
-          </div>
-        </div>
+      <!-- User Info -->
+      <div class="report-info flex-grow-1">
+        <h5 class="mb-1">{{ report.report.reporting?.user?.username }}</h5>
+        <p class="text-muted mb-0">
+          <strong>Número de denúncias:</strong> {{ report.count }}
+        </p>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="report-actions ms-auto">
+        <button 
+          class="btn btn-warning btn-sm me-2" 
+          (click)="toggleUserBan(report.report.reporting?.user?.id, report.report.reporting?.user?.is_active)">
+          {{ report.report.reporting?.user?.is_active ? 'Banir usuário' : 'Desbanir usuário' }}
+        </button>
+        <button 
+          class="btn btn-danger btn-sm" 
+          (click)="closeReport(report.report.id, true)">
+          Fechar denúncia
+        </button>
       </div>
     </div>
   </div>
-  
+
+  <!-- Product Reports Section -->
+  <div *ngIf="!showUserReports && product_reports.length > 0" id="product-reports-section">
+    <h2 class="mb-3">Denúncias de publicações</h2>
+    <div *ngFor="let report of product_reports" class="report-item d-flex align-items-center p-3 mb-3 shadow-sm rounded">
+      <!-- Image -->
+      <div class="report-image flex-shrink-0 me-3">
+        <img [src]="'http://127.0.0.1:8080' + report.report.product?.image || 'placeholder.jpg'" 
+             alt="Product Image" 
+             class="rounded">
+      </div>
+
+      <!-- Product Info -->
+      <div class="report-info flex-grow-1">
+        <h5 class="mb-1">{{ report.report.product?.name }}</h5>
+        <p class="text-muted mb-0">
+          <strong>Número de denúncias:</strong> {{ report.count }}
+        </p>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="report-actions ms-auto">
+        <button 
+          class="btn btn-danger btn-sm me-2" 
+          (click)="deleteProduct(report.report.product?.id)">
+          Apagar publicação
+        </button>
+        <button 
+          class="btn btn-danger btn-sm" 
+          (click)="closeReport(report.report.id, false)">
+          Fechar denúncia
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
