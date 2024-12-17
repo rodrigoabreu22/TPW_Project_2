@@ -54,7 +54,7 @@
 
       <div class="action-buttons mt-4">
         <button class="btn me-2" [ngClass]="getOfferColor()" (click)="getOfferAction()()" [disabled]="getOfferDisabled()">{{getOfferLabel()}}</button>
-        <button type="button" class="btn btn-outline-danger btn-sm ml-2" 
+        <button *ngIf="log_user" type="button" class="btn btn-outline-danger btn-sm ml-2" 
                                 data-bs-toggle="modal" 
                                 data-bs-target="#reportModal">
                             Reportar Publicação

@@ -22,11 +22,13 @@
     <h2 class="mb-3">Denúncias de usuários</h2>
     <div *ngFor="let report of user_reports" class="report-item d-flex align-items-center p-3 mb-3 shadow-sm rounded">
       <!-- Image -->
-      <div class="report-image flex-shrink-0 me-3">
-        <img [src]="'http://127.0.0.1:8080' + report.report.reporting?.image || 'placeholder.jpg'" 
-             alt="User Image" 
-             class="rounded-circle">
-      </div>
+      <a [routerLink]="['/profile', report.report.reporting?.user?.username]">
+        <div class="report-image flex-shrink-0 me-3">
+          <img [src]="'http://127.0.0.1:8080' + report.report.reporting?.image || 'placeholder.jpg'" 
+              alt="User Image" 
+              class="rounded-circle">
+        </div>
+      </a>
 
       <!-- User Info -->
       <div class="report-info flex-grow-1">
@@ -57,11 +59,13 @@
     <h2 class="mb-3">Denúncias de publicações</h2>
     <div *ngFor="let report of product_reports" class="report-item d-flex align-items-center p-3 mb-3 shadow-sm rounded">
       <!-- Image -->
-      <div class="report-image flex-shrink-0 me-3">
-        <img [src]="'http://127.0.0.1:8080' + report.report.product?.image || 'placeholder.jpg'" 
-             alt="Product Image" 
-             class="rounded">
-      </div>
+      <a [routerLink]="['/product', report.report.product?.id]">
+        <div class="report-image flex-shrink-0 me-3">
+          <img [src]="'http://127.0.0.1:8080' + report.report.product?.image || 'placeholder.jpg'" 
+              alt="Product Image" 
+              class="rounded">
+        </div>
+      </a>
 
       <!-- Product Info -->
       <div class="report-info flex-grow-1">
