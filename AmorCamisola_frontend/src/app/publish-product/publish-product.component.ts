@@ -96,10 +96,6 @@ export class PublishProductComponent implements OnInit {
       console.error('Error publishing product:', error);
     }
   }
-
-  private isBrowser(): boolean {
-    return typeof window !== 'undefined' && typeof localStorage !== 'undefined';
-  }
 }
 
 
