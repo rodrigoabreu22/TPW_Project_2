@@ -16,6 +16,7 @@ export class UserService {
   constructor() {
 
    }
+   
 
    async getWallet(user_id: number) {
     // NEEDS USER ID NOT USER PROFILE ID

@@ -20,6 +20,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   logged_in: boolean = false;
   moderator: boolean = false;
   wallet: number = 0;
+  offerCount: Promise<number> = Promise.resolve(0);
   private subscription!: Subscription;
 
   userService: UserService = inject(UserService);
@@ -42,17 +43,29 @@ export class NavbarComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
   }
-  
+
   async initializeUser(): Promise<void> {
     await this.loadLoggedUser(); // Wait for the user to load
     console.log(this.log_user); // Now this will have the correct value
   
     if (this.log_user != null) {
+      this.offerCount = this.getNotifCount();
       this.wallet = this.log_user.wallet;
       console.log("login", this.logged_in);
       this.username = this.log_user.user.username;
       console.log(this.username);
       await this.loadModerator(); // Proceed only after log_user is set
+    }
+  }
+
+  async getNotifCount(): Promise<number> {
+    try {
+      const notif = await this.loginService.getNotifs();
+      console.log("Notif",notif)
+      return notif;
+    } catch (error) {
+      console.error("Failed to load logged user:", error);
+      return 0;
     }
   }
 

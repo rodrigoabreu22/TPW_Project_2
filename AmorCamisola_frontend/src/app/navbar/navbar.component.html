@@ -15,11 +15,11 @@
     </div>
     <div class="navbar-right">
         <a routerLink="/users" routerLinkActive="active"><i class="fa-solid fa-users"></i></a>
-        <a routerLink="/offers" routerLinkActive="active" class="notification-icon" style="position: relative;">
-            <i class="fa-regular fa-comments mx-3" style="color: #ffffff; cursor: pointer;" data-toggle="tooltip" title="Ofertas"></i>
-            <!--<span class="notification-bubble">{{ offer_count }}</span>-->
-        </a>
         <div *ngIf="log_user">
+            <a routerLink="/offers" routerLinkActive="active" class="notification-icon" style="position: relative;">
+                <i class="fa-regular fa-comments mx-3" style="color: #ffffff; cursor: pointer;" data-toggle="tooltip" title="Ofertas"></i>
+                <span *ngIf="(offerCount | async)! > 0" class="notification-bubble">{{(offerCount | async)!}}</span>
+            </a>
             <a routerLink="/wallet" routerLinkActive="active">
                 <i class="fas fa-wallet"></i>{{ wallet | number:'1.2-2' }}€
             </a>

@@ -1590,5 +1590,13 @@ def wallet_function(request):
             return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
     except UserProfile.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
+    
+
+
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def check_notifs(request):
+    return Response({'offer_count': getOffersCount(request)}, status=status.HTTP_200_OK)
 
 # ------------------- REST API ------------------- #

@@ -67,6 +67,7 @@ urlpatterns = [
     path('ws/user-reports/', views.get_user_reports , name='get_user_reports'),   
     path('ws/users/<int:id>', views.userProfile_by_id , name='userProfile_by_id'),
     path('ws/users/wallet/', views.wallet_function, name='wallet'),
+    path('ws/users/notifs/', views.check_notifs, name='check_notifs'),
     #path('ws/reports/', views.api_reports, name='api_reports'),
     #path('ws/reports/<int:id>/', views.api_report, name='api_report'),
     
