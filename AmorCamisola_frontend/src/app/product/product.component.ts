@@ -2,8 +2,9 @@ import { Component, Input, inject, OnInit } from '@angular/core';
 import { ProductService } from '../product.service';
 import { Product } from '../product';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { FavoritesService } from '../favorites.service';  // Importing the FavoritesService
+import { RouterModule, Router } from '@angular/router'; // Import Router
+import { FavoritesService } from '../favorites.service';  
+import { LoginService } from '../login.service';
 
 @Component({
   selector: 'app-product',
@@ -21,7 +22,9 @@ export class ProductComponent implements OnInit {
   isFavorite: boolean = false;
   myproduct: boolean = false;
   productService: ProductService = inject(ProductService);
-  favoriteService: FavoritesService = inject(FavoritesService); // Injecting the FavoritesService
+  favoriteService: FavoritesService = inject(FavoritesService);
+  loginService: LoginService = inject(LoginService);
+  router: Router = inject(Router); // Inject Router
 
   constructor() {}
 
@@ -36,17 +39,23 @@ export class ProductComponent implements OnInit {
     } else {
       console.warn('localStorage is not available in the current environment.');
     }
-    if (this.userId != null && this.productId > 0) {
+
+    if (this.productId > 0) {
       console.log('Fetching product with ID:', this.productId);
       this.productService
         .getProduct(this.productId)
         .then((fetchedProduct: Product) => {
           this.product = fetchedProduct;
-          this.checkIfFavorite();
-          console.log("produto", fetchedProduct)
-          if (this.product.seller.id == Number(localStorage.getItem("id"))){
-            console.log("Meu produto")
-            this.myproduct = true
+
+          // Check if it's the user's product
+          if (this.product.seller.id === this.userId) {
+            console.log("Meu produto");
+            this.myproduct = true;
+          }
+
+          // Only check favorites if user is logged in
+          if (this.userId != null) {
+            this.checkIfFavorite();
           }
         })
         .catch((error) => {
@@ -79,9 +88,16 @@ export class ProductComponent implements OnInit {
   toggleFavorite(event: Event, product: Product): void {
     event.stopPropagation(); // Prevents navigation
 
+    // Redirect to login if the user is not logged in
+    if (!this.userId) {
+      console.warn("User not logged in. Redirecting to authentication page.");
+      this.router.navigate(['/authentication']); // Adjust route as needed
+      return;
+    }
+
     if (this.isFavorite) {
       // If the product is already a favorite, remove it
-      this.favoriteService.removeFavorite(this.userId!, product.id, this.token!)
+      this.favoriteService.removeFavorite(this.userId, product.id, this.token!)
         .then(() => {
           this.isFavorite = false;
           console.log(`Product ${product.name} removed from favorites.`);
@@ -91,7 +107,7 @@ export class ProductComponent implements OnInit {
         });
     } else {
       // If the product is not a favorite, add it
-      this.favoriteService.addFavorite(this.userId!, product.id, this.token!)
+      this.favoriteService.addFavorite(this.userId, product.id, this.token!)
         .then(() => {
           this.isFavorite = true;
           console.log(`Product ${product.name} added to favorites.`);
