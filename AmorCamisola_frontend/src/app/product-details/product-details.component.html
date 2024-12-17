@@ -7,16 +7,6 @@
           class="img-fluid rounded"
           alt="{{ product?.name }}"
         />
-        <div *ngIf="moderator">
-          <div class="toggle-reports-btn" (click)="toggleReports()">
-            {{ showReports ? 'Esconder Denúncias' : 'Mostrar Denúncias' }}
-          </div>
-          
-          <!-- Reports Section -->
-          <div class="reports-container" [class.active]="showReports">
-            <app-report-list [reports]="reports"></app-report-list>
-          </div>
-        </div>
       </div>
     </div>
 
@@ -60,6 +50,16 @@
                             Reportar Publicação
                         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- Reports Section -->
+  <div *ngIf="moderator" class="reports-container-wrapper">
+    <div class="toggle-reports-btn" (click)="toggleReports()">
+      {{ showReports ? 'Esconder Denúncias' : 'Mostrar Denúncias' }}
+    </div>
+    <div class="reports-container" [class.active]="showReports">
+      <app-report-list [reports]="reports"></app-report-list>
     </div>
   </div>
 </div>

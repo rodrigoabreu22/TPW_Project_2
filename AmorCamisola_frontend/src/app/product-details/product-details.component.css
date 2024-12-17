@@ -94,6 +94,10 @@
 }
 
 /* Reports Section */
+.reports-container-wrapper {
+  margin-top: 30px; /* Added margin to separate from product details */
+}
+
 .reports-container {
   display: none; /* Initially hidden */
   margin-top: 20px;
