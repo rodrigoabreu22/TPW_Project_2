@@ -74,7 +74,7 @@ export class ProductDetailsComponent implements OnInit {
   getOfferLabel(): string {
     if (!this.token) return "Iniciar sessão"
     if (this.currentNegotiations.some(offer => offer.product.id === this.product?.id)) return "Negociação em andamento";
-    if (this.product?.seller.id === Number(localStorage.getItem("id"))) return "Remover produto";
+    if (this.product?.seller.id === this.log_user?.user.id) return "Remover produto";
     if (!this.product?.is_active) return "Produto indisponível";
     
     return "Fazer proposta";
@@ -87,14 +87,14 @@ export class ProductDetailsComponent implements OnInit {
   getOfferColor(): string {
     if (!this.token) return "btn-primary";
     if (this.currentNegotiations.some(offer => offer.product.id === this.product?.id)) return "btn-warning";
-    if (this.product?.seller.id === Number(localStorage.getItem("id"))) return "btn-danger";
+    if (this.product?.seller.id === this.log_user?.user.id) return "btn-danger";
     if (!this.product?.is_active) return "btn-danger";
     return "btn-primary";
   }
 
   getOfferAction(): () => void {
     if (!this.token) return this.redirectToLogin;
-    if (this.product?.seller.id === Number(localStorage.getItem("id"))) return this.removeProduct;
+    if (this.product?.seller.id === this.log_user?.user.id) return this.removeProduct;
     if (this.currentNegotiations.some(offer => offer.product.id === this.product?.id)) return this.redirectToOffers;
     return this.showOfferModal;
   }
