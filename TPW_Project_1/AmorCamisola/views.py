@@ -1592,6 +1592,22 @@ def close_report_a(request, report_id):
 
     return Response({"message": "Report closed successfully."})
 
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def create_report(request):
+    print(request.data,"\n\n\n\n\n")
+    """API endpoint to create a new report."""
+    report_serializer = ReportSerializer(data=request.data)
+    print(report_serializer)
+    report = report_serializer.create(validated_data=request.data)
+    print("\n\n\n\n\n",report)
+    new_report = ReportSerializer(report,many=False)
+    if (new_report.is_valid):
+        return Response(new_report.data, status=status.HTTP_201_CREATED)
+    else:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
 
         
     

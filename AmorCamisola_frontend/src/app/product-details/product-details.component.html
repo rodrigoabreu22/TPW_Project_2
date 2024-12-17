@@ -47,8 +47,18 @@
 
       <div class="action-buttons mt-4">
         <button class="btn btn-primary me-2">Fazer Proposta</button>
-        <button class="btn btn-danger">Reportar Publicação</button>
+        <button type="button" class="btn btn-outline-danger btn-sm ml-2" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#reportModal">
+                            Reportar Publicação
+                        </button>
       </div>
     </div>
   </div>
 </div>
+
+<app-report-modal *ngIf="product?.name"
+        [user]="false"
+        [target]="product"
+        (reportSubmitted)="onReportSubmitted()"
+        ></app-report-modal>

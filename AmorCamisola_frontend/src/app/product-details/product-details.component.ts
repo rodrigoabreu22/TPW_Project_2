@@ -10,11 +10,12 @@ import { ReportView } from '../report-view';
 import { ModeratorService } from '../moderator.service';
 import { ReportListComponent } from '../report-list/report-list.component';
 import { Report } from '../report';
+import { ReportModalComponent } from '../report-modal/report-modal.component';
 
 @Component({
   selector: 'app-product-details',
   standalone: true,
-  imports: [CommonModule, RouterModule,ReportListComponent],
+  imports: [CommonModule, RouterModule,ReportListComponent, ReportModalComponent],
   templateUrl: './product-details.component.html',
   styleUrls: ['./product-details.component.css']
 })
@@ -33,6 +34,12 @@ export class ProductDetailsComponent implements OnInit {
 
   constructor(private route: ActivatedRoute) {
     this.productId = route.snapshot.params['id']
+  }
+
+  onReportSubmitted(): void {
+    console.log('Report was successfully submitted!');
+    // Perform any additional actions, e.g., refresh user profile or show a success message
+    alert('Thank you for your report!');
   }
 
   async ngOnInit(): Promise<void> {

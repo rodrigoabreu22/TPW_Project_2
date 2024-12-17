@@ -11,6 +11,24 @@ export class ModeratorService {
 
   constructor() { }
 
+  async createReport(report: Partial<Report>, token: string): Promise<Report> {
+    const url = `${this.baseUrl}reports/`;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Token ${token}`,
+      },
+      body: JSON.stringify(report),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to create report: ${response.statusText}`);
+    }
+
+    return await response.json();
+  }
+
   async getProductReports(token: string): Promise<ReportView[]> {
     console.log("token: ",token)  
     const url = `${this.baseUrl}product-reports`;

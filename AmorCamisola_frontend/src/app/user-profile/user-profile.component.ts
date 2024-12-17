@@ -1,4 +1,4 @@
-import {Component, inject, Input} from '@angular/core';
+import {Component, inject, Input, ViewChild} from '@angular/core';
 import {ProductService} from "../product.service";
 import {User} from "../user";
 import { UserService } from '../user.service';
@@ -16,16 +16,19 @@ import { LoginService } from '../login.service';
 import { Report } from '../report';
 import { ModeratorService } from '../moderator.service';
 import { ReportListComponent } from '../report-list/report-list.component';
+import { ReportModalComponent } from '../report-modal/report-modal.component';
 
 @Component({
   selector: 'app-user-profile',
   standalone: true,
-  imports: [CommonModule, RouterModule,ProductListComponent, UserListComponent, ReportListComponent],
+  imports: [CommonModule, RouterModule,ProductListComponent, UserListComponent, ReportListComponent, ReportModalComponent],
   templateUrl: './user-profile.component.html',
   styleUrl: './user-profile.component.css'
 })
 
 export class UserProfileComponent {
+  @ViewChild(ReportModalComponent) reportModal: ReportModalComponent | undefined;
+
   log_user: UserProfile | null = null;
   username: string = "";
   log_username: string = "";
@@ -72,6 +75,13 @@ export class UserProfileComponent {
       console.warn("localStorage não está disponível no ambiente atual.");
     }
     
+  }
+
+  onReportSubmitted(): void {
+    console.log('Report was successfully submitted!');
+    this.process();
+    // Perform any additional actions, e.g., refresh user profile or show a success message
+    alert('Thank you for your report!');
   }
 
   async process(): Promise<void> {

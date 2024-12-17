@@ -1,0 +1,41 @@
+<div class="modal fade" id="reportModal" tabindex="-1" role="dialog" aria-labelledby="reportModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="reportModalLabel">
+            {{ user ? 'Reportar Utilizador' : 'Reportar Produto' }}
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="reasonSelect" class="form-label">Razão</label>
+              <select
+                id="reasonSelect"
+                class="form-select"
+                [value]="report.reasons"
+                (change)="onReasonChange($event)"
+                required>
+                <option *ngFor="let reason of reasons" [value]="reason.code">
+                  {{ reason.label }}
+                </option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="descriptionTextarea" class="form-label">Descrição</label>
+              <textarea
+                id="descriptionTextarea"
+                class="form-control"
+                [value]="report.description"
+                (input)="onDescriptionChange($event)"
+                rows="4">
+              </textarea>
+            </div>
+            <button type="button" class="btn btn-danger" (click)="submitReport()">Enviar Denúncia</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  
