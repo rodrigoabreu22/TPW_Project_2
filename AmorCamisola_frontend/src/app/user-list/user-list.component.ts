@@ -17,7 +17,7 @@ export class UserListComponent implements OnInit {
   @Input() users: UserProfile[] = [];
   @Input() simple_user: User[] = [];
   @Input() perfil: boolean = false;
-  isLoading: boolean = true;
+  @Input() isLoading: boolean = false;
   userService: UserService = inject(UserService);
 
   constructor() {}

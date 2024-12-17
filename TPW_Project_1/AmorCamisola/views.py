@@ -23,6 +23,7 @@ from rest_framework.decorators import api_view, permission_classes, authenticati
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from AmorCamisola.serializers import *
+from decimal import Decimal
 
 
 def verifyIfAdmin(request):
@@ -1142,10 +1143,16 @@ def get_offers_aux(request):
     })
 
 def create_offer(request):
+    print(request.data)
     offer_serializer = OfferSerializer(data=request.data)
     offer_serializer.is_valid()
     offer = offer_serializer.create(validated_data=request.data)
-    return Response(offer)
+    offer.buyer.wallet -= Decimal(offer.value)
+    offer.buyer.save()
+    print("myoffer", offer)
+    new_offer_serializer = OfferSerializer(offer, many=False)
+    print(new_offer_serializer.data)
+    return Response(new_offer_serializer.data)
 
 
 @api_view(['GET', 'POST', 'PUT'])
@@ -1342,40 +1349,141 @@ def user_favorites(request, user_id, product_id=None):
         )
 
 
+@api_view(['GET', 'POST', 'DELETE'])
+def follows(request):
+    if request.method == 'GET':
+        if 'userId' in request.GET:
+            userId = request.GET["userId"]
+
+        try:
+            following = Following.objects.filter(following__id=userId)
+        except Following.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        following_serializer = FollowingSerializer(following, many=True)
+        followed_users = []
+        for entry in following_serializer.data:
+            try:
+                followed_user = User.objects.get(id=entry['followed'])
+                followed_user_serializer = UserSerializer(followed_user)
+                followed_users.append(followed_user_serializer.data)
+            except User.DoesNotExist:
+                continue
+
+        print("FOLLOWING:",followed_users)
+        return Response(followed_users)
+
+    elif request.method == 'POST':
+        print("Dados recebidos:", request.data)
+        serialize = FollowingSerializer(data=request.data)
+        if serialize.is_valid():
+            serialize.save()
+            return Response(serialize.data, status=status.HTTP_201_CREATED)
+        print("Erros:", serialize.errors)
+        return Response(serialize.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        serialize = FollowingSerializer(data=request.data)
+        print(serialize)
+        if serialize.is_valid():
+            following_data = serialize.validated_data
+            following_user = following_data.get('following')
+            followed_user = following_data.get('followed')
+
+            following_relations = Following.objects.filter(following=following_user, followed=followed_user)
+
+            if following_relations.exists():
+                print(0)
+                deleted_count, _ = following_relations.delete()
+                if deleted_count > 0:
+                    print(1)
+                    return Response(request.data)
+                else:
+                    print(2)
+                    return Response({'error': 'No matching following relationship found'}, status=status.HTTP_404_NOT_FOUND)
+            else:
+                print(3)
+                return Response({'error': 'Following relationship not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        return Response(serialize.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
 
 @api_view(['GET'])
-def follows(request):
-    username=None
-    if 'username' in request.GET:
-        print("username")
-        username = request.GET['username']
-    if username:
-        #if verifyIfAdmin(request):
-            #return redirect("/admin")
-        if request.method == 'GET':
+def followers(request, id):
+    if request.method == 'GET':
+        try:
+            # Get the followers (users following the given user)
+            followers = Following.objects.filter(followed__id=id)
+        except Following.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        followers_serializer = FollowingSerializer(followers, many=True)
+        following_users = []
+        for entry in followers_serializer.data:
             try:
-                following = Following.objects.filter(following__username = username)
-                followers = Following.objects.filter(followed__username=username)
-                
-            except Following.DoesNotExist:
-                return Response(status=status.HTTP_404_NOT_FOUND)
-            following_serializer = FollowingSerializer(following, many=True)
-            followers_serializer = FollowingSerializer(followers, many=True)
+                following_user = User.objects.get(id=entry['following'])
+                following_user_serializer = UserSerializer(following_user)
+                following_users.append(following_user_serializer.data)
+            except User.DoesNotExist:
+                continue
+        print("FOLLOWERS:",following_users)
+        return Response(following_users)
 
-            # Extract and restructure serialized data
-            following_data = [
-                entry['followed'] for entry in following_serializer.data
-            ]
-            followers_data = [
-                entry['following'] for entry in followers_serializer.data
-            ]
-            # Prepare the response data
-            response_data = {
-                'following': following_data,
-                'followed': followers_data
-            }
-            return Response(response_data)
     return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
+
+#@api_view(['GET'])
+#def follows(request):
+#    username=None
+#    if 'username' in request.GET:
+#        print("username")
+#        username = request.GET['username']
+#    if username:
+#        #if verifyIfAdmin(request):
+#            #return redirect("/admin")
+#        if request.method == 'GET':
+#            try:
+#                following = Following.objects.filter(following__username = username)
+#                followers = Following.objects.filter(followed__username=username)
+#                
+#            except Following.DoesNotExist:
+#                return Response(status=status.HTTP_404_NOT_FOUND)
+#            following_serializer = FollowingSerializer(following, many=True)
+#            followers_serializer = FollowingSerializer(followers, many=True)
+#
+#            # Extract and restructure serialized data
+#            following_data = [
+#                entry['followed'] for entry in following_serializer.data
+#            ]
+#            followers_data = [
+#                entry['following'] for entry in followers_serializer.data
+#            ]
+#            # Prepare the response data
+#            response_data = {
+#                'following': following_data,
+#                'followed': followers_data
+#            }
+#            return Response(response_data)
+#        
+#        elif request.method == 'POST':
+#            follow = request.data
+#            serialize = FollowingSerializer(follow)
+#            if serialize.is_valid:
+#                serialize.create(follow)
+#                return Response(follow.data)
+#        
+#        elif request.method == 'DELETE':
+#            follow = request.data
+#            serialize = FollowingSerializer(follow)
+#            if serialize.is_valid:
+#                serialize.remove(follow)
+#                return Response(follow.data)
+#
+#    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 @api_view(['GET'])
 def get_user_profiles(request):
@@ -1471,6 +1579,12 @@ def handle_offers(request):
                 value = offer.get('value')
                 print(offer_id)
                 new_offer = Offer.objects.get(id=offer_id)
+                if payment_method == "store_credit":
+                    if new_offer.buyer.id == new_offer.sent_by.id:
+                        new_offer.buyer.wallet -= new_offer.value
+                    else:
+                        new_offer.buyer.wallet += new_offer.value
+                    new_offer.buyer.save()
                 new_offer.payment_method = payment_method
                 new_offer.delivery_method = delivery_method
                 new_offer.address = address
@@ -1544,6 +1658,12 @@ def get_user_reports(request):
         #print(user_reports)
         return Response(user_reports,status=status.HTTP_200_OK)
     
+def deposit_money_api(id, deposit_amount):
+    userinfo = UserProfile.objects.get(user__id=id)
+    userinfo.wallet += deposit_amount
+    userinfo.save()
+    return Response({'wallet': userinfo.wallet}, status=status.HTTP_200_OK)
+
 @api_view(['DELETE'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
@@ -1609,7 +1729,39 @@ def create_report(request):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-        
+def withdraw_money_api(user_id, withdrawal_amount):
+    userinfo = UserProfile.objects.get(user__id=user_id)
+    if withdrawal_amount <= userinfo.wallet:
+        userinfo.wallet -= withdrawal_amount
+        userinfo.save()
+    return Response({'wallet': userinfo.wallet}, status=status.HTTP_200_OK)
+
+@api_view(['GET', 'PUT'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def wallet_function(request):
+    try:
+        userProfile = UserProfile.objects.get(user=request.user)
+        if request.method == 'GET':
+            return Response({'wallet': userProfile.wallet}, status=status.HTTP_200_OK)
+        elif request.method == 'PUT':
+            amount = request.data.get('amount')
+            action = request.data.get('action')
+            if action == 'deposit':
+                return deposit_money_api(userProfile.user.id, amount)
+            elif action == 'withdraw':
+                return withdraw_money_api(userProfile.user.id, amount)
+        else:
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    except UserProfile.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
     
+
+
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def check_notifs(request):
+    return Response({'offer_count': getOffersCount(request)}, status=status.HTTP_200_OK)
 
 # ------------------- REST API ------------------- #

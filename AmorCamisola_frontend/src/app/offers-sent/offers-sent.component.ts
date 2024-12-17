@@ -29,7 +29,7 @@ export class OffersSentComponent {
     getActions(offer: Offer) {
       return [
         {
-          label: 'apagar',
+          label: 'Cancelar negociação',
           handler: this.deleteOffer.bind(this),
           color: 'btn-danger'
         }

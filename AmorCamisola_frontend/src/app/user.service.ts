@@ -2,15 +2,46 @@ import { Injectable, inject } from '@angular/core';
 import { UserProfile } from './user-profile';
 import { User } from './user';
 import { Product } from './product';
+import { BehaviorSubject } from 'rxjs';
+import { json } from 'stream/consumers';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
   private baseUrl :string = 'http://localhost:8080/ws/';
+  private walletValueSubject = new BehaviorSubject<number>(0);
+  walletValue$ = this.walletValueSubject.asObservable();
 
   constructor() {
 
+   }
+   
+
+   async getWallet(user_id: number) {
+    // NEEDS USER ID NOT USER PROFILE ID
+    const url = `${this.baseUrl}wallet/?user_id=${user_id}`;
+    const response: Response = await fetch(url);
+    return await response.json();
+   }
+
+   async updateWallet(amount: number, action: string) {
+    // NEEDS USER ID NOT USER PROFILE ID
+    const url = `${this.baseUrl}users/wallet/`;
+    const response: Response = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Token ${localStorage.getItem('token')}`,
+      },
+      body: JSON.stringify({ 'amount': amount, 'action': action }),
+    });
+    if (!response.ok) {
+      return null;
+    }
+    const json_response = await response.json();
+    this.walletValueSubject.next(json_response.wallet);
+    return json_response;
    }
 
    async getUser(username: string): Promise<UserProfile> {
@@ -61,7 +92,6 @@ export class UserService {
     const id = userProfile.user.id;
     const url = `${this.baseUrl}users/${id}`;
     
-    // Add imageBase64 to payload if available
     const payload: any = { ...userProfile, password };
     if (imageBase64) {
       payload.image_base64 = imageBase64;
@@ -79,8 +109,6 @@ export class UserService {
   
     return response.json();
   }  
-  
-
 
    async getUserFavorites(): Promise<Product[]>{
       const userId = localStorage.getItem('id');
@@ -91,5 +119,4 @@ export class UserService {
       const data :Response = await fetch(url);
       return await data.json() ?? undefined;
    }
-
   }

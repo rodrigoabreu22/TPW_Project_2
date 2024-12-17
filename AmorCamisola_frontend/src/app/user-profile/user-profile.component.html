@@ -22,15 +22,31 @@
                 <div class="mr-4">
                     <strong>{{ pnumber }}</strong> produtos
                 </div>
+                
                 <div class="mr-4">
-                    <a href="#" class="text-dark" data-bs-toggle="modal" data-bs-target="#followersModal">
-                        <strong>{{ followers }}</strong> seguidores
-                    </a>
+                  <a href="#" 
+                     class="text-dark" 
+                     [attr.data-bs-toggle]="myprofile ? 'modal' : null" 
+                     [attr.data-bs-target]="myprofile ? '#followersModal' : null"
+                     (click)="myprofile ? null : $event.preventDefault()">
+                    <strong>{{ followers_number }}</strong> seguidores
+                  </a>
                 </div>
                 <div>
-                    <a href="#" class="text-dark" data-bs-toggle="modal" data-bs-target="#followingModal">
-                        <strong>{{ following }}</strong> seguindo
-                    </a>
+                  <a href="#" 
+                     class="text-dark" 
+                     [attr.data-bs-toggle]="myprofile ? 'modal' : null" 
+                     [attr.data-bs-target]="myprofile ? '#followingModal' : null"
+                     (click)="myprofile ? null : $event.preventDefault()">
+                    <strong>{{ following_number }}</strong> seguindo
+                  </a>
+                </div>
+                  
+                  
+                <div *ngIf="!myprofile" class="mb-3">
+                    <button class="btn btn-outline-primary btn-sm" (click)="isFollowing ? unfollowUser() : followUser()">
+                      {{ isFollowing ? 'Não Seguir' : 'Seguir' }}
+                    </button>
                 </div>
             </div>
                 <p>Nome: {{ userprofile.user.first_name }} {{ userprofile.user.last_name }}</p>
@@ -89,7 +105,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <app-user-list *ngIf="seguidores && seguidores.length > 0" [simple_user]="seguidores" [perfil]="true"></app-user-list>
+                <app-user-list *ngIf="followers && followers_number > 0" [simple_user]="followers" [perfil]="true"></app-user-list>
             </div>
         </div>
     </div>
@@ -103,7 +119,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <app-user-list *ngIf="seguindo && seguindo.length > 0" [simple_user]="seguindo" [perfil]="true"></app-user-list>
+                <app-user-list *ngIf="following && following_number > 0" [simple_user]="following" [perfil]="true"></app-user-list>
             </div>
         </div>
     </div>

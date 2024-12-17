@@ -46,7 +46,7 @@
       </div>
 
       <div class="action-buttons mt-4">
-        <button class="btn btn-primary me-2">Fazer Proposta</button>
+        <button class="btn btn-primary me-2" (click)="showOfferModal()">Fazer Proposta</button>
         <button type="button" class="btn btn-outline-danger btn-sm ml-2" 
                                 data-bs-toggle="modal" 
                                 data-bs-target="#reportModal">
@@ -62,3 +62,35 @@
         [target]="product"
         (reportSubmitted)="onReportSubmitted()"
         ></app-report-modal>
+
+<!-- Backdrop -->
+<div
+  class="modal-backdrop fade"
+  *ngIf="showModal"
+  [class.show]="showModal"
+  (click)="closeOfferModal()"
+  style="z-index: 1040; opacity: 0.5;"
+></div>
+
+<!-- Modal -->
+<div
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  *ngIf="showModal"
+  [class.show]="showModal"
+  (click)="onModalClick($event)"
+  style="display: block; z-index: 1050;"
+>
+      <!-- Offer Modal Content -->
+      <app-offer-modal
+        [product]="product!"
+        [offerValue]="product?.price || 0"
+        [offer_id]="0"
+        [buyer]="buyer!"
+        [offer_status]="'in_progress'"
+
+        (close)="closeOfferModal()"
+        (submitOffer)="submitOffer($event)"
+      ></app-offer-modal>
+    </div>

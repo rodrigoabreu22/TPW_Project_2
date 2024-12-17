@@ -1,5 +1,5 @@
 .navbar {
-    background-color: #006400; /* Dark green */
+    background-color: #214621; /* Dark green */
     color: white;
     display: flex;
     justify-content: space-between;
@@ -46,3 +46,24 @@
 .navbar a i:hover {
     color: #d4ffd4; /* Light green on hover */
 }
+
+.notification-icon {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .notification-bubble {
+    position: absolute;
+    top: -7px;
+    right: 3px;
+    background-color: red;
+    color: white;
+    font-size: 0.75rem;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  

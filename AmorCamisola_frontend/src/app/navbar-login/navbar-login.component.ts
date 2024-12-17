@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
-import { RouterLink, RouterModule } from '@angular/router';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { RouterLink, RouterModule, Router } from '@angular/router';
+import { LoginService } from '../login.service';
 
 @Component({
   selector: 'app-navbar-login',
@@ -10,6 +11,12 @@ import { RouterLink, RouterModule } from '@angular/router';
 })
 export class NavbarLoginComponent {
   @Input() username: string = "";
+  @Output() logoutEvent = new EventEmitter<void>();
+  loginService: LoginService = inject(LoginService);
 
-  constructor() { }
+  constructor(private router: Router) { }
+
+  logout() {
+    this.logoutEvent.emit();
+  }
 }

@@ -10,17 +10,20 @@ import { PublishProductComponent } from './publish-product/publish-product.compo
 import { IndexComponent } from './index/index.component';
 import { ModeratorComponent } from './moderator/moderator.component';
 import { AccountComponent } from './account/account.component';
+import { WalletComponent } from './wallet/wallet.component';
+import { UsersPageComponent } from './users-page/users-page.component';
 
 export const routes: Routes = [
     {path: '', redirectTo: '/products', pathMatch: 'full'},
     {path: 'products', component: IndexComponent},
     {path: 'product/:id', component: ProductDetailsComponent},
-    {path: 'users', component: UserListComponent},
+    {path: 'users', component: UsersPageComponent},
     {path: 'profile/:username', component: UserProfileComponent},
     {path: 'favorites', component: FavoritesComponent},
     {path: 'offers', component: OffersListComponent},
-    {path: 'authentication', component: AuthenticationComponent, data: {showNavbar: false}},
+    {path: 'authentication', component: AuthenticationComponent, data: {showNavbar: false, showFooter: false}},
     {path: 'sell', component: PublishProductComponent},
     {path: 'moderator', component: ModeratorComponent},
-    {path: 'account', component: AccountComponent}
+    {path: 'account', component: AccountComponent},
+    {path: 'wallet', component: WalletComponent}
 ];

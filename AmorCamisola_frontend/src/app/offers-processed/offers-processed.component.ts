@@ -29,7 +29,7 @@ export class OffersProcessedComponent {
     getActions(offer: Offer) {
       return [
         {
-          label: 'apagar',
+          label: 'Apagar do histórico',
           handler: this.deleteOffer.bind(this),
           color: 'btn-danger'
         }

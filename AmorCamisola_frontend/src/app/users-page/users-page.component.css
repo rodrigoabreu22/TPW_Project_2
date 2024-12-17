@@ -1,0 +1,13 @@
+/* Optional: Add some custom styling for better visual appeal */
+.input-group-text {
+    background-color: #e9ecef; /* Light gray background */
+    border: 1px solid #ced4da; /* Slightly darker border */
+}
+.input-group>.form-control:not(:first-child), .input-group>*:not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+.input-group>.form-control:not(:last-child), .input-group>*:not(:last-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}

@@ -11,11 +11,14 @@ import { ModeratorService } from '../moderator.service';
 import { ReportListComponent } from '../report-list/report-list.component';
 import { Report } from '../report';
 import { ReportModalComponent } from '../report-modal/report-modal.component';
+import { OfferModalComponent } from '../offer-modal/offer-modal.component';
+import { Offer } from '../offer';
+import { OffersService } from '../offers.service';
 
 @Component({
   selector: 'app-product-details',
   standalone: true,
-  imports: [CommonModule, RouterModule,ReportListComponent, ReportModalComponent],
+  imports: [CommonModule, RouterModule,ReportListComponent, ReportModalComponent, OfferModalComponent],
   templateUrl: './product-details.component.html',
   styleUrls: ['./product-details.component.css']
 })
@@ -25,7 +28,14 @@ export class ProductDetailsComponent implements OnInit {
   product: Product | null = null;
   sellerInfo: UserProfile | null = null;
   moderator: boolean =false;
-  token: string | null = null;
+  token: string | null = localStorage.getItem("token") || null;
+  showModal: boolean = false; // Controls modal visibility
+  offerService: OffersService = inject(OffersService);
+
+  //offer modal things
+  buyer: UserProfile | null = null;
+  
+
 
   private productService: ProductService = inject(ProductService);
   private userService: UserService = inject(UserService);
@@ -76,6 +86,26 @@ export class ProductDetailsComponent implements OnInit {
     } catch (error) {
       console.error('Error loading product or seller information:', error);
     }
+  }
+
+  submitOffer(offer: Offer) {
+    this.offerService.submitOffer(offer, this.token!);
+
+    console.log('submitOffer', offer);
+    this.showModal = false;
+  }
+
+  async showOfferModal(){
+    this.buyer = await this.loginService.getLoggedUser();
+    this.showModal = true;
+  }
+
+  onModalClick(event: Event){
+    event.stopPropagation();
+  }
+
+  closeOfferModal(){
+    this.showModal = false;
   }
 
   private isBrowser(): boolean {

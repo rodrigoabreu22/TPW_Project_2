@@ -37,17 +37,35 @@ export class OffersAcceptedComponent {
 
   getActions(offer: Offer) {
     if (this.userId=== offer.buyer.user.id) {
+      if (offer.delivered === true) {
+        return [
+          {
+            label: 'Cancelar confirmação de entrega',
+            handler: this.confirmDelivery.bind(this),
+            color: 'btn-warning'
+          }
+        ];
+      }
       return [
         {
-          label: 'entrega',
+          label: 'Confirmar entrega',
           handler: this.confirmDelivery.bind(this),
           color: 'btn-success'
         }
       ];
     } else {
+      if (offer.paid === true) {
+        return [
+          {
+            label: 'Cancelar confirmação de pagamento',
+            handler: this.confirmPayment.bind(this),
+            color: 'btn-warning'
+          }
+        ];
+      }
       return [
         {
-          label: 'pagamento',
+          label: 'Confirmar pagamento',
           handler: this.confirmPayment.bind(this),
           color: 'btn-success'
         }
