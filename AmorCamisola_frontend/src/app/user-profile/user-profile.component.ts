@@ -52,6 +52,13 @@ export class UserProfileComponent {
   token: string | null = null;
   isFollowing: boolean = false;
 
+  showReports = false;
+
+  toggleReports() {
+    this.showReports = !this.showReports;
+  }
+
+
   productService: ProductService = inject(ProductService);
   userService: UserService = inject(UserService);
   followService: FollowerInfoService = inject(FollowerInfoService);

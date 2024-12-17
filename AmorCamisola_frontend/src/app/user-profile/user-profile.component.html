@@ -8,7 +8,7 @@
         <div class="col-md-8">
     <div class="d-flex align-items-center mb-3">
         <h2 class="mr-3">{{ userprofile.user.username }}</h2>
-        <div *ngIf="logged_in" class="d-flex"> <div *ngIf="!myprofile">
+        <div *ngIf="logged_in && userprofile.user.is_active" class="d-flex"> <div *ngIf="!myprofile">
                 <button class="btn btn-outline-primary btn-sm" (click)="isFollowing ? unfollowUser() : followUser()">
                     {{ isFollowing ? 'Não Seguir' : 'Seguir' }}
                 </button>
@@ -50,7 +50,14 @@
         </div>
     </div>
     <div *ngIf="logged_in && moderator && userprofile.user.is_active">
-        <app-report-list [reports]="reports"></app-report-list>
+        <div class="toggle-reports-btn" (click)="toggleReports()">
+            {{ showReports ? 'Esconder Denúncias' : 'Mostrar Denúncias' }}
+          </div>
+          
+          <!-- Reports Section -->
+          <div class="reports-container" [class.active]="showReports">
+            <app-report-list [reports]="reports"></app-report-list>
+          </div>
     </div>
     <hr/>
 
