@@ -1,11 +1,11 @@
-import {Component, inject, Input, ViewChild} from '@angular/core';
-import {ProductService} from "../product.service";
-import {User} from "../user";
+import { Component, inject, Input, ViewChild } from '@angular/core';
+import { ProductService } from "../product.service";
+import { User } from "../user";
 import { UserService } from '../user.service';
 import { FollowerInfoService } from '../follower-info.service';
-import {UserProfile} from "../user-profile";
-import {Product} from "../product";
-import {CommonModule} from "@angular/common";
+import { UserProfile } from "../user-profile";
+import { Product } from "../product";
+import { CommonModule } from "@angular/common";
 import { RouterModule, ActivatedRoute } from '@angular/router';
 import { Following } from '../following';
 import { ProductListComponent } from '../product-list/product-list.component';
@@ -19,30 +19,29 @@ import { ReportModalComponent } from '../report-modal/report-modal.component';
 @Component({
   selector: 'app-user-profile',
   standalone: true,
-  imports: [CommonModule, RouterModule,ProductListComponent, UserListComponent, ReportListComponent, ReportModalComponent],
+  imports: [CommonModule, RouterModule, ProductListComponent, UserListComponent, ReportListComponent, ReportModalComponent],
   templateUrl: './user-profile.component.html',
   styleUrl: './user-profile.component.css'
 })
-
 export class UserProfileComponent {
   @ViewChild(ReportModalComponent) reportModal: ReportModalComponent | undefined;
 
-  log_user: UserProfile | null = null;
+  log_user: UserProfile | null = null; // Logged-in user
   username: string = "";
   log_username: string = "";
-  logged_in: boolean = false;
+  logged_in: boolean = false; // Indicates if a user is logged in
   userprofile: UserProfile = {
-    id : 0,
+    id: 0,
     user: {} as User,
     address: '',
     phone: '',
     wallet: 0,
     image: '',
   };
-  
+
   followers_number: number = 0;
   following_number: number = 0;
-  myprofile: boolean = false;
+  myprofile: boolean = false; // Determines if the current profile belongs to the logged user
   pnumber: number = 0;
   products: Product[] = [];
   followers: User[] = [];
@@ -53,8 +52,7 @@ export class UserProfileComponent {
   token: string | null = null;
   isFollowing: boolean = false;
 
-
-  productService: ProductService = inject(ProductService)
+  productService: ProductService = inject(ProductService);
   userService: UserService = inject(UserService);
   followService: FollowerInfoService = inject(FollowerInfoService);
   loginService: LoginService = inject(LoginService);
@@ -64,13 +62,11 @@ export class UserProfileComponent {
 
   ngOnInit(): void {
     this.username = this.route.snapshot.paramMap.get('username') || "";
-    console.log("profile user",this.username)
-    if (this.isBrowser()){
+    if (this.isBrowser()) {
       this.process();
     } else {
       console.warn("localStorage não está disponível no ambiente atual.");
     }
-    
   }
 
   onReportSubmitted(): void {
@@ -81,84 +77,59 @@ export class UserProfileComponent {
   }
 
   async process(): Promise<void> {
-    await this.loadLoggedUser();
-    const user = await this.loginService.getLoggedUser();
-    this.moderator = await this.userService.checkModerator(user.user.username);
-    console.log("moderator1",this.moderator)
-    if (this.moderator){
-      console.log("entrei")
-      if (this.isBrowser()) {
-        this.token = localStorage.getItem("token");
-        if(this.token){
-          console.log("USERNAME RAG",this.username)
-          const fetchedReports = await this.moderatorService.getUReports(this.username,this.token);
-          this.reports = fetchedReports;
-        }
-      }
-      else{
-        console.warn("localStorage não está disponível no ambiente atual.");
-      }
-    }
-    console.log("USER REPORTS",this.reports)
-    console.log("user", this.log_user);
-  
-    if (this.logged_in && this.log_user != null) {
-      this.log_username = this.log_user.user.username;
-      if (this.username === this.log_username) {
-        this.myprofile = true; // Está no próprio perfil
-      }
-    }
-  
-    if (this.username != "") {
-      try {
-        // Carregar perfil do usuário
+    this.load = true;
+    try {
+      // Always load the profile data, even if the user is not logged in
+      if (this.username) {
         this.userprofile = await this.userService.getUser(this.username);
   
-        // Carregar produtos do usuário
+        // Default is_active to true if undefined
+        if (this.userprofile.user && this.userprofile.user.is_active === undefined) {
+          this.userprofile.user.is_active = true;
+        }
+  
+        // Load products
         const fetchedProducts = await this.productService.getProductsByUsername(this.username);
         this.products = fetchedProducts;
         this.pnumber = fetchedProducts.length;
   
-        if (this.userprofile.user.id !== undefined) {
-          this.followService
-            .getFollowers(this.userprofile.user.id)
-            .then((fetchedFollowers: User[]) => {
-              this.followers_number = fetchedFollowers.length;
-              this.followers = fetchedFollowers;
-              
-            })
-            .catch((error) => {
-              console.error("Error fetching followers", error);
-            });
+        // Additional checks only if user is logged in
+        await this.loadLoggedUser();
+        if (this.logged_in && this.log_user) {
+          this.log_username = this.log_user.user.username;
+          if (this.username === this.log_username) {
+            this.myprofile = true;
+          }
   
-            this.followService
-              .getFollows(this.userprofile.user.id)
-              .then((fetchedFollowing: User[]) => {
-                this.following = fetchedFollowing;
-                this.following_number = fetchedFollowing.length;
-                console.log("following: ", this.following)
-              })
-              .catch((error) => {
-                console.error("Error fetching followings", error);
-              });
-            } else {
-              console.warn("Logged user ID is undefined.");}
-        this.isFollowing = this.followers.some(f => f.username === this.log_username);
-      } catch (error) {
-        console.error("Erro ao carregar os dados:", error);
+          if (this.userprofile.user.id) {
+            const followers = await this.followService.getFollowers(this.userprofile.user.id);
+            this.followers_number = followers.length;
+            this.followers = followers;
+  
+            const following = await this.followService.getFollows(this.userprofile.user.id);
+            this.following = following;
+            this.following_number = following.length;
+  
+            // Check if the logged-in user follows this profile
+            this.isFollowing = this.followers.some(f => f.username === this.log_username);
+          }
+        }
       }
+    } catch (error) {
+      console.error("Error loading profile data:", error);
+    } finally {
+      this.load = false;
     }
   }
+  
 
   async loadLoggedUser(): Promise<void> {
     try {
       const user = await this.loginService.getLoggedUser();
-      console.log("User loggado",user)
       this.log_user = user;
-      console.log("useruser",this.log_user)
       this.logged_in = true;
     } catch (error) {
-      console.error("Failed to load logged user:", error);
+      console.warn("No user is logged in.");
       this.logged_in = false;
     }
   }
@@ -168,33 +139,36 @@ export class UserProfileComponent {
   }
 
   async followUser(): Promise<void> {
+    if (!this.logged_in) return;
+
     const followData: Following = {
       following: this.log_user!.user,
       followed: this.userprofile.user,
     };
-  
+
     try {
       await this.followService.addFollow(followData);
       this.isFollowing = true;
       this.followers_number += 1;
     } catch (error) {
-      console.error("Erro ao seguir o usuário:", error);
+      console.error("Error following user:", error);
     }
   }
-  
+
   async unfollowUser(): Promise<void> {
+    if (!this.logged_in) return;
+
     const followData: Following = {
       following: this.log_user!.user,
       followed: this.userprofile.user,
     };
-  
+
     try {
       await this.followService.removeFollow(followData);
       this.isFollowing = false;
       this.followers_number -= 1;
     } catch (error) {
-      console.error("Erro ao deixar de seguir o usuário:", error);
+      console.error("Error unfollowing user:", error);
     }
   }
-  
 }
