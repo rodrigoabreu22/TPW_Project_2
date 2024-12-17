@@ -6,6 +6,7 @@ import { Product } from '../product';
 import { UserService } from '../user.service';
 import { UserProfile } from '../user-profile';  // Assuming you have a UserProfile type defined.
 import { LoginService } from '../login.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-publish-product',
@@ -43,7 +44,7 @@ export class PublishProductComponent implements OnInit {
   userService: UserService = inject(UserService);
   loginService: LoginService = inject(LoginService);
 
-  constructor() {}
+  constructor(private router:Router) {}
 
   ngOnInit(): void {
     this.updateSizeOptions();
@@ -53,10 +54,18 @@ export class PublishProductComponent implements OnInit {
   // This method fetches the logged-in user's profile from the userService
   async setSellerData(): Promise<void> {
     try {
-      const userProfile: UserProfile = await this.loginService.getLoggedUser()
-      if (userProfile && userProfile.user) {
-        this.product.seller = userProfile.user;  // Set the seller data in the product
-      }
+
+      this.loginService.getLoggedUser()
+        .then(user => {
+          if (user) {
+            this.product.seller = user.user;
+            console.log("USER ATUAL", user);
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching logged user:', error);
+          this.router.navigate(['authentication']); // Redirect to authentication page
+        });
     } catch (error) {
       console.error('Error fetching user profile:', error);
     }

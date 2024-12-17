@@ -1,5 +1,7 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Offer } from './offer';
+import { BehaviorSubject } from 'rxjs';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -7,6 +9,10 @@ import { Offer } from './offer';
 export class OffersService {
 
   constructor() { }
+
+    private offersSubject = new BehaviorSubject<Offer[][] | null>(null);
+    currentOffers$ = this.offersSubject.asObservable();
+    userService: UserService = inject(UserService);
 
   async submitOffer(offer: Offer, token: string): Promise<Offer[][] | null> {
     const url = 'http://localhost:8080/ws/offers/';
@@ -26,6 +32,8 @@ export class OffersService {
     const sentOffers = offers.offers_made;
     const acceptedOffers = offers.offers_accepted;
     const processedOffers = offers.offers_processed;
+    this.offersSubject.next([receivedOffers, sentOffers, acceptedOffers, processedOffers]);
+    this.userService.getWallet();
     return [receivedOffers, sentOffers, acceptedOffers, processedOffers];
   }
 
@@ -48,6 +56,8 @@ export class OffersService {
     const sentOffers = offers.offers_made;
     const acceptedOffers = offers.offers_accepted;
     const processedOffers = offers.offers_processed;
+    this.offersSubject.next([receivedOffers, sentOffers, acceptedOffers, processedOffers]);
+    this.userService.getWallet();
     return [receivedOffers, sentOffers, acceptedOffers, processedOffers];
   }
 
@@ -69,6 +79,8 @@ export class OffersService {
     const sentOffers = offers.offers_made;
     const acceptedOffers = offers.offers_accepted;
     const processedOffers = offers.offers_processed;
+    this.offersSubject.next([receivedOffers, sentOffers, acceptedOffers, processedOffers]);
+    this.userService.getWallet();
     return [receivedOffers, sentOffers, acceptedOffers, processedOffers];
   }
 
