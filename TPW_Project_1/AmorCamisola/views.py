@@ -1697,9 +1697,17 @@ def toggle_ban_user(request, user_id):
     if user.is_active:
         user.is_active = False
         action = "banned"
+        user_products = Product.objects.filter(seller = user)
+        for x in user_products:
+            x.is_active = False
+            x.save()
     else:
         user.is_active = True
         action = "unbanned"
+        user_products = Product.objects.filter(seller = user)
+        for x in user_products:
+            x.is_active = True
+            x.save()
     user.save()
     return Response({"message": f"User {action} successfully.", "is_active": user.is_active})
 
