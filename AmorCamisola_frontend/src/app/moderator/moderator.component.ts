@@ -4,6 +4,9 @@ import { ModeratorService } from '../moderator.service';
 import { RouterLink, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NgZone } from '@angular/core';
+import { LoginService } from '../login.service';
+import { UserService } from '../user.service';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -19,16 +22,29 @@ export class ModeratorComponent {
   token: string | null = null;
 
   moderatorService: ModeratorService = inject(ModeratorService);
+  loginService: LoginService = inject(LoginService);
+  userService: UserService = inject(UserService);
 
-  constructor (){}
+  constructor (private router: Router){}
 
   ngOnInit(): void {
     if (this.isBrowser()) {
       this.token = localStorage.getItem("token");
+      this.process();
       this.reports();
     }
     else{
       console.warn("localStorage não está disponível no ambiente atual.");
+    }
+  }
+  async process(): Promise<void> {
+    const user = await this.loginService.getLoggedUser();
+    if (!user){
+      this.router.navigate(['/']);
+    }
+    const moderator = await this.userService.checkModerator(user.user.username);
+    if (!moderator){
+      this.router.navigate(['/']);
     }
   }
 
