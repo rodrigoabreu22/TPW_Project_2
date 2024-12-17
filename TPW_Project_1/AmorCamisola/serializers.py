@@ -404,7 +404,11 @@ class OfferSerializer(serializers.ModelSerializer):
         buyer_data = validated_data.pop('buyer')
         product_data = validated_data.pop('product')
         sent_by_data = validated_data.pop('sent_by')
-        validated_data['id'] = Offer.objects.all().last().id + 1
+        count = Offer.objects.count()
+        if count == 0:
+            validated_data['id'] = 1
+        else:
+            validated_data['id'] = Offer.objects.all().last().id + 1
         if buyer_data:
             buyer = UserProfile.objects.get(id=buyer_data['id'])
             if not buyer:
