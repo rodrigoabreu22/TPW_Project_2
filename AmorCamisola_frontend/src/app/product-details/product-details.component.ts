@@ -49,7 +49,9 @@ export class ProductDetailsComponent implements OnInit {
     if (this.token) {
       this.offerService.getOffersByUser(userId, this.token).then(offers => {
         if (offers) {
-          this.currentNegotiations = offers[0].concat(offers[1]);
+          console.log('Offers:', offers);
+          this.currentNegotiations = offers[0].concat(offers[1]).concat(offers[2]);
+          console.log('Current negotiations:', this.currentNegotiations);
         } else {
           console.warn('No offers found');
         }
@@ -64,15 +66,19 @@ export class ProductDetailsComponent implements OnInit {
   getOfferLabel(): string {
     if (this.currentNegotiations.some(offer => offer.product.id === this.product?.id)) return "Negociação em andamento";
     if (this.product?.seller.id === Number(localStorage.getItem("id"))) return "Remover produto";
-    if (this.product?.sold) return "Produto indisponível";
+    if (!this.product?.is_active) return "Produto indisponível";
     
     return "Fazer proposta";
+  }
+
+  getOfferDisabled(): boolean {
+    return !this.product?.is_active!;
   }
 
   getOfferColor(): string {
     if (this.currentNegotiations.some(offer => offer.product.id === this.product?.id)) return "btn-warning";
     if (this.product?.seller.id === Number(localStorage.getItem("id"))) return "btn-danger";
-    if (this.product?.sold) return "btn-danger";
+    if (!this.product?.is_active) return "btn-danger";
     return "btn-primary";
   }
 
