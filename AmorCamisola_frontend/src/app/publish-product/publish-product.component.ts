@@ -1,11 +1,12 @@
 import { Component, OnInit, inject } from '@angular/core';
-import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
-import {CommonModule} from "@angular/common";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { CommonModule } from "@angular/common";
 import { ProductService } from '../product.service';
 import { Product } from '../product';
 import { UserService } from '../user.service';
-import { UserProfile } from '../user-profile';  // Assuming you have a UserProfile type defined.
+import { UserProfile } from '../user-profile';
 import { LoginService } from '../login.service';
+import { Router } from '@angular/router';  // Import Router for navigation
 
 @Component({
   selector: 'app-publish-product',
@@ -42,6 +43,7 @@ export class PublishProductComponent implements OnInit {
   productService: ProductService = inject(ProductService);
   userService: UserService = inject(UserService);
   loginService: LoginService = inject(LoginService);
+  router: Router = inject(Router);  // Inject the Router for navigation
 
   constructor() {}
 
@@ -50,12 +52,11 @@ export class PublishProductComponent implements OnInit {
     this.setSellerData();
   }
 
-  // This method fetches the logged-in user's profile from the userService
   async setSellerData(): Promise<void> {
     try {
       const userProfile: UserProfile = await this.loginService.getLoggedUser()
       if (userProfile && userProfile.user) {
-        this.product.seller = userProfile.user;  // Set the seller data in the product
+        this.product.seller = userProfile.user;
       }
     } catch (error) {
       console.error('Error fetching user profile:', error);
@@ -77,17 +78,20 @@ export class PublishProductComponent implements OnInit {
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
-        this.product.image_base64 = reader.result as string; // Save the file as a Base64 string
+        this.product.image_base64 = reader.result as string;
       };
       reader.readAsDataURL(file);
     }
   }
-  
 
   async onSubmit(): Promise<void> {
     try {
       await this.productService.createProduct(this.product);
-      console.log('Product successfully listed!');
+      // Show success alert
+      window.alert('Produto publicado com sucesso!');
+
+      // Redirect to products page
+      this.router.navigate(['/products']);  // Navigate to the 'products' page
     } catch (error) {
       console.error('Error publishing product:', error);
     }
@@ -95,7 +99,8 @@ export class PublishProductComponent implements OnInit {
 
   private isBrowser(): boolean {
     return typeof window !== 'undefined' && typeof localStorage !== 'undefined';
-  } 
+  }
 }
+
 
 
