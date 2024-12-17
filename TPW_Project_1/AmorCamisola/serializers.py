@@ -180,29 +180,33 @@ def save_base64_image(base64_string, isUser):
     
 class ReportSerializer(serializers.ModelSerializer):
     sent_by = UserProfileSerializer(many=False)
-    reporting = UserProfileSerializer(many=False)
-    product = ProductSerializer(many=False)
+    reporting = UserProfileSerializer(many=False, required=False, allow_null=True)
+    product = ProductSerializer(many=False, required=False, allow_null=True)
 
     class Meta:
         model = Report
         fields = ['id','sent_by', 'reporting', 'product', 'reasons', 'description']
 
     def create(self, validated_data):
-        sent_by_data = validated_data.pop('sent_by')
-        reporting_data = validated_data.pop('reporting')
-        product_data = validated_data.pop('product')
-        if sent_by_data:
-            sent_by, _ = UserProfile.objects.get_or_create(**sent_by_data)
+        sent_by_data = validated_data.pop('sent_by', None)
+        if sent_by_data and 'id' in sent_by_data:
+            sent_by = UserProfile.objects.get(id=sent_by_data['id'])
             validated_data['sent_by'] = sent_by
-        if reporting_data:
-            reporting, _ = UserProfile.objects.get_or_create(**reporting_data)
-            validated_data['reporting'] = reporting
-        if product_data:
-            product, _ = Product.objects.get_or_create(**product_data)
-            validated_data['product'] = product
-        
-        report = Report.objects.create(**validated_data)
 
+        # Process reporting
+        reporting_data = validated_data.pop('reporting', None)
+        if reporting_data and 'id' in reporting_data:
+            reporting = UserProfile.objects.get(id=reporting_data['id'])
+            validated_data['reporting'] = reporting
+
+        # Process product
+        product_data = validated_data.pop('product', None)
+        if product_data and 'id' in product_data:
+            product = Product.objects.get(id=product_data['id'])
+            validated_data['product'] = product
+
+        # Create the report
+        report = Report.objects.create(**validated_data)
         return report
     
     def update(self, instance, validated_data):

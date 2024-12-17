@@ -9,23 +9,15 @@
             <div class="d-flex align-items-center mb-3">
                  <h2 class="mr-3">{{ userprofile.user.username }}</h2>
                  <div *ngIf="!myprofile">
+                    <div *ngIf="userprofile.user.is_active">
+                        <button type="button" class="btn btn-outline-danger btn-sm ml-2" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#reportModal">
+                            Reportar Utilizador
+                        </button>
+                    </div>
                  </div>
-                 <!--
-                {% if follows %}
-                    <a href="{% url 'unfollow' profile_user.username %}" class="btn btn-outline-primary btn-sm">Não seguir</a>
-                {% else %}
-                    {% if not is_banned %}
-                        <a href="{% url 'follow' profile_user.username %}" class="btn btn-outline-primary btn-sm">Seguir</a>
-                    {% endif %}
-                {% endif %}
-                {% if not is_banned %}
-                    Report Button
-                    <button type="button" class="btn btn-outline-danger btn-sm ml-2" data-toggle="modal" data-target="#reportModal">
-                        Reportar Utilizador
-                    </button>
-                {% endif %}
-            -->
-                </div>
+            </div>
             <div class="d-flex mb-3">
                 <div class="mr-4">
                     <strong>{{ pnumber }}</strong> produtos
@@ -65,6 +57,12 @@
     </div>
     <hr/>
 
+    <app-report-modal *ngIf="userprofile.address"
+        [user]="true"
+        [target]="userprofile"
+        (reportSubmitted)="onReportSubmitted()"
+        ></app-report-modal>
+
     <!-- Report Modal 
     <div class="modal fade" id="reportModal" tabindex="-1" role="dialog" aria-labelledby="reportModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -88,10 +86,7 @@
             </div>
         </div>
     </div>
-
     -->
-
-    <!--{% if not is_banned %}-->
     <div *ngIf="userprofile.user.is_active; else banned">
         <app-product-list *ngIf="userprofile.user.username" [username]="userprofile.user.username" ></app-product-list>
     </div>
