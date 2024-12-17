@@ -6,18 +6,21 @@
              class="rounded-circle" alt="">
         </div>
         <div class="col-md-8">
-            <div class="d-flex align-items-center mb-3">
-                 <h2 class="mr-3">{{ userprofile.user.username }}</h2>
-                 <div *ngIf="!myprofile">
-                    <div *ngIf="userprofile.user.is_active">
-                        <button type="button" class="btn btn-outline-danger btn-sm ml-2" 
-                                data-bs-toggle="modal" 
-                                data-bs-target="#reportModal">
-                            Reportar Utilizador
-                        </button>
-                    </div>
-                 </div>
+    <div class="d-flex align-items-center mb-3">
+        <h2 class="mr-3">{{ userprofile.user.username }}</h2>
+        <div *ngIf="logged_in" class="d-flex"> <div *ngIf="!myprofile">
+                <button class="btn btn-outline-primary btn-sm" (click)="isFollowing ? unfollowUser() : followUser()">
+                    {{ isFollowing ? 'Não Seguir' : 'Seguir' }}
+                </button>
             </div>
+            <div *ngIf="userprofile.user.is_active && !myprofile" class="ml-2"> <button type="button" class="btn btn-outline-danger btn-sm" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#reportModal">
+                    Reportar Utilizador
+                </button>
+            </div>
+        </div>
+    </div>
             <div class="d-flex mb-3">
                 <div class="mr-4">
                     <strong>{{ pnumber }}</strong> produtos
@@ -41,18 +44,12 @@
                     <strong>{{ following_number }}</strong> seguindo
                   </a>
                 </div>
-                  
-                  
-                <div *ngIf="!myprofile" class="mb-3">
-                    <button class="btn btn-outline-primary btn-sm" (click)="isFollowing ? unfollowUser() : followUser()">
-                      {{ isFollowing ? 'Não Seguir' : 'Seguir' }}
-                    </button>
-                </div>
+  
             </div>
                 <p>Nome: {{ userprofile.user.first_name }} {{ userprofile.user.last_name }}</p>
         </div>
     </div>
-    <div *ngIf="moderator && userprofile.user.is_active">
+    <div *ngIf="logged_in && moderator && userprofile.user.is_active">
         <app-report-list [reports]="reports"></app-report-list>
     </div>
     <hr/>
@@ -61,7 +58,7 @@
         [user]="true"
         [target]="userprofile"
         (reportSubmitted)="onReportSubmitted()"
-        ></app-report-modal>
+    ></app-report-modal>
 
     <!-- Report Modal 
     <div class="modal fade" id="reportModal" tabindex="-1" role="dialog" aria-labelledby="reportModalLabel" aria-hidden="true">
@@ -87,14 +84,16 @@
         </div>
     </div>
     -->
-    <div *ngIf="userprofile.user.is_active; else banned">
-        <app-product-list *ngIf="userprofile.user.username" [username]="userprofile.user.username" ></app-product-list>
+    <div *ngIf="userprofile.user && (userprofile.user.is_active === undefined || userprofile.user.is_active === true); else banned">
+        <app-product-list *ngIf="userprofile.user.username" [username]="userprofile.user.username"></app-product-list>
     </div>
+    
     <ng-template #banned>
         <div class="alert alert-danger" style="border: 2px solid darkred; background-color: #f8d7da; color: darkred; font-size: 2rem; text-align: center; padding: 20px;">
             <strong>Este usuário foi banido!!!</strong>
         </div>
-      </ng-template>
+    </ng-template>
+    
 </div>
 
 <div class="modal fade" id="followersModal" tabindex="-1" aria-labelledby="followersModalLabel" aria-hidden="true">
