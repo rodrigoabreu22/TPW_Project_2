@@ -16,6 +16,7 @@ import { ModeratorService } from '../moderator.service';
 import { ReportListComponent } from '../report-list/report-list.component';
 import { ReportModalComponent } from '../report-modal/report-modal.component';
 import { Subscription } from 'rxjs';
+import { ReportService } from '../report.service';
 
 @Component({
   selector: 'app-user-profile',
@@ -67,6 +68,7 @@ export class UserProfileComponent {
   followService: FollowerInfoService = inject(FollowerInfoService);
   loginService: LoginService = inject(LoginService);
   moderatorService: ModeratorService = inject(ModeratorService);
+  reportService: ReportService = inject(ReportService);
 
   constructor(private route: ActivatedRoute) { 
     this.routeSubscription = this.router.params.subscribe(params => {
@@ -107,7 +109,7 @@ export class UserProfileComponent {
           if (this.isBrowser()) {
             this.token = localStorage.getItem("token");
             if (this.token) {
-              const fetchedReports = await this.moderatorService.getUReports(this.username, this.token);
+              const fetchedReports = await this.reportService.getUReports(this.username, this.token);
               this.reports = fetchedReports;
             }
           } else {
@@ -140,7 +142,7 @@ export class UserProfileComponent {
             if (this.isBrowser()) {
               this.token = localStorage.getItem("token");
               if(this.token){
-                const fetchedReports = await this.moderatorService.getUReports(this.username,this.token);
+                const fetchedReports = await this.reportService.getUReports(this.username,this.token);
                 this.reports = fetchedReports;
               }
             }

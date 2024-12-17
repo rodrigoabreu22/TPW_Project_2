@@ -17,15 +17,6 @@ export class LoginService {
 
   constructor() {}
 
-    async getNotifs(): Promise<number> {
-      const url: string = this.baseUrl + 'users/notifs/';
-      const data: Response = await fetch(url, {
-        headers: { Authorization: `Token ${localStorage.getItem('token')}` },
-      });
-      const response = await data.json();
-      return response.offer_count;
-    }
-
     async getLoggedUser(): Promise<UserProfile> {
       const userId = localStorage.getItem('id');
       if (!userId) {
@@ -40,10 +31,6 @@ export class LoginService {
       localStorage.setItem('id', JSON.stringify(user?.id));
     }
     this.currentUser.next(user);
-  }
-
-  private setBanned(banned: boolean): void {
-    this.banned = banned;
   }
 
   async login(username: string, password: string): Promise<UserProfile | boolean | null> {

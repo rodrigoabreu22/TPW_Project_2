@@ -94,7 +94,13 @@ export class OffersService {
     return await response.json();
   }
 
-
-
+  async getNotifs(): Promise<number> {
+      const url: string = `http://localhost:8080/ws/users/notifs/`;
+      const data: Response = await fetch(url, {
+        headers: { Authorization: `Token ${localStorage.getItem('token')}` },
+      });
+      const response = await data.json();
+      return response.offer_count;
+    }
 
 }

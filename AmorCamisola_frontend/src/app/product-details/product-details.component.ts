@@ -15,6 +15,7 @@ import { OfferModalComponent } from '../offer-modal/offer-modal.component';
 import { Offer } from '../offer';
 import { OffersService } from '../offers.service';
 import { Subscription } from 'rxjs';
+import { ReportService } from '../report.service';
 
 @Component({
   selector: 'app-product-details',
@@ -48,6 +49,7 @@ export class ProductDetailsComponent implements OnInit {
   private userService: UserService = inject(UserService);
   private loginService: LoginService = inject(LoginService);
   private moderatorService: ModeratorService = inject(ModeratorService);
+  private reportService: ReportService = inject(ReportService);
 
   private currentNegotiations: Offer[] = [];
 
@@ -128,7 +130,7 @@ export class ProductDetailsComponent implements OnInit {
         if (this.isBrowser()) {
           this.token = localStorage.getItem("token");
           if(this.token){
-            const fetchedReports = await this.moderatorService.getPReports(this.productId,this.token);
+            const fetchedReports = await this.reportService.getPReports(this.productId,this.token);
             this.reports = fetchedReports;
           }
         }
@@ -150,7 +152,7 @@ export class ProductDetailsComponent implements OnInit {
       if (this.isBrowser()) {
         this.token = localStorage.getItem("token");
         if(this.token){
-          const fetchedReports = await this.moderatorService.getPReports(this.productId,this.token);
+          const fetchedReports = await this.reportService.getPReports(this.productId,this.token);
           this.reports = fetchedReports;
         }
       }

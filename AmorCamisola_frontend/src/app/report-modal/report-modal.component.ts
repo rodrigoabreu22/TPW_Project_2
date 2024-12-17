@@ -5,6 +5,7 @@ import { LoginService } from '../login.service';
 import { log } from 'console';
 import { CommonModule } from '@angular/common';
 import { UserProfile } from '../user-profile';
+import { ReportService } from '../report.service';
 
 @Component({
   selector: 'app-report-modal',
@@ -38,7 +39,7 @@ export class ReportModalComponent {
   loginService: LoginService = inject(LoginService);
 
 
-  constructor(private reportService: ModeratorService) {}
+  constructor(private reportService: ReportService) {}
 
   ngOnInit(): void {
     if (this.isBrowser()){

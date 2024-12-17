@@ -7,6 +7,7 @@ import { LoginService } from '../login.service';
 import { UserProfile } from '../user-profile';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { OffersService } from '../offers.service';
 
 @Component({
   selector: 'app-navbar',
@@ -26,6 +27,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   userService: UserService = inject(UserService);
   loginService: LoginService = inject(LoginService);
+  offerService: OffersService = inject(OffersService);
 
   constructor(private route: ActivatedRoute, private router: Router) { }
 
@@ -66,7 +68,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   async getNotifCount(): Promise<number> {
     try {
-      const notif = await this.loginService.getNotifs();
+      const notif = await this.offerService.getNotifs();
       return notif;
     } catch (error) {
       console.error("Failed to load logged user:", error);
