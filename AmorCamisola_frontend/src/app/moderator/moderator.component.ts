@@ -7,6 +7,7 @@ import { NgZone } from '@angular/core';
 import { LoginService } from '../login.service';
 import { UserService } from '../user.service';
 import { Router } from '@angular/router';
+import { UserProfile } from '../user-profile';
 
 
 @Component({
@@ -20,6 +21,7 @@ export class ModeratorComponent {
   product_reports: ReportView[] = [];
   user_reports: ReportView[] = [];
   token: string | null = null;
+  log_user: UserProfile | null = null;
 
   moderatorService: ModeratorService = inject(ModeratorService);
   loginService: LoginService = inject(LoginService);
@@ -41,6 +43,7 @@ export class ModeratorComponent {
     this.loginService.getLoggedUser()
             .then(user => {
               if (user) {
+                this.log_user = user
                 this.userService.checkModerator(user.user.username)
                 .then(moderator => {
                   if (!moderator){

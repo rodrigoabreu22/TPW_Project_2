@@ -94,6 +94,7 @@ export class ProductDetailsComponent implements OnInit {
 
   getOfferAction(): () => void {
     if (!this.token) return this.redirectToLogin;
+    if (this.product?.seller.id === this.log_user?.user.id) return this.removeProduct;
     if (this.currentNegotiations.some(offer => offer.product.id === this.product?.id)) return this.redirectToOffers;
     if (this.product?.seller.id === this.log_user?.user.id) return this.removeProduct;
     return this.showOfferModal;
