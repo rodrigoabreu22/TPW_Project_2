@@ -20,36 +20,38 @@
   <!-- User Reports Section -->
   <div *ngIf="showUserReports && user_reports.length > 0" id="user-reports-section">
     <h2 class="mb-3">Denúncias de usuários</h2>
-    <div *ngFor="let report of user_reports" class="report-item d-flex align-items-center p-3 mb-3 shadow-sm rounded">
-      <!-- Image -->
-      <a [routerLink]="['/profile', report.report.reporting?.user?.username]">
-        <div class="report-image flex-shrink-0 me-3">
-          <img [src]="'http://127.0.0.1:8080' + report.report.reporting?.image || 'placeholder.jpg'" 
-              alt="User Image" 
-              class="rounded-circle">
+    <div *ngFor="let report of user_reports">
+      <div *ngIf="report.report.reporting?.user?.username != log_user?.user?.username" class="report-item d-flex align-items-center p-3 mb-3 shadow-sm rounded">
+        <!-- Image -->
+        <a [routerLink]="['/profile', report.report.reporting?.user?.username]">
+          <div class="report-image flex-shrink-0 me-3">
+            <img [src]="'http://127.0.0.1:8080' + report.report.reporting?.image || 'placeholder.jpg'" 
+                alt="User Image" 
+                class="rounded-circle">
+          </div>
+        </a>
+
+        <!-- User Info -->
+        <div class="report-info flex-grow-1">
+          <h5 class="mb-1">{{ report.report.reporting?.user?.username }}</h5>
+          <p class="text-muted mb-0">
+            <strong>Número de denúncias:</strong> {{ report.count }}
+          </p>
         </div>
-      </a>
 
-      <!-- User Info -->
-      <div class="report-info flex-grow-1">
-        <h5 class="mb-1">{{ report.report.reporting?.user?.username }}</h5>
-        <p class="text-muted mb-0">
-          <strong>Número de denúncias:</strong> {{ report.count }}
-        </p>
-      </div>
-
-      <!-- Action Buttons -->
-      <div class="report-actions ms-auto">
-        <button 
-          class="btn btn-warning btn-sm me-2" 
-          (click)="toggleUserBan(report.report.reporting?.user?.id, report.report.reporting?.user?.is_active)">
-          {{ report.report.reporting?.user?.is_active ? 'Banir usuário' : 'Desbanir usuário' }}
-        </button>
-        <button 
-          class="btn btn-danger btn-sm" 
-          (click)="closeReport(report.report.id, true)">
-          Fechar denúncia
-        </button>
+        <!-- Action Buttons -->
+        <div class="report-actions ms-auto">
+          <button 
+            class="btn btn-warning btn-sm me-2" 
+            (click)="toggleUserBan(report.report.reporting?.user?.id, report.report.reporting?.user?.is_active)">
+            {{ report.report.reporting?.user?.is_active ? 'Banir usuário' : 'Desbanir usuário' }}
+          </button>
+          <button 
+            class="btn btn-danger btn-sm" 
+            (click)="closeReport(report.report.id, true)">
+            Fechar denúncia
+          </button>
+        </div>
       </div>
     </div>
   </div>

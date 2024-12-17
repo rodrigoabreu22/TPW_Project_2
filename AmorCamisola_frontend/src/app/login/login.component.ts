@@ -33,11 +33,19 @@ export class LoginComponent implements OnInit{
       const password = this.loginForm.value.password;
 
       this.loginUserService.login(username, password)
-        .then((success: UserProfile | null) => {
+        .then((success: UserProfile | boolean | null) => {
           if (success) {
-            console.log("Success!!!", success);
-            this.goBack();
+            if (typeof success === "boolean") {
+              console.log("User banido")
+              alert("Esta conta foi banida por um dos nosso moderadores")
+            } else if (typeof success === "object" && success !== null) {
+              console.log("Success is a UserProfile:", success);
+              this.goBack();
+            } else {
+              console.log("Success is of an unknown type:", success);
+            }
           } else {
+            console.log("OLAAAAAAAAAAAAAAA")
             this.invalidCredentials = true;
           }
         })

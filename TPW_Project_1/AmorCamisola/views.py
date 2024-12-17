@@ -1520,14 +1520,18 @@ def login(request):
             username = request.data.get('username')
             password = request.data.get('password')
             print(username, password)
+            try_user = User.objects.get(username=username)
+            if username == "admin" and password == "admin":
+                return Response({"admin": True},status=status.HTTP_401_UNAUTHORIZED)
+            banned = not try_user.is_active
             user = authenticate(username=username, password=password)
             if user is not None:
                 user_profile = UserProfile.objects.get(user=user)
                 user_serializer = UserProfileSerializer(user_profile, many=False)
                 token, _ = Token.objects.get_or_create(user=user)
-                return Response({"userProfile": user_serializer.data, "token": token.key}, status=status.HTTP_200_OK)
+                return Response({"userProfile": user_serializer.data, "token": token.key, "banned": banned}, status=status.HTTP_200_OK)
             else:
-                return Response(status=status.HTTP_401_UNAUTHORIZED)
+                return Response({"banned": banned},status=status.HTTP_401_UNAUTHORIZED)
         except Exception as e:
             return Response(
                 {"error": str(e)},
@@ -1701,6 +1705,40 @@ def toggle_ban_user(request, user_id):
         for x in user_products:
             x.is_active = False
             x.save()
+        related_offers = Offer.objects.filter(
+            models.Q(buyer=user.userprofile) | models.Q(product__seller=user)
+        )
+        for offer in related_offers:
+            print(offer)
+            offer_status_conditions = offer.paid and not offer.delivered
+
+            offer_status_conditions2 = offer.offer_status in ["accepted","rejected"] and not offer.paid and not offer.delivered
+
+            offer_status_conditions3 = offer.offer_status in ["in_progress"]
+
+            print(offer.product)
+
+            buyer_profile = offer.buyer
+            seller_profile = UserProfile.objects.get(user=offer.product.seller)
+
+            if (offer.product.seller == user and (offer_status_conditions or offer_status_conditions2)) or \
+                    (offer.buyer == user and (offer_status_conditions or offer_status_conditions2)):
+                print("Condition 1 or 2 met: Transferring money from seller to buyer and deleting offer")
+
+                buyer_profile.wallet += offer.value
+                buyer_profile.save()
+                seller_profile.wallet -= offer.value
+                seller_profile.save()
+
+                offer.delete()
+
+            elif offer_status_conditions3:
+                print("Condition 3 met: Adding money to buyer and deleting offer")
+
+                buyer_profile.wallet += offer.value
+                buyer_profile.save()
+
+                offer.delete()
     else:
         user.is_active = True
         action = "unbanned"
