@@ -1,16 +1,36 @@
 <div class="container my-5">
     <h2 class="mb-4">Dashboard das Ofertas</h2>
+
+  <!-- Nav Tabs -->
+  <ul class="nav nav-tabs mb-4">
+    <li class="nav-item">
+      <button
+        class="nav-link"
+        [class.active]="activeTab === 'sales'"
+        (click)="switchTab('sales')">
+        Vendas
+      </button>
+    </li>
+    <li class="nav-item">
+      <button
+        class="nav-link"
+        [class.active]="activeTab === 'purchases'"
+        (click)="switchTab('purchases')">
+        Compras
+      </button>
+    </li>
+  </ul>
   
     <!-- Offers Sent -->
-    <app-offers-sent [sentOffers]="sentOffers" (offerSent)="handleUpdates($event)"></app-offers-sent>
+    <app-offers-sent [sentOffers]="filteredSentOffers" (offerSent)="handleUpdates($event)"></app-offers-sent>
   
     <!-- Offers Received -->
-    <app-offers-received [receivedOffers]="receivedOffers" (offerReceived)="handleUpdates($event)"></app-offers-received>
+    <app-offers-received [receivedOffers]="filteredReceivedOffers" (offerReceived)="handleUpdates($event)"></app-offers-received>
   
     <!-- Accepted Offers -->
-    <app-offers-accepted [acceptedOffers]="acceptedOffers" (offerAccepted)="handleUpdates($event)"></app-offers-accepted>
+    <app-offers-accepted [acceptedOffers]="filteredAcceptedOffers" (offerAccepted)="handleUpdates($event)"></app-offers-accepted>
   
     <!-- Processed Offers -->
-    <app-offers-processed [processedOffers]="processedOffers" (offerProcessed)="handleUpdates($event)"></app-offers-processed>
+    <app-offers-processed [processedOffers]="filteredProcessedOffers" (offerProcessed)="handleUpdates($event)"></app-offers-processed>
   </div>
   
