@@ -127,8 +127,11 @@ class ProductSerializer(serializers.ModelSerializer):
         category = validated_data.pop('category', None)
         size = validated_data.pop('size', None)
         image_base64 = validated_data.pop('image_base64', None)  # Remove `image_base64
-        
-        validated_data['id'] = Product.objects.count() + 1
+        count = Product.objects.count()
+        if count == 0:
+            validated_data['id'] = 1
+        else:
+            validated_data['id'] = Product.objects.count() + 1
     
         if seller_data:
             print("--------------_> ",seller_data)
