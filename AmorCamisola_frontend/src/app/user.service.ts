@@ -18,11 +18,14 @@ export class UserService {
    }
    
 
-   async getWallet(user_id: number) {
+   async getWallet() {
     // NEEDS USER ID NOT USER PROFILE ID
-    const url = `${this.baseUrl}wallet/?user_id=${user_id}`;
-    const response: Response = await fetch(url);
-    return await response.json();
+    console.log("Getting wallet");
+    const url = `${this.baseUrl}users/wallet/`;
+    const response: Response = await fetch(url, {'headers': {'Authorization': `Token ${localStorage.getItem('token')}`}});
+    const wallet = await response.json();
+    this.walletValueSubject.next(wallet.wallet);
+    return wallet;
    }
 
    async updateWallet(amount: number, action: string) {

@@ -6,7 +6,7 @@ import { Product } from '../product';
 import { UserService } from '../user.service';
 import { UserProfile } from '../user-profile';
 import { LoginService } from '../login.service';
-import { Router } from '@angular/router';  // Import Router for navigation
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-publish-product',
@@ -54,10 +54,18 @@ export class PublishProductComponent implements OnInit {
 
   async setSellerData(): Promise<void> {
     try {
-      const userProfile: UserProfile = await this.loginService.getLoggedUser()
-      if (userProfile && userProfile.user) {
-        this.product.seller = userProfile.user;
-      }
+
+      this.loginService.getLoggedUser()
+        .then(user => {
+          if (user) {
+            this.product.seller = user.user;
+            console.log("USER ATUAL", user);
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching logged user:', error);
+          this.router.navigate(['authentication']); // Redirect to authentication page
+        });
     } catch (error) {
       console.error('Error fetching user profile:', error);
     }

@@ -14,6 +14,7 @@ import { ReportModalComponent } from '../report-modal/report-modal.component';
 import { OfferModalComponent } from '../offer-modal/offer-modal.component';
 import { Offer } from '../offer';
 import { OffersService } from '../offers.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-product-details',
@@ -33,6 +34,7 @@ export class ProductDetailsComponent implements OnInit {
   offerService: OffersService = inject(OffersService);
   showReports = false;
   log_user: UserProfile | null = null;
+  offerSubscription!: Subscription;
 
   toggleReports() {
     this.showReports = !this.showReports;
@@ -70,6 +72,7 @@ export class ProductDetailsComponent implements OnInit {
   }
 
   getOfferLabel(): string {
+    if (!this.token) return "Iniciar sessão"
     if (this.currentNegotiations.some(offer => offer.product.id === this.product?.id)) return "Negociação em andamento";
     if (this.product?.seller.id === Number(localStorage.getItem("id"))) return "Remover produto";
     if (!this.product?.is_active) return "Produto indisponível";
@@ -82,6 +85,7 @@ export class ProductDetailsComponent implements OnInit {
   }
 
   getOfferColor(): string {
+    if (!this.token) return "btn-primary";
     if (this.currentNegotiations.some(offer => offer.product.id === this.product?.id)) return "btn-warning";
     if (this.product?.seller.id === Number(localStorage.getItem("id"))) return "btn-danger";
     if (!this.product?.is_active) return "btn-danger";
@@ -89,6 +93,7 @@ export class ProductDetailsComponent implements OnInit {
   }
 
   getOfferAction(): () => void {
+    if (!this.token) return this.redirectToLogin;
     if (this.product?.seller.id === Number(localStorage.getItem("id"))) return this.removeProduct;
     if (this.currentNegotiations.some(offer => offer.product.id === this.product?.id)) return this.redirectToOffers;
     return this.showOfferModal;
@@ -106,6 +111,10 @@ export class ProductDetailsComponent implements OnInit {
     console.log(this.offerService)
     console.log(this.userService)
     console.log(this.loginService)
+    this.offerSubscription = this.offerService.currentOffers$.subscribe((value) => {
+      console.log('Offer value changed:', value);
+      this.currentNegotiations = value![0].concat(value![1]).concat(value![2]);
+    });
     if (this.productId <= 0) {
       console.warn('Invalid or missing product ID.');
       return;
@@ -167,6 +176,11 @@ export class ProductDetailsComponent implements OnInit {
     console.log('redirectToOffers');
     this.router.navigate(['offers']);
   };
+
+  redirectToLogin = (): void => {
+    console.log('redirectToLogin');
+    this.router.navigate(['authentication']);
+  }
   
 
   submitOffer(offer: Offer) {

@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-moderator',
   standalone: true,
-  imports: [CommonModule,RouterModule,RouterLink],
+  imports: [CommonModule,RouterModule],
   templateUrl: './moderator.component.html',
   styleUrl: './moderator.component.css'
 })
@@ -38,14 +38,26 @@ export class ModeratorComponent {
     }
   }
   async process(): Promise<void> {
-    const user = await this.loginService.getLoggedUser();
-    if (!user){
-      this.router.navigate(['/']);
-    }
-    const moderator = await this.userService.checkModerator(user.user.username);
-    if (!moderator){
-      this.router.navigate(['/']);
-    }
+    this.loginService.getLoggedUser()
+            .then(user => {
+              if (user) {
+                this.userService.checkModerator(user.user.username)
+                .then(moderator => {
+                  if (!moderator){
+                    this.router.navigate(['/']);
+                  }
+                })
+                .catch(error => {
+                  console.error('Error fetching logged user:', error);
+                  this.router.navigate(['/']); // Redirect to authentication page
+                });
+                console.log("USER ATUAL", user);
+              }
+            })
+            .catch(error => {
+              console.error('Error fetching logged user:', error);
+              this.router.navigate(['/']); // Redirect to authentication page
+            });
   }
 
   showUserReports: boolean = true; // Default to showing user reports

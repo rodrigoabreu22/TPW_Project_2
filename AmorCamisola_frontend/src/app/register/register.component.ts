@@ -78,7 +78,7 @@ export class RegisterComponent {
         user: user,
         address: this.registerForm.value.address,
         phone: this.registerForm.value.phone,
-        image: '',
+        image: 'defaultUser.png',
         wallet: 0
       }
       console.log('Registering user:', userProfile);
