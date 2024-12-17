@@ -2,7 +2,7 @@ import { Component, Input, inject, OnInit } from '@angular/core';
 import { ProductService } from '../product.service';
 import { Product } from '../product';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { UserProfile } from '../user-profile';
 import { UserService } from '../user.service';
 import { LoginService } from '../login.service';
@@ -41,9 +41,51 @@ export class ProductDetailsComponent implements OnInit {
   private userService: UserService = inject(UserService);
   private loginService: LoginService = inject(LoginService);
   private moderatorService: ModeratorService = inject(ModeratorService);
+  private currentNegotiations: Offer[] = [];
 
-  constructor(private route: ActivatedRoute) {
+  constructor(private route: ActivatedRoute, private router: Router) {
     this.productId = route.snapshot.params['id']
+    const userId = Number(localStorage.getItem("id"));
+    if (this.token) {
+      this.offerService.getOffersByUser(userId, this.token).then(offers => {
+        if (offers) {
+          console.log('Offers:', offers);
+          this.currentNegotiations = offers[0].concat(offers[1]).concat(offers[2]);
+          console.log('Current negotiations:', this.currentNegotiations);
+        } else {
+          console.warn('No offers found');
+        }
+      }).catch(error => {
+        console.error('Error fetching offers:', error);
+      });
+    } else {
+      console.warn('Token is null');
+    }
+  }
+
+  getOfferLabel(): string {
+    if (this.currentNegotiations.some(offer => offer.product.id === this.product?.id)) return "Negociação em andamento";
+    if (this.product?.seller.id === Number(localStorage.getItem("id"))) return "Remover produto";
+    if (!this.product?.is_active) return "Produto indisponível";
+    
+    return "Fazer proposta";
+  }
+
+  getOfferDisabled(): boolean {
+    return !this.product?.is_active!;
+  }
+
+  getOfferColor(): string {
+    if (this.currentNegotiations.some(offer => offer.product.id === this.product?.id)) return "btn-warning";
+    if (this.product?.seller.id === Number(localStorage.getItem("id"))) return "btn-danger";
+    if (!this.product?.is_active) return "btn-danger";
+    return "btn-primary";
+  }
+
+  getOfferAction(): () => void {
+    if (this.product?.seller.id === Number(localStorage.getItem("id"))) return this.removeProduct;
+    if (this.currentNegotiations.some(offer => offer.product.id === this.product?.id)) return this.redirectToOffers;
+    return this.showOfferModal;
   }
 
   onReportSubmitted(): void {
@@ -87,6 +129,17 @@ export class ProductDetailsComponent implements OnInit {
       console.error('Error loading product or seller information:', error);
     }
   }
+
+  removeProduct(): void {
+    console.log('removeProduct');
+    this.productService.deleteProduct(this.productId, this.token!);
+  }
+
+  redirectToOffers = (): void => {
+    console.log('redirectToOffers');
+    this.router.navigate(['offers']);
+  };
+  
 
   submitOffer(offer: Offer) {
     this.offerService.submitOffer(offer, this.token!);

@@ -51,6 +51,23 @@ export class ProductService {
     return response;
     }
 
+
+    async deleteProduct(id: number, token: string): Promise<any> {
+      const url = `${this.baseUrl}products/${id}/`;
+      const data = await fetch(url, {
+        method: "DELETE", headers: new Headers({"Content-Type": "application/json", "Authorization": `Token ${token}`})});
+        let response: any;
+        if (!data.ok) {
+          response = await data.text();
+          console.log('Error logging in:', response);
+          return null;
+        } else {
+          response = await data.json();
+          console.log('Login response:', response);
+        }
+      return response;
+      }
+
     //async filterProducts(filters: any): Promise<Product[]> {
     //  const params = new URLSearchParams();
     //  for (const key in filters) {

@@ -1756,7 +1756,19 @@ def wallet_function(request):
     except UserProfile.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     
-
+@api_view(['DELETE'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def delete_product(request, product_id):
+    try:
+        if product.seller.id == request.user.id:
+            product = Product.objects.get(id=product_id)
+            product.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_403_FORBIDDEN)
+    except Product.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
 
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
