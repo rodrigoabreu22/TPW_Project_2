@@ -25,7 +25,7 @@ export class ReportModalComponent {
   ];
 
   report: Partial<Report> = {
-    reasons: '',
+    reasons: 'IN',
     description: '',
     product: null,
     reporting: null,

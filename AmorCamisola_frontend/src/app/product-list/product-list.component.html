@@ -2,7 +2,7 @@
 
 <div *ngIf="!isLoading" class="product-list">
   <div *ngFor="let product of products" class="product-item">
-    <app-product [productId]="product.id"></app-product> 
+    <app-product *ngIf="product.is_active && product.seller.is_active && !product.sold" [productId]="product.id"></app-product> 
   </div>
 </div>
 
