@@ -23,9 +23,6 @@ export class UserListComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    console.log("perfil", this.perfil)
-    console.log("users",this.simple_user)
-    console.log("lenght", this.simple_user.length)
     if (this.perfil && this.simple_user.length > 0) {
       this.userService.getUsersProfiles(this.simple_user)
         .then((users: UserProfile[]) => {

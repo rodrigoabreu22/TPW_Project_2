@@ -22,7 +22,6 @@ export class OffersAcceptedComponent {
   async confirmDelivery(offer: Offer | undefined) {
     const updatedOffers = await this.offersService.updateOffer(offer!, 'delivered', localStorage.getItem('token')!);
     if (updatedOffers) {
-      console.log(updatedOffers);
       this.offerAccepted.emit(updatedOffers);
     }
   }
@@ -30,7 +29,6 @@ export class OffersAcceptedComponent {
   async confirmPayment(offer: Offer | undefined) {
     const updatedOffers = await this.offersService.updateOffer(offer!, 'paid', localStorage.getItem('token')!);
     if (updatedOffers) {
-      console.log(updatedOffers);
       this.offerAccepted.emit(updatedOffers);
     }
   }

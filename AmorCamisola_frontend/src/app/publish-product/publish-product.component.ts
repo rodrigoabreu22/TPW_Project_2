@@ -59,7 +59,6 @@ export class PublishProductComponent implements OnInit {
         .then(user => {
           if (user) {
             this.product.seller = user.user;
-            console.log("USER ATUAL", user);
           }
         })
         .catch(error => {

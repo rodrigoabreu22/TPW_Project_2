@@ -21,7 +21,6 @@ export class OffersProcessedComponent {
     async deleteOffer(offer: Offer | undefined) {
       const updatedOffers = await this.offersService.updateOffer(offer!, 'deleted', localStorage.getItem('token')!);
       if (updatedOffers) {
-        console.log(updatedOffers);
         this.offerProcessed.emit(updatedOffers);
       }
     }

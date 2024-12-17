@@ -26,7 +26,6 @@ export class OffersReceivedComponent {
     async rejectOffer(offer: Offer | undefined) {
       const updatedOffers = await this.offersService.updateOffer(offer!, 'rejected', localStorage.getItem('token')!);
       if (updatedOffers) {
-        console.log(updatedOffers);
         this.offerReceived.emit(updatedOffers);
       }
     }
@@ -34,7 +33,6 @@ export class OffersReceivedComponent {
     async acceptOffer(offer: Offer | undefined) {
       const updatedOffers = await this.offersService.updateOffer(offer!, 'accepted', localStorage.getItem('token')!);
       if (updatedOffers) {
-        console.log(updatedOffers);
         this.offerReceived.emit(updatedOffers);
       }
     }
@@ -43,7 +41,6 @@ export class OffersReceivedComponent {
       this.selectedOffer = offer;
       this.selectedProductName = offer?.product;
       this.showModal = true;
-      console.log('counterOffer', offer);
       console.log('showModal', this.showModal);
       /*const updatedOffers = await this.offersService.updateOffer(offer!, 'countered', localStorage.getItem('token')!);
       if (updatedOffers) {
@@ -54,7 +51,6 @@ export class OffersReceivedComponent {
     }
 
     async submitCounterOffer(offer: Offer) {
-      console.log('submitCounterOffer', offer);
       const updatedOffers = await this.offersService.updateOffer(offer!, 'countered', localStorage.getItem('token')!);
       if (updatedOffers) {
         console.log(updatedOffers);

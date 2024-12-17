@@ -54,7 +54,6 @@ export class ModeratorComponent {
                   console.error('Error fetching logged user:', error);
                   this.router.navigate(['/']); // Redirect to authentication page
                 });
-                console.log("USER ATUAL", user);
               }
             })
             .catch(error => {
@@ -77,8 +76,6 @@ export class ModeratorComponent {
   async reports(): Promise<void> {
     await this.loadUserReports();
     await this.loadProductReports();
-    console.log(this.product_reports);
-    console.log(this.user_reports)
   }
 
   async loadUserReports(): Promise<void> {

@@ -36,7 +36,6 @@ export class LoginService {
     }
 
   private setCurrentUser(user: UserProfile | null): void {
-    console.log('Setting current user:', user);
     if (user) {
       localStorage.setItem('id', JSON.stringify(user?.id));
     }

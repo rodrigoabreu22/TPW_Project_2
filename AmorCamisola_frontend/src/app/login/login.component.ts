@@ -45,7 +45,6 @@ export class LoginComponent implements OnInit{
               console.log("Success is of an unknown type:", success);
             }
           } else {
-            console.log("OLAAAAAAAAAAAAAAA")
             this.invalidCredentials = true;
           }
         })

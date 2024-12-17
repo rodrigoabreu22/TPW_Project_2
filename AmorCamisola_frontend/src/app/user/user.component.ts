@@ -23,12 +23,10 @@ export class UserComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.username != "") {
-      console.log("Username  ", this.username)
       this.userService
         .getUser(this.username)
         .then((fetchedUser: UserProfile) => {
           this.user = fetchedUser;
-          console.log(this.user)
         })
         .catch((error) => {
           console.error('Error fetching user:', error);

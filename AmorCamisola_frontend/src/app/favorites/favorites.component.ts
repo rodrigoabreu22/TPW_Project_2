@@ -24,20 +24,17 @@ export class FavoritesComponent{
     if (this.isBrowser()) {
       const storedId = localStorage.getItem("id");
       this.token = localStorage.getItem("token");
-      console.log("ola",storedId)
       if(storedId !== null){
         this.userId = parseInt(storedId, 10);
       }
     } else {
       console.warn("localStorage não está disponível no ambiente atual.");
     }
-    console.log(this.userId)
     if(this.userId){  
     this.favoriteService
       .getFavorites(this.userId, this.token!)
       .then((fetchedFavorites: Product[])=>{
         this.favorites = fetchedFavorites;
-        console.log(this.favorites)
     })
     .catch((error) => {
       console.error('Error fetching products from user:', error);

@@ -58,14 +58,11 @@ export class UserService {
    async getUsers(): Promise<UserProfile[]> {
     let url = `${this.baseUrl}users/`;
     const data: Response = await fetch(url);
-    console.log("TESTE!!!!!!!",data);
     return await data.json() ?? [];
   }
   async getUsersProfiles(users: User[]): Promise<UserProfile[]> {
-    console.log("Users array:", users);
     const usernames = users.map(user => user.username); // Get the usernames from the users array
     const url = `${this.baseUrl}usersprofiles/?usernames=${encodeURIComponent(usernames.join(','))}`;
-    console.log("usernames",usernames)
     const response: Response = await fetch(url);
     if (!response.ok) {
         throw new Error(`Error fetching user profiles: ${response.statusText}`);
@@ -113,14 +110,4 @@ export class UserService {
   
     return response.json();
   }  
-
-   async getUserFavorites(): Promise<Product[]>{
-      const userId = localStorage.getItem('id');
-      if (!userId) {
-        throw new Error('User is not logged in.');
-      }
-      let url = `${this.baseUrl}users/${userId}/favorites`;
-      const data :Response = await fetch(url);
-      return await data.json() ?? undefined;
-   }
   }

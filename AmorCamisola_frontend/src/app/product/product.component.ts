@@ -49,7 +49,6 @@ export class ProductComponent implements OnInit {
 
           // Check if it's the user's product
           if (this.product.seller.id === this.userId) {
-            console.log("Meu produto");
             this.myproduct = true;
           }
 

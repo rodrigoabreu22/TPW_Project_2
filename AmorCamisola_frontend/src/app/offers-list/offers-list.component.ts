@@ -43,15 +43,12 @@ export class OffersListComponent {
           this.loginService.getLoggedUser()
             .then(user => {
               this.currentUser = user;
-              console.log("USER ATUAL", user);
             })
             .catch(error => {
               console.error('Error fetching logged user:', error);
               this.route.navigate(['authentication']); // Redirect to authentication page
             });
   
-          console.log(listOffers);
-          console.log(this.currentUser);
           this.receivedOffers = listOffers[0];
           this.sentOffers = listOffers[1];
           this.acceptedOffers = listOffers[2];

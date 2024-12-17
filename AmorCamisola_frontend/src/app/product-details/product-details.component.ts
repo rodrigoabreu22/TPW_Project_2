@@ -109,9 +109,6 @@ export class ProductDetailsComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     console.log("Product detail")
-    console.log(this.offerService)
-    console.log(this.userService)
-    console.log(this.loginService)
     this.offerSubscription = this.offerService.currentOffers$.subscribe((value) => {
       console.log('Offer value changed:', value);
       this.currentNegotiations = value![0].concat(value![1]).concat(value![2]);
@@ -127,9 +124,7 @@ export class ProductDetailsComponent implements OnInit {
       const user = await this.loginService.getLoggedUser();
       this.log_user = user;
       this.moderator = await this.userService.checkModerator(user.user.username);
-      console.log("moderator1",this.moderator)
       if (this.moderator){
-        console.log("entrei")
         if (this.isBrowser()) {
           this.token = localStorage.getItem("token");
           if(this.token){
@@ -140,7 +135,6 @@ export class ProductDetailsComponent implements OnInit {
         else{
           console.warn("localStorage não está disponível no ambiente atual.");
         }
-        console.log("Reports",this.reports)
       }
       // If the product has a seller, fetch seller info
     } catch (error) {
@@ -153,7 +147,6 @@ export class ProductDetailsComponent implements OnInit {
 
   async fetchReports(): Promise<void> {
     if (this.moderator){
-      console.log("entrei")
       if (this.isBrowser()) {
         this.token = localStorage.getItem("token");
         if(this.token){
@@ -164,7 +157,6 @@ export class ProductDetailsComponent implements OnInit {
       else{
         console.warn("localStorage não está disponível no ambiente atual.");
       }
-      console.log("Reports",this.reports)
     }
   }
 

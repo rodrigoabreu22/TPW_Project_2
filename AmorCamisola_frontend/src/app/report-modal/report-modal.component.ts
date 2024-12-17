@@ -53,13 +53,8 @@ export class ReportModalComponent {
     if (log_user){
       this.currentUser = log_user
       this.report.sent_by = this.currentUser
-      console.log("ele fez isto")
     }
-    console.log(this.user);
-    console.log(this.token);
     if (this.user && this.token) {
-      console.log("TOU AQUI")
-      console.log(this.target)
       this.report.reporting = this.target as UserProfile; // Assign user to be reported
     } else {
       this.report.product = this.target; // Assign product to be reported
