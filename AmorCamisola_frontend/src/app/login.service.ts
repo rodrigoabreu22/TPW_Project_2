@@ -9,6 +9,7 @@ import { BehaviorSubject } from 'rxjs';
 export class LoginService {
   private baseUrl: string = 'http://localhost:8080/ws/';
   userService: UserService = inject(UserService);
+  banned: boolean = true;
   private currentUser = new BehaviorSubject<UserProfile | null>(null);
   currentUser$ = this.currentUser.asObservable();
   
@@ -42,7 +43,11 @@ export class LoginService {
     this.currentUser.next(user);
   }
 
-  async login(username: string, password: string): Promise<UserProfile | null> {
+  private setBanned(banned: boolean): void {
+    this.banned = banned;
+  }
+
+  async login(username: string, password: string): Promise<UserProfile | boolean | null> {
     const url: string = this.baseUrl + 'login';
     const data: Response = await fetch(url, {
       method: 'POST',
@@ -59,6 +64,17 @@ export class LoginService {
     if (!data.ok) {
       response = await data.text();
       console.log('Error logging in:', response);
+      try {
+        const parsedResponse = JSON.parse(response); // Parse the JSON string
+        console.log(parsedResponse['banned']); // Access the 'banned' property
+    
+        if (parsedResponse.banned) {
+          return parsedResponse.banned; // Return the value of 'banned'
+        }
+      } catch (error) {
+        console.error('Error parsing response:', error);
+      }
+    
       return null;
     } else {
       response = await data.json();

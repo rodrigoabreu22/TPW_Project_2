@@ -1520,14 +1520,16 @@ def login(request):
             username = request.data.get('username')
             password = request.data.get('password')
             print(username, password)
+            try_user = User.objects.get(username=username)
+            banned = not try_user.is_active
             user = authenticate(username=username, password=password)
             if user is not None:
                 user_profile = UserProfile.objects.get(user=user)
                 user_serializer = UserProfileSerializer(user_profile, many=False)
                 token, _ = Token.objects.get_or_create(user=user)
-                return Response({"userProfile": user_serializer.data, "token": token.key}, status=status.HTTP_200_OK)
+                return Response({"userProfile": user_serializer.data, "token": token.key, "banned": banned}, status=status.HTTP_200_OK)
             else:
-                return Response(status=status.HTTP_401_UNAUTHORIZED)
+                return Response({"banned": banned},status=status.HTTP_401_UNAUTHORIZED)
         except Exception as e:
             return Response(
                 {"error": str(e)},
