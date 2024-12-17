@@ -1,13 +1,13 @@
 body {
     display: flex;
     flex-direction: column;
-    min-height: 100vh; /* Ensure the body takes up at least the full viewport height */
-    margin: 0; /* Reset default body margins */
+    min-height: 100vh; 
+    margin: 0; 
 }
 
-main { /* Or whatever your main content container is */
-    flex: 1; /* Allow the main content to take up available space */
-    padding-bottom: 60px; /* Add padding to prevent content from being hidden under the footer */
+main { 
+    flex: 1; 
+    padding-bottom: 60px; 
 }
 
 footer {
@@ -15,7 +15,7 @@ footer {
     padding: 20px;
     text-align: center;
     color: white;
-    margin-top: auto; /* Push the footer to the bottom */
+    margin-top: auto; 
     width: 100%;
     max-width: 100%;
 }
