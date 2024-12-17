@@ -59,19 +59,22 @@ export class OfferModalComponent {
   async initializeUser() {
     this.user = await this.loginService.getLoggedUser();
     this.walletBalance = this.user?.wallet ?? 0;
+    console.log('User:', this.user?.user);
+    console.log('Seller:', this.product?.seller);
+    console.log(this.product?.seller?.id === this.user?.user?.id)
 
-    if (this.user?.user?.id && this.product?.seller?.id !== this.user?.user?.id) {
-      this.newWalletBalance = this.walletBalance + this.offerValue;
+    if (this.user?.user?.id && this.product?.seller?.id === this.user?.user?.id) {
+      this.newWalletBalance = Number(this.walletBalance) + Number(this.offerValue);
     } else {
-      this.newWalletBalance = this.walletBalance - this.offerValue;
+      this.newWalletBalance = Number(this.walletBalance) - Number(this.offerValue);
     }
   }
 
   checkBalance() {
-    if (this.user?.user?.id && this.product?.seller?.id !== this.user?.user?.id) {
-      this.newWalletBalance = this.walletBalance + this.offerValue;
+    if (this.user?.user?.id && this.product?.seller?.id === this.user?.user?.id) {
+      this.newWalletBalance = Number(this.walletBalance) + Number(this.offerValue);
     } else {
-      this.newWalletBalance = this.walletBalance - this.offerValue;
+      this.newWalletBalance = Number(this.walletBalance) - Number(this.offerValue);
     }
 
     return this.newWalletBalance;
@@ -100,6 +103,16 @@ export class OfferModalComponent {
   
     this.closeModal();
   }
+
+  canSubmit(): boolean {
+    const newBalance = this.checkBalance();
+    return newBalance >= 0 && this.offerValue > 0;
+  }
+
+  isStoreCreditSelected(): boolean {
+    return this.paymentMethod === 'store_credit'; // Adjust 'store_credit' to match your store credit value
+  }
+  
   
 
   closeModal() {

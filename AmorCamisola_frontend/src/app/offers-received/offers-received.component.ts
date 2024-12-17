@@ -65,17 +65,17 @@ export class OffersReceivedComponent {
     getActions(offer: Offer) {
       return [
         {
-          label: 'aceitar',
+          label: 'Aceitar',
           handler: this.acceptOffer.bind(this),
           color: 'btn-success'
         },
         {
-          label: 'rejeitar',
+          label: 'Rejeitar',
           handler: this.rejectOffer.bind(this),
           color: 'btn-danger'
         },
         {
-          label: 'contra-oferta',
+          label: 'Contra-Oferta',
           handler: this.counterOffer.bind(this),
           color: 'btn-warning'
         }

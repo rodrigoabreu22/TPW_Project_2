@@ -14,11 +14,7 @@
       <!-- Status Badge -->
         <span
         class="badge"
-        [ngClass]="{
-            'bg-success': offer?.offer_status === 'completed' || offer?.offer_status === 'accepted' || offer?.offer_status === 'sold',
-            'bg-danger': offer?.offer_status === 'rejected',
-            'bg-secondary': !offer?.offer_status
-        }"
+        [ngClass]="getColorLabel(offer?.offer_status)"
         >
         {{ getStatusLabel(offer?.offer_status) }}
         </span>
@@ -38,9 +34,9 @@
   
       <!-- Product Details -->
       <div class="col-md-8">
-        <p class="card-text mb-1"><strong>Valor:</strong> €{{ offer?.value }}</p>
-        <p class="card-text mb-1"><strong>Método de Pagamento:</strong> {{ offer?.payment_method }}</p>
-        <p class="card-text mb-1"><strong>Método de Entrega:</strong> {{ offer?.delivery_method }}</p>
+        <p class="card-text mb-1"><strong>Valor:</strong> {{ offer?.value }}€</p>
+        <p class="card-text mb-1"><strong>Método de Pagamento:</strong> {{ getPaymentMethodLabel(offer?.payment_method) }}</p>
+        <p class="card-text mb-1"><strong>Método de Entrega:</strong> {{ getDeliveryMethodLabel(offer?.delivery_method) }}</p>
         <p class="card-text mb-1"><strong>Endereço de Entrega:</strong> {{ offer?.address }}</p>
       </div>
     </div>

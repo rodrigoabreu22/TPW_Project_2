@@ -1,10 +1,12 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { UserService } from '../user.service';
 import { CommonModule } from '@angular/common';
 import { NavbarLoginComponent } from '../navbar-login/navbar-login.component';
 import { LoginService } from '../login.service';
 import { UserProfile } from '../user-profile';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-navbar',
@@ -12,16 +14,19 @@ import { UserProfile } from '../user-profile';
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit, OnDestroy {
   log_user: UserProfile | null = null;
   username: string = "";
   logged_in: boolean = false;
   moderator: boolean = false;
+  wallet: number = 0;
+  offerCount: Promise<number> = Promise.resolve(0);
+  private subscription!: Subscription;
 
   userService: UserService = inject(UserService);
   loginService: LoginService = inject(LoginService);
 
-  constructor(private route: ActivatedRoute) { }
+  constructor(private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
     if (this.isBrowser()) {
@@ -29,16 +34,38 @@ export class NavbarComponent {
     } else {
       console.warn("localStorage não está disponível no ambiente atual.");
     }
+    this.subscription = this.userService.walletValue$.subscribe((value) => {
+      console.log('Wallet value changed:', value);
+      this.wallet = value;
+    });
   }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+
   async initializeUser(): Promise<void> {
     await this.loadLoggedUser(); // Wait for the user to load
     console.log(this.log_user); // Now this will have the correct value
   
     if (this.log_user != null) {
+      this.offerCount = this.getNotifCount();
+      this.wallet = this.log_user.wallet;
       console.log("login", this.logged_in);
       this.username = this.log_user.user.username;
       console.log(this.username);
       await this.loadModerator(); // Proceed only after log_user is set
+    }
+  }
+
+  async getNotifCount(): Promise<number> {
+    try {
+      const notif = await this.loginService.getNotifs();
+      console.log("Notif",notif)
+      return notif;
+    } catch (error) {
+      console.error("Failed to load logged user:", error);
+      return 0;
     }
   }
 
@@ -73,5 +100,13 @@ export class NavbarComponent {
 
   private isBrowser(): boolean {
     return typeof window !== 'undefined' && typeof localStorage !== 'undefined';
+  }
+
+  logout() {
+    this.loginService.logout();
+    this.logged_in = false;
+    this.log_user = null;
+    this.router.navigate(['/']);
+    window.location.reload(); // shouldn't be here but unfortunately if the page is already /products then poo poo
   }
 }

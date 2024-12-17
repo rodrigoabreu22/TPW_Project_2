@@ -11,6 +11,15 @@ export class LoginService {
 
   constructor() {}
 
+    async getNotifs(): Promise<number> {
+      const url: string = this.baseUrl + 'users/notifs/';
+      const data: Response = await fetch(url, {
+        headers: { Authorization: `Token ${localStorage.getItem('token')}` },
+      });
+      const response = await data.json();
+      return response.offer_count;
+    }
+
     async getLoggedUser(): Promise<UserProfile> {
       const userId = localStorage.getItem('id');
       if (!userId) {
@@ -90,10 +99,10 @@ export class LoginService {
    * Clear the user's session / logout
    */
   logout() {
-    if (localStorage.getItem('token') === null) {
+    if (localStorage.getItem('token') !== null) {
       localStorage.removeItem('token');
     }
-    if (localStorage.getItem('id') === null) {
+    if (localStorage.getItem('id') !== null) {
       localStorage.removeItem('id');
     }
     this.setCurrentUser(null);

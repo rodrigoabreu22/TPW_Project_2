@@ -8,6 +8,27 @@ export class OffersService {
 
   constructor() { }
 
+  async submitOffer(offer: Offer, token: string): Promise<Offer[][] | null> {
+    const url = 'http://localhost:8080/ws/offers/';
+    const data = await fetch(url, {
+      method: 'POST',
+      headers: new Headers({'Content-Type': 'application/json', 'Authorization': `Token ${token}`}),
+      body: JSON.stringify(offer),
+    });
+    if (!data.ok) {
+      console.error('Error submitting offer:', await data.text());
+    }
+    if (!data.ok) {
+      return null;
+    }
+    const offers = await data.json();
+    const receivedOffers = offers.offers_received;
+    const sentOffers = offers.offers_made;
+    const acceptedOffers = offers.offers_accepted;
+    const processedOffers = offers.offers_processed;
+    return [receivedOffers, sentOffers, acceptedOffers, processedOffers];
+  }
+
   async getOffers(): Promise<any[]> {
     const url = 'http://localhost:8080/ws/offers/';
     const response: Response = await fetch(url);

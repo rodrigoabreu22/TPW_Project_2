@@ -23,6 +23,7 @@ from rest_framework.decorators import api_view, permission_classes, authenticati
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from AmorCamisola.serializers import *
+from decimal import Decimal
 
 
 def verifyIfAdmin(request):
@@ -1142,10 +1143,16 @@ def get_offers_aux(request):
     })
 
 def create_offer(request):
+    print(request.data)
     offer_serializer = OfferSerializer(data=request.data)
     offer_serializer.is_valid()
     offer = offer_serializer.create(validated_data=request.data)
-    return Response(offer)
+    offer.buyer.wallet -= Decimal(offer.value)
+    offer.buyer.save()
+    print("myoffer", offer)
+    new_offer_serializer = OfferSerializer(offer, many=False)
+    print(new_offer_serializer.data)
+    return Response(new_offer_serializer.data)
 
 
 @api_view(['GET', 'POST', 'PUT'])
@@ -1572,6 +1579,12 @@ def handle_offers(request):
                 value = offer.get('value')
                 print(offer_id)
                 new_offer = Offer.objects.get(id=offer_id)
+                if payment_method == "store_credit":
+                    if new_offer.buyer.id == new_offer.sent_by.id:
+                        new_offer.buyer.wallet -= new_offer.value
+                    else:
+                        new_offer.buyer.wallet += new_offer.value
+                    new_offer.buyer.save()
                 new_offer.payment_method = payment_method
                 new_offer.delivery_method = delivery_method
                 new_offer.address = address
@@ -1645,6 +1658,12 @@ def get_user_reports(request):
         #print(user_reports)
         return Response(user_reports,status=status.HTTP_200_OK)
     
+def deposit_money_api(id, deposit_amount):
+    userinfo = UserProfile.objects.get(user__id=id)
+    userinfo.wallet += deposit_amount
+    userinfo.save()
+    return Response({'wallet': userinfo.wallet}, status=status.HTTP_200_OK)
+
 @api_view(['DELETE'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
@@ -1694,7 +1713,39 @@ def close_report_a(request, report_id):
     return Response({"message": "Report closed successfully."})
 
 
-        
+def withdraw_money_api(user_id, withdrawal_amount):
+    userinfo = UserProfile.objects.get(user__id=user_id)
+    if withdrawal_amount <= userinfo.wallet:
+        userinfo.wallet -= withdrawal_amount
+        userinfo.save()
+    return Response({'wallet': userinfo.wallet}, status=status.HTTP_200_OK)
+
+@api_view(['GET', 'PUT'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def wallet_function(request):
+    try:
+        userProfile = UserProfile.objects.get(user=request.user)
+        if request.method == 'GET':
+            return Response({'wallet': userProfile.wallet}, status=status.HTTP_200_OK)
+        elif request.method == 'PUT':
+            amount = request.data.get('amount')
+            action = request.data.get('action')
+            if action == 'deposit':
+                return deposit_money_api(userProfile.user.id, amount)
+            elif action == 'withdraw':
+                return withdraw_money_api(userProfile.user.id, amount)
+        else:
+            return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    except UserProfile.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
     
+
+
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def check_notifs(request):
+    return Response({'offer_count': getOffersCount(request)}, status=status.HTTP_200_OK)
 
 # ------------------- REST API ------------------- #
