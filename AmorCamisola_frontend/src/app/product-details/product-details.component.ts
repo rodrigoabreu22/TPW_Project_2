@@ -143,12 +143,11 @@ export class ProductDetailsComponent implements OnInit {
         console.log("Reports",this.reports)
       }
       // If the product has a seller, fetch seller info
-      console.log("banana", this.product.seller)
-      if (this.product.seller.username) {
-        this.sellerInfo = await this.userService.getUser(this.product.seller.username);
-      }
     } catch (error) {
       console.error('Error loading product or seller information:', error);
+    }
+    if (this.product) {
+      this.sellerInfo = await this.userService.getUser(this.product.seller.username);
     }
   }
 
