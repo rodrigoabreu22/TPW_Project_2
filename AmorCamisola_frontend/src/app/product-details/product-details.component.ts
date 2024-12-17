@@ -167,10 +167,11 @@ export class ProductDetailsComponent implements OnInit {
     }
   }
 
-  removeProduct(): void {
+  removeProduct = async () => {
     console.log('removeProduct');
     this.productService.deleteProduct(this.productId, this.token!);
-  }
+    this.router.navigate(["/"])
+  };
 
   redirectToOffers = (): void => {
     console.log('redirectToOffers');
