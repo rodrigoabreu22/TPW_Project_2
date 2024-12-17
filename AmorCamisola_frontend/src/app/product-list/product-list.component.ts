@@ -1,9 +1,10 @@
-import { Component, OnInit, inject, Input } from '@angular/core';
+import { Component, OnInit, inject, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { ProductService } from '../product.service';
 import { Product } from '../product';
 import { CommonModule } from '@angular/common';
 import { ProductComponent } from '../product/product.component';  
 import { RouterModule } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-product-list',
@@ -12,7 +13,7 @@ import { RouterModule } from '@angular/router';
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.css']
 })
-export class ProductListComponent implements OnInit {
+export class ProductListComponent implements OnInit, OnChanges {
   @Input() username: string = ""; // Username input for filtering products
   @Input() products: Product[] = []; // Allow passing external products dynamically
   isLoading: boolean = true; // Loading state
@@ -29,6 +30,13 @@ export class ProductListComponent implements OnInit {
     } else {
       // Stop the loading spinner if products are passed externally
       this.isLoading = false;
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['username'] && !changes['username'].firstChange) {
+      this.isLoading = true;
+      this.fetchProductsByUsername();
     }
   }
 

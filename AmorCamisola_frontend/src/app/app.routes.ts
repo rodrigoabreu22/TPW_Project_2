@@ -16,9 +16,9 @@ import { UsersPageComponent } from './users-page/users-page.component';
 export const routes: Routes = [
     {path: '', redirectTo: '/products', pathMatch: 'full'},
     {path: 'products', component: IndexComponent},
-    {path: 'product/:id', component: ProductDetailsComponent},
+    {path: 'product/:id', component: ProductDetailsComponent, data: { renderMode: 'no-prerender' }},
     {path: 'users', component: UsersPageComponent},
-    {path: 'profile/:username', component: UserProfileComponent},
+    {path: 'profile/:username', component: UserProfileComponent, data: { renderMode: 'no-prerender' }},
     {path: 'favorites', component: FavoritesComponent},
     {path: 'offers', component: OffersListComponent},
     {path: 'authentication', component: AuthenticationComponent, data: {showNavbar: false, showFooter: false}},
