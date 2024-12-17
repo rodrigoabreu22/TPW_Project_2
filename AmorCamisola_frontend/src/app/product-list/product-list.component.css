@@ -5,8 +5,3 @@
   justify-content: center;  /* Center items horizontally */
   margin-top: 20px;  /* Space above the product list */
 }
-
-.product-item{
-  margin-top: 25px;
-  margin-inline: 15px;
-}
