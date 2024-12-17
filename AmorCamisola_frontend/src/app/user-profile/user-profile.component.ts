@@ -79,8 +79,32 @@ export class UserProfileComponent {
   async process(): Promise<void> {
     this.load = true;
     try {
-      // Always load the profile data, even if the user is not logged in
+      // Load logged-in user
+      await this.loadLoggedUser();
+  
+      // Check if the user is a moderator
+      if (this.logged_in && this.log_user) {
+        this.moderator = await this.userService.checkModerator(this.log_user.user.username);
+        console.log("Moderator status:", this.moderator);
+  
+        if (this.moderator) {
+          console.log("Loading reports...");
+          if (this.isBrowser()) {
+            this.token = localStorage.getItem("token");
+            if (this.token) {
+              const fetchedReports = await this.moderatorService.getUReports(this.username, this.token);
+              this.reports = fetchedReports;
+            }
+          } else {
+            console.warn("localStorage is not available in the current environment.");
+          }
+          console.log("User reports:", this.reports);
+        }
+      }
+  
+      // Always load the profile data
       if (this.username) {
+        // Fetch user profile
         this.userprofile = await this.userService.getUser(this.username);
   
         // Default is_active to true if undefined
@@ -88,18 +112,17 @@ export class UserProfileComponent {
           this.userprofile.user.is_active = true;
         }
   
-        // Load products
+        // Fetch user products
         const fetchedProducts = await this.productService.getProductsByUsername(this.username);
         this.products = fetchedProducts;
         this.pnumber = fetchedProducts.length;
   
-        // Additional checks only if user is logged in
-        await this.loadLoggedUser();
+        // Additional checks for logged-in user
         if (this.logged_in && this.log_user) {
           this.log_username = this.log_user.user.username;
           this.moderator = await this.userService.checkModerator(this.log_user.user.username);
           if (this.username === this.log_username) {
-            this.myprofile = true;
+            this.myprofile = true; // The logged-in user is viewing their own profile
           }
           if (this.moderator){
             if (this.isBrowser()) {
@@ -115,10 +138,11 @@ export class UserProfileComponent {
             }
           }
   
+          // Fetch followers and following
           if (this.userprofile.user.id) {
             const followers = await this.followService.getFollowers(this.userprofile.user.id);
-            this.followers_number = followers.length;
             this.followers = followers;
+            this.followers_number = followers.length;
   
             const following = await this.followService.getFollows(this.userprofile.user.id);
             this.following = following;
@@ -130,11 +154,12 @@ export class UserProfileComponent {
         }
       }
     } catch (error) {
-      console.error("Error loading profile data:", error);
+      console.error("Error processing user profile data:", error);
     } finally {
       this.load = false;
     }
   }
+  
   
 
   async loadLoggedUser(): Promise<void> {
