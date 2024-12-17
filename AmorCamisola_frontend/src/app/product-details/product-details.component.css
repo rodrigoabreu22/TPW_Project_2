@@ -1,13 +1,23 @@
 .product-details {
   max-width: 900px;
   margin: 0 auto;
-  padding: 40px 0;
+  padding: 40px 20px;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .product-image {
   border: 1px solid #ddd;
   padding: 10px;
-  background-color: #f9f9f9;
+  background-color: #f8f8f8;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.product-image img {
+  max-width: 100%;
   border-radius: 5px;
 }
 
@@ -16,31 +26,93 @@
 }
 
 .product-title {
-  font-size: 2rem;
+  font-size: 2.2rem;
   font-weight: bold;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
+  color: #333;
 }
 
 .product-details h5 {
-  font-size: 1.2rem;
-  margin-top: 20px;
+  font-size: 1.1rem;
+  margin-top: 15px;
+  color: #555;
 }
 
 .product-details p {
-  margin-bottom: 10px;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+  color: #666;
 }
 
 .product-price {
   font-size: 1.8rem;
   font-weight: bold;
-  color: #e74c3c; /* Use a more vibrant red for price */
+  color: #e74c3c;
+  margin-top: 15px;
 }
 
 .action-buttons {
   margin-top: 20px;
 }
 
+.action-buttons .btn {
+  padding: 8px 20px;
+  font-size: 0.9rem;
+}
+
 .btn-primary {
-  background-color: #007bff;
-  border-color: #007bff;
+  background-color: #28a745;
+  border-color: #28a745;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background-color: #218838;
+  border-color: #1e7e34;
+}
+
+.btn-outline-danger {
+  border-color: #dc3545;
+  color: #dc3545;
+}
+
+.btn-outline-danger:hover {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.toggle-reports-btn {
+  margin-top: 20px;
+  display: inline-block;
+  cursor: pointer;
+  color: #007bff;
+  text-decoration: underline;
+}
+
+.toggle-reports-btn:hover {
+  color: #0056b3;
+}
+
+/* Reports Section */
+.reports-container {
+  display: none; /* Initially hidden */
+  margin-top: 20px;
+  border: 1px solid #ccc;
+  padding: 15px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.reports-container.active {
+  display: block;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }

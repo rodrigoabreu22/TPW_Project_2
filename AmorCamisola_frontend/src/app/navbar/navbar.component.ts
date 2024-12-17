@@ -22,6 +22,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   wallet: number = 0;
   offerCount: Promise<number> = Promise.resolve(0);
   private subscription!: Subscription;
+  private userSubcription!: Subscription;
 
   userService: UserService = inject(UserService);
   loginService: LoginService = inject(LoginService);
@@ -37,6 +38,14 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.subscription = this.userService.walletValue$.subscribe((value) => {
       console.log('Wallet value changed:', value);
       this.wallet = value;
+    });
+    this.userSubcription = this.loginService.currentUser$.subscribe((user) => {
+      console.log('User changed:', user);
+      this.logged_in = user != null;
+      if (user != null) {
+        this.log_user = user;
+        this.username = this.log_user?.user.username!;
+      }
     });
   }
 

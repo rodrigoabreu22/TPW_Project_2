@@ -31,16 +31,21 @@ export class ProductDetailsComponent implements OnInit {
   token: string | null = localStorage.getItem("token") || null;
   showModal: boolean = false; // Controls modal visibility
   offerService: OffersService = inject(OffersService);
+  showReports = false;
+
+  toggleReports() {
+    this.showReports = !this.showReports;
+  }
 
   //offer modal things
   buyer: UserProfile | null = null;
   
 
-
   private productService: ProductService = inject(ProductService);
   private userService: UserService = inject(UserService);
   private loginService: LoginService = inject(LoginService);
   private moderatorService: ModeratorService = inject(ModeratorService);
+
   private currentNegotiations: Offer[] = [];
 
   constructor(private route: ActivatedRoute, private router: Router) {
@@ -90,12 +95,16 @@ export class ProductDetailsComponent implements OnInit {
 
   onReportSubmitted(): void {
     console.log('Report was successfully submitted!');
+    this.fetchReports();
     // Perform any additional actions, e.g., refresh user profile or show a success message
     alert('Thank you for your report!');
   }
 
   async ngOnInit(): Promise<void> {
     console.log("Product detail")
+    console.log(this.offerService)
+    console.log(this.userService)
+    console.log(this.loginService)
     if (this.productId <= 0) {
       console.warn('Invalid or missing product ID.');
       return;
@@ -130,6 +139,23 @@ export class ProductDetailsComponent implements OnInit {
     }
   }
 
+  async fetchReports(): Promise<void> {
+    if (this.moderator){
+      console.log("entrei")
+      if (this.isBrowser()) {
+        this.token = localStorage.getItem("token");
+        if(this.token){
+          const fetchedReports = await this.moderatorService.getPReports(this.productId,this.token);
+          this.reports = fetchedReports;
+        }
+      }
+      else{
+        console.warn("localStorage não está disponível no ambiente atual.");
+      }
+      console.log("Reports",this.reports)
+    }
+  }
+
   removeProduct(): void {
     console.log('removeProduct');
     this.productService.deleteProduct(this.productId, this.token!);
@@ -148,10 +174,11 @@ export class ProductDetailsComponent implements OnInit {
     this.showModal = false;
   }
 
-  async showOfferModal(){
+  showOfferModal = async () => {
     this.buyer = await this.loginService.getLoggedUser();
     this.showModal = true;
-  }
+  };
+  
 
   onModalClick(event: Event){
     event.stopPropagation();

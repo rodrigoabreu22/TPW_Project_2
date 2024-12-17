@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { UserProfile } from './user-profile';
 import { UserService } from './user.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -8,6 +9,10 @@ import { UserService } from './user.service';
 export class LoginService {
   private baseUrl: string = 'http://localhost:8080/ws/';
   userService: UserService = inject(UserService);
+  private currentUser = new BehaviorSubject<UserProfile | null>(null);
+  currentUser$ = this.currentUser.asObservable();
+  
+
 
   constructor() {}
 
@@ -25,7 +30,8 @@ export class LoginService {
       if (!userId) {
         throw new Error('User is not logged in.');
       }
-      return this.userService.getUsersProfile(parseInt(userId, 10));
+      this.currentUser.next(await this.userService.getUsersProfile(parseInt(userId, 10)));
+      return this.currentUser.value!;
     }
 
   private setCurrentUser(user: UserProfile | null): void {
@@ -33,6 +39,7 @@ export class LoginService {
     if (user) {
       localStorage.setItem('id', JSON.stringify(user?.id));
     }
+    this.currentUser.next(user);
   }
 
   async login(username: string, password: string): Promise<UserProfile | null> {
@@ -90,7 +97,8 @@ export class LoginService {
     } else {
       response = await data.json();
       console.log('Registration response:', response);
-      this.setCurrentUser(response);
+      localStorage.setItem('token', response.token);
+      this.setCurrentUser(response.userProfile);
       return response;
     }
   }

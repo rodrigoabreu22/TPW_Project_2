@@ -8,7 +8,14 @@
           alt="{{ product?.name }}"
         />
         <div *ngIf="moderator">
-          <app-report-list [reports]="reports"></app-report-list>
+          <div class="toggle-reports-btn" (click)="toggleReports()">
+            {{ showReports ? 'Esconder Denúncias' : 'Mostrar Denúncias' }}
+          </div>
+          
+          <!-- Reports Section -->
+          <div class="reports-container" [class.active]="showReports">
+            <app-report-list [reports]="reports"></app-report-list>
+          </div>
         </div>
       </div>
     </div>
