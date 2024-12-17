@@ -816,6 +816,10 @@ def counterOffer(request, id):
 
 def retractOffer(request, id):
     offer = Offer.objects.get(id=id)
+    if offer.payment_method == "store_credit" and not offer.product.sold:
+        if offer.sent_by.id == offer.buyer.id:
+            offer.buyer.wallet += offer.value
+        offer.buyer.save()
     offer.delete()
     return redirect("/offers/")
 
@@ -1152,7 +1156,7 @@ def create_offer(request):
     print("myoffer", offer)
     new_offer_serializer = OfferSerializer(offer, many=False)
     print(new_offer_serializer.data)
-    return Response(new_offer_serializer.data)
+    return get_offers_aux(request)
 
 
 @api_view(['GET', 'POST', 'PUT'])
