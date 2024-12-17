@@ -36,11 +36,11 @@ export class ProductDetailsComponent implements OnInit {
   buyer: UserProfile | null = null;
   
 
-
   private productService: ProductService = inject(ProductService);
   private userService: UserService = inject(UserService);
   private loginService: LoginService = inject(LoginService);
   private moderatorService: ModeratorService = inject(ModeratorService);
+
   private currentNegotiations: Offer[] = [];
 
   constructor(private route: ActivatedRoute, private router: Router) {
@@ -96,6 +96,9 @@ export class ProductDetailsComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     console.log("Product detail")
+    console.log(this.offerService)
+    console.log(this.userService)
+    console.log(this.loginService)
     if (this.productId <= 0) {
       console.warn('Invalid or missing product ID.');
       return;
@@ -148,10 +151,11 @@ export class ProductDetailsComponent implements OnInit {
     this.showModal = false;
   }
 
-  async showOfferModal(){
+  showOfferModal = async () => {
     this.buyer = await this.loginService.getLoggedUser();
     this.showModal = true;
-  }
+  };
+  
 
   onModalClick(event: Event){
     event.stopPropagation();
