@@ -33,6 +33,7 @@ export class ProductDetailsComponent implements OnInit {
   showModal: boolean = false; // Controls modal visibility
   offerService: OffersService = inject(OffersService);
   showReports = false;
+  log_user: UserProfile | null = null;
   offerSubscription!: Subscription;
 
   toggleReports() {
@@ -123,6 +124,7 @@ export class ProductDetailsComponent implements OnInit {
       // Fetch product details
       this.product = await this.productService.getProduct(this.productId);
       const user = await this.loginService.getLoggedUser();
+      this.log_user = user;
       this.moderator = await this.userService.checkModerator(user.user.username);
       console.log("moderator1",this.moderator)
       if (this.moderator){
