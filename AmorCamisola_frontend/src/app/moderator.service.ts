@@ -90,4 +90,30 @@ export class ModeratorService {
       throw new Error(`Failed to delete product: ${response.statusText}`);
     }
   }
+
+  async toggleBanUser(userId: number, isActive: boolean, token: string): Promise<void> {
+    const url = `${this.baseUrl}users/${userId}/toggle-ban/`;  // Use '/toggle-ban/' instead of '/ban'
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Token ${token}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to ${isActive ? 'ban' : 'unban'} user: ${response.statusText}`);
+    }
+  }
+  
+  async closeReport(reportId: number, token: string): Promise<void> {
+    const url = `${this.baseUrl}reports/${reportId}/close/`;
+    const response = await fetch(url, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Token ${token}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to close report: ${response.statusText}`);
+    }
+  }
 }

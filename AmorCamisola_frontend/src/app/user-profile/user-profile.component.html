@@ -30,21 +30,37 @@
                 <div class="mr-4">
                     <strong>{{ pnumber }}</strong> produtos
                 </div>
+                
                 <div class="mr-4">
-                    <a href="#" class="text-dark" data-bs-toggle="modal" data-bs-target="#followersModal">
-                        <strong>{{ followers }}</strong> seguidores
-                    </a>
+                  <a href="#" 
+                     class="text-dark" 
+                     [attr.data-bs-toggle]="myprofile ? 'modal' : null" 
+                     [attr.data-bs-target]="myprofile ? '#followersModal' : null"
+                     (click)="myprofile ? null : $event.preventDefault()">
+                    <strong>{{ followers_number }}</strong> seguidores
+                  </a>
                 </div>
                 <div>
-                    <a href="#" class="text-dark" data-bs-toggle="modal" data-bs-target="#followingModal">
-                        <strong>{{ following }}</strong> seguindo
-                    </a>
+                  <a href="#" 
+                     class="text-dark" 
+                     [attr.data-bs-toggle]="myprofile ? 'modal' : null" 
+                     [attr.data-bs-target]="myprofile ? '#followingModal' : null"
+                     (click)="myprofile ? null : $event.preventDefault()">
+                    <strong>{{ following_number }}</strong> seguindo
+                  </a>
+                </div>
+                  
+                  
+                <div *ngIf="!myprofile" class="mb-3">
+                    <button class="btn btn-outline-primary btn-sm" (click)="isFollowing ? unfollowUser() : followUser()">
+                      {{ isFollowing ? 'Não Seguir' : 'Seguir' }}
+                    </button>
                 </div>
             </div>
                 <p>Nome: {{ userprofile.user.first_name }} {{ userprofile.user.last_name }}</p>
         </div>
     </div>
-    <div *ngIf="moderator">
+    <div *ngIf="moderator && userprofile.user.is_active">
         <app-report-list [reports]="reports"></app-report-list>
     </div>
     <hr/>
@@ -76,44 +92,14 @@
     -->
 
     <!--{% if not is_banned %}-->
-    <app-product-list *ngIf="userprofile.user.username" [username]="userprofile.user.username" ></app-product-list>
-    <!--
-        <div class="row">
-        {% for product in products %}
-            <div class="col-6 col-md-4 mb-4">
-                <div class="card h-100 shadow-sm">
-                    <a href="{% url 'detailedproduct' id=product.id %}">
-                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="card-img-top img-fluid rounded" style="object-fit: cover; height: 300px;">
-                    </a>
-                    <div class="card-body d-flex flex-column text-center">
-                        <h5 class="card-title">{{ product.name }}</h5>
-                        <p class="card-text text-muted">{{ product.price }} €</p>
-                        <p class="text-muted">Vendedor: {{ product.seller.username }}</p>
-                        <form method="POST" action="" class="mt-auto">
-                        {% csrf_token %}
-                                <input type="hidden" name="favorite_product_id" value="{{ product.id }}">
-                                <button type="submit" class="btn btn-outline-danger w-100">
-                                {% if product.id in favorites_ids %}
-                                    <i class="fas fa-heart"></i>
-                                {% else %}
-                                     <i class="far fa-heart"></i>
-                                {% endif %}
-                                </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        {% empty %}
-            <p class="col-12 text-center">Sem produtos à venda.</p>
-        {% endfor %}
-        {% else %}
-            <div class="alert alert-danger" style="border: 2px solid darkred; background-color: #f8d7da; color: darkred; font-size: 2rem; text-align: center; padding: 20px;">
-                <strong>Este usuário foi banido!!!</strong>
-            </div>
-        {% endif %}
+    <div *ngIf="userprofile.user.is_active; else banned">
+        <app-product-list *ngIf="userprofile.user.username" [username]="userprofile.user.username" ></app-product-list>
+    </div>
+    <ng-template #banned>
+        <div class="alert alert-danger" style="border: 2px solid darkred; background-color: #f8d7da; color: darkred; font-size: 2rem; text-align: center; padding: 20px;">
+            <strong>Este usuário foi banido!!!</strong>
         </div>
-
--->
+      </ng-template>
 </div>
 
 <div class="modal fade" id="followersModal" tabindex="-1" aria-labelledby="followersModalLabel" aria-hidden="true">
@@ -124,7 +110,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <app-user-list *ngIf="seguidores && seguidores.length > 0" [simple_user]="seguidores" [perfil]="true"></app-user-list>
+                <app-user-list *ngIf="followers && followers_number > 0" [simple_user]="followers" [perfil]="true"></app-user-list>
             </div>
         </div>
     </div>
@@ -138,7 +124,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <app-user-list *ngIf="seguindo && seguindo.length > 0" [simple_user]="seguindo" [perfil]="true"></app-user-list>
+                <app-user-list *ngIf="following && following_number > 0" [simple_user]="following" [perfil]="true"></app-user-list>
             </div>
         </div>
     </div>

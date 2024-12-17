@@ -26,7 +26,7 @@
   .filter-sidebar {
     position: fixed;
     left: -300px; /* Initially hidden */
-    top: 51px;
+    top: 57px;
     width: 300px;
     height: 100%;
     background: #f9f9f9;
@@ -76,7 +76,7 @@
     line-height: 30px; /* Center text vertically */
     text-align: center;
     border-radius: 50%; /* Make it a circle */
-    background-color: #ffffff; /* Set background color */
+    background-color: #f9f9f9; /* Set background color */
     color: #333; /* Set text color */
     border: none; /* Remove button border */
   }
@@ -91,3 +91,21 @@
     vertical-align: bottom;
   }
 
+  .btn-filtrar {
+    /* Cores e Bordas */
+    background-color: #277727; /* Verde claro - ajuste conforme sua paleta de cores */
+    border: none;
+    color: white;
+  
+    /* Efeitos de Hover */
+    &:hover {
+      background-color: #3e8e41; /* Verde um pouco mais escuro */
+      cursor: pointer;
+    }
+  
+    /* Tamanhos e Espaçamento */
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+  }

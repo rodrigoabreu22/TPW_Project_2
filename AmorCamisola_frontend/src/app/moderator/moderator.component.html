@@ -23,7 +23,9 @@
       <div *ngFor="let report of user_reports" class="product-card card shadow-sm h-100 border-0">
         <a [routerLink]="['/profile', report.report.reporting?.user?.username]">
           <div class="image-container bg-light rounded-top" style="height: 180px; overflow: hidden;">
-            <img [src]="'http://127.0.0.1:8080' + report.report.reporting?.image || 'placeholder.jpg'" class="img-fluid img-thumbnail w-100" style="object-fit: contain;">
+            <img [src]="'http://127.0.0.1:8080' + report.report.reporting?.image || 'placeholder.jpg'" 
+                class="img-fluid img-thumbnail w-100" 
+                style="object-fit: contain;">
           </div>
         </a>
         <div class="card-body text-center p-2">
@@ -32,9 +34,24 @@
             <strong>Número de denúncias:</strong>
             <a class="text-decoration-none">{{ report.count }}</a>
           </p>
+
+          <!-- Ban/Unban Button -->
+          <button 
+            class="btn btn-warning btn-sm my-1" 
+            (click)="toggleUserBan(report.report.reporting?.user?.id, report.report.reporting?.user?.is_active)">
+            {{ report.report.reporting?.user?.is_active ? 'Banir usuário' : 'Desbanir usuário' }}
+          </button>
+
+          <!-- Close Report Button -->
+          <button 
+            class="btn btn-danger btn-sm my-1" 
+            (click)="closeReport(report.report.id, true)">
+            Fechar denúncia
+          </button>
         </div>
       </div>
     </div>
+
   
     <!-- Product Reports Section -->
     <div *ngIf="!showUserReports && product_reports && product_reports.length > 0" class="report-section" id="product-reports-section">
@@ -51,7 +68,18 @@
             <strong>Número de denúncias:</strong>
             <a class="text-decoration-none">{{ report.count }}</a>
           </p>
-          
+          <div class="card-footer text-center bg-white border-0 p-2">
+            <button 
+              class="btn btn-danger" 
+              (click)="deleteProduct(report.report.product?.id)">
+              Apagar publicação
+            </button>
+            <button 
+              class="btn btn-danger btn-sm my-1" 
+              (click)="closeReport(report.report.id, false)">
+              Fechar denúncia
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -60,6 +60,7 @@ urlpatterns = [
     path('ws/usersprofiles/', views.get_user_profiles, name='get_user_profiles'),
     path('ws/offers/', views.get_user_offers, name='get_user_offers'),
     path('ws/follows/', views.follows, name='follows'),
+    path('ws/followers/<int:id>/', views.followers, name='followers'),
     path('ws/offers/<int:id>/', views.get_offer_by_id, name='get_offer_by_id'),
     path('ws/users/<int:user_id>/favorites/', views.user_favorites, name='user_favorites'),  
     path('ws/users/<int:user_id>/favorites/<int:product_id>/', views.user_favorites, name='user_favorites_product'), 
@@ -68,6 +69,9 @@ urlpatterns = [
     path('ws/users/<int:id>', views.userProfile_by_id , name='userProfile_by_id'),
     path('ws/users/wallet/', views.wallet_function, name='wallet'),
     path('ws/users/notifs/', views.check_notifs, name='check_notifs'),
+    path('ws/products/<int:product_id>/delete', views.delete_product_a, name='delete_product_a'),
+    path('ws/users/<int:user_id>/toggle-ban/', views.toggle_ban_user, name='toggle_ban_user'),
+    path('ws/reports/<int:report_id>/close/', views.close_report_a, name='close_report_a'),
     #path('ws/reports/', views.api_reports, name='api_reports'),
     #path('ws/reports/<int:id>/', views.api_report, name='api_report'),
     
