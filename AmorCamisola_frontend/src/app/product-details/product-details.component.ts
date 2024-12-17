@@ -96,6 +96,7 @@ export class ProductDetailsComponent implements OnInit {
     if (!this.token) return this.redirectToLogin;
     if (this.product?.seller.id === this.log_user?.user.id) return this.removeProduct;
     if (this.currentNegotiations.some(offer => offer.product.id === this.product?.id)) return this.redirectToOffers;
+    if (this.product?.seller.id === this.log_user?.user.id) return this.removeProduct;
     return this.showOfferModal;
   }
 
@@ -142,6 +143,7 @@ export class ProductDetailsComponent implements OnInit {
         console.log("Reports",this.reports)
       }
       // If the product has a seller, fetch seller info
+      console.log("banana", this.product.seller)
       if (this.product.seller.username) {
         this.sellerInfo = await this.userService.getUser(this.product.seller.username);
       }

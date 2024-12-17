@@ -58,6 +58,7 @@ export class UserService {
    async getUsers(): Promise<UserProfile[]> {
     let url = `${this.baseUrl}users/`;
     const data: Response = await fetch(url);
+    console.log("TESTE!!!!!!!",data);
     return await data.json() ?? [];
   }
   async getUsersProfiles(users: User[]): Promise<UserProfile[]> {
