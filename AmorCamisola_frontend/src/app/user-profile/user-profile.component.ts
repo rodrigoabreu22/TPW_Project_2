@@ -97,8 +97,22 @@ export class UserProfileComponent {
         await this.loadLoggedUser();
         if (this.logged_in && this.log_user) {
           this.log_username = this.log_user.user.username;
+          this.moderator = await this.userService.checkModerator(this.log_user.user.username);
           if (this.username === this.log_username) {
             this.myprofile = true;
+          }
+          if (this.moderator){
+            if (this.isBrowser()) {
+              this.token = localStorage.getItem("token");
+              if(this.token){
+                console.log("USERNAME RAG",this.username)
+                const fetchedReports = await this.moderatorService.getUReports(this.username,this.token);
+                this.reports = fetchedReports;
+              }
+            }
+            else{
+              console.warn("localStorage não está disponível no ambiente atual.");
+            }
           }
   
           if (this.userprofile.user.id) {
